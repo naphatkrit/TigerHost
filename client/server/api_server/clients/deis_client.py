@@ -13,6 +13,17 @@ class DeisClient:
         """
         self.deis_url = deis_url
 
+    def _request(self, method, path, **kwargs):
+        """Sends a request to Deis.
+
+        @type method: str
+            HTTP method, such as "POST", "GET", "PUT"
+
+        @type path: str
+            The extra http path to be appended to the deis URL
+        """
+        return requests.request(method, urlparse.urljoin(self.deis_url, path), **kwargs)
+
     def register(self, username, password, email):
         """Register a new user with Deis.
 
@@ -20,8 +31,7 @@ class DeisClient:
         @type password: str
         @type email: str
         """
-        url = urlparse.urljoin(self.deis_url, 'v1/auth/register/')
-        resp = requests.post(url, json={
+        resp = self._request('POST', 'v1/auth/register/', json={
             "username": username,
             "password": password,
             "email": email
