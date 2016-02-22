@@ -40,7 +40,7 @@ class DeisClient(object):
             "password": password,
             "email": email
         })
-        if resp.status_code != 201:
+        if not 200 <= resp.status_code < 300:
             raise DeisClientResponseError(resp)
 
     def login(self, username, password):
@@ -60,7 +60,7 @@ class DeisClient(object):
             "username": username,
             "password": password
         })
-        if resp.status_code != 201:
+        if not 200 <= resp.status_code < 300:
             raise DeisClientResponseError(resp)
         token = resp.json()['token']
         return DeisAuthenticatedClient(self.deis_url, token)

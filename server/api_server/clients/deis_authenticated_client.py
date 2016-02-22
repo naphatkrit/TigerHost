@@ -36,7 +36,7 @@ class DeisAuthenticatedClient(DeisClient):
         # TODO this may not work correctly if there are too many apps
         # will need to look at "next" key in the response
         resp = self._request('GET', 'v1/apps')
-        if resp.status_code != 200:
+        if not 200 <= resp.status_code < 300:
             raise DeisClientResponseError(resp)
         return [x['id'] for x in resp.json()['results']]
 
@@ -49,5 +49,5 @@ class DeisAuthenticatedClient(DeisClient):
         @raises DeisClientResponseError
         """
         resp = self._request('POST', 'v1/apps/')
-        if resp.status_code != 201:
+        if not 200 <= resp.status_code < 300:
             raise DeisClientResponseError(resp)
