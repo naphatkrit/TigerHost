@@ -23,12 +23,25 @@ def test_application(deis_authenticated_client, app_id):
     assert ids == [app_id]
 
     # test environmental variables
+    bindings = {
+        'TESTING1': '1',
+        'TESTING2': '2'
+    }
     old_vars = deis_authenticated_client.get_application_env_variables(app_id)
     deis_authenticated_client.set_application_env_variables(
-        app_id, {'TESTING': 'testing'})
-    old_vars['TESTING'] = 'testing'
+        app_id, bindings)
+
+    old_vars_updated = old_vars.copy()
+    old_vars_updated.update(bindings)
+
     new_vars = deis_authenticated_client.get_application_env_variables(app_id)
-    assert new_vars == old_vars
+    assert new_vars == old_vars_updated
+
+    deis_authenticated_client.unset_application_env_variables(
+        app_id, [key for key in bindings])
+    new_vars_deleted = deis_authenticated_client.get_application_env_variables(
+        app_id)
+    assert old_vars == new_vars_deleted
 
     # delete application
     deis_authenticated_client.delete_application(app_id)
