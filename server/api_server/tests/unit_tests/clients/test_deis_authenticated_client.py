@@ -109,6 +109,32 @@ def test_set_application_owner(deis_authenticated_client, fake_deis_url):
 
 
 @responses.activate
+def test_get_application_collaborators(deis_authenticated_client, fake_deis_url):
+    users = ['user1', 'user2']
+    responses.add(responses.GET, urlparse.urljoin(
+        fake_deis_url, 'v1/apps/{}/perms/'.format('testid')), status=200, json={'users': users})
+    ret = deis_authenticated_client.get_application_collaborators('testid')
+    assert set(ret) == set(users)
+
+
+@responses.activate
+def test_add_application_collaborator(deis_authenticated_client, fake_deis_url):
+    username = 'username'
+    responses.add(responses.POST, urlparse.urljoin(
+        fake_deis_url, 'v1/apps/{}/perms/'.format('testid')), status=201)
+    deis_authenticated_client.add_application_collaborator('testid', username)
+
+
+@responses.activate
+def test_remove_application_collaborator(deis_authenticated_client, fake_deis_url):
+    username = 'username'
+    responses.add(responses.DELETE, urlparse.urljoin(
+        fake_deis_url, 'v1/apps/{}/perms/{}'.format('testid', username)), status=204)
+    deis_authenticated_client.remove_application_collaborator(
+        'testid', username)
+
+
+@responses.activate
 def test_get_application_keys(deis_authenticated_client, fake_deis_url):
     keys = ['key1', 'key2']
     responses.add(responses.GET, urlparse.urljoin(
