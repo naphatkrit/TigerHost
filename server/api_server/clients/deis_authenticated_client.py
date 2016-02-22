@@ -48,6 +48,8 @@ class DeisAuthenticatedClient(DeisClient):
 
         @raises DeisClientResponseError
         """
-        resp = self._request('POST', 'v1/apps/')
+        resp = self._request('POST', 'v1/apps/', json={
+            'id': app_id
+        })
         if not 200 <= resp.status_code < 300:
             raise DeisClientResponseError(resp)
