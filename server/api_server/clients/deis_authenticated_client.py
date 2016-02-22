@@ -133,3 +133,41 @@ class DeisAuthenticatedClient(DeisClient):
         """
         self._request_and_raise(
             'DELETE', 'v1/apps/{}/domains/{}'.format(app_id, domain))
+
+    def get_keys(self):
+        """Get all public keys associated with this user.
+
+        @rtype: dict
+            A dictionary with two keys: 'key_name' and 'key'
+
+        @raises e: DeisClientResponseError
+        """
+        # TODO may have to page
+        resp = self._request_and_raise(
+            'GET', 'v1/keys/')
+        return [{'key_name': x['id'], 'key': x['public']} for x in resp.json()['results']]
+
+    def add_key(self, key_name, key):
+        """Add a public key to this user.
+
+        @type key_name: str
+            An ID to be associated with this key
+
+        @type key: str
+
+        @raises e: DeisClientResponseError
+        """
+        self._request_and_raise('POST', 'v1/keys/', json={
+            'id': key_name,
+            'public': key
+        })
+
+    def remove_key(self, key_name):
+        """Remove the specified key from this user.
+
+        @type key_name: str
+            The ID associated with this key when added.
+
+        @raises e: DeisClientResponseError
+        """
+        self._request_and_raise('DELETE', 'v1/keys/{}'.format(key_name))

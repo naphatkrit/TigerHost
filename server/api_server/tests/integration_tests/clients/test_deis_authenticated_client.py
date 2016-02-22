@@ -85,3 +85,24 @@ def test_application_domains(deis_authenticated_client, app_id, create_applicati
     # can't remove a non-existent domain
     with pytest.raises(DeisClientResponseError):
         deis_authenticated_client.remove_application_domain(app_id, domain)
+
+
+def test_keys(deis_authenticated_client, public_key):
+    """
+    @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    """
+    key_name = 'key_name'
+    old_keys = deis_authenticated_client.get_keys()
+
+    deis_authenticated_client.add_key(key_name, public_key)
+    new_keys = deis_authenticated_client.get_keys()
+    assert new_keys == old_keys + [{'key_name': key_name, 'key': public_key}]
+
+    with pytest.raises(DeisClientResponseError):
+        deis_authenticated_client.add_key(key_name, public_key)
+
+    deis_authenticated_client.remove_key(key_name)
+    assert deis_authenticated_client.get_keys() == old_keys
+
+    with pytest.raises(DeisClientResponseError):
+        deis_authenticated_client.remove_key(key_name)
