@@ -30,6 +30,8 @@ class DeisAuthenticatedClient(DeisClient):
 
         @rtype: list
             The list of application IDs (str)
+
+        @raises DeisClientResponseError
         """
         # TODO this may not work correctly if there are too many apps
         # will need to look at "next" key in the response
@@ -37,3 +39,15 @@ class DeisAuthenticatedClient(DeisClient):
         if resp.status_code != 200:
             raise DeisClientResponseError(resp)
         return [x['id'] for x in resp.json()['results']]
+
+
+    def create_application(self, app_id):
+        """Create a new application with the specified ID.
+
+        @type app_id: str
+
+        @raises DeisClientResponseError
+        """
+        resp = self._request('POST', 'v1/apps/')
+        if resp.status_code != 201:
+            raise DeisClientResponseError(resp)
