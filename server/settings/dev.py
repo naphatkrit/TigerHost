@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cas',
     'api_server',
 ]
 
@@ -70,6 +71,21 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'api_server.wsgi.application'
+
+# START AUTHENTICATION CONFIGURATION
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'cas.backends.CASBackend',
+)
+
+CAS_SERVER_URL = 'https://fed.princeton.edu/cas/'
+
+CAS_REDIRECT_URL = '/'
+
+LOGIN_URL = '/login'
+
+# END AUTHENTICATION CONFIGURATION
 
 
 # Database
