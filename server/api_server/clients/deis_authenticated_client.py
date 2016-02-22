@@ -68,3 +68,16 @@ class DeisAuthenticatedClient(DeisClient):
         self._request_and_raise('POST', 'v1/apps/{}/config/'.format(app_id), json={
             'values': bindings
         })
+
+    def get_application_env_variables(self, app_id):
+        """Get the environmental variables for the specified app ID.
+
+        @type app_id: str
+
+        @rtype: dict
+            The key-value pair representing the environmental variables
+
+        @raises e: DeisClientResponseError
+        """
+        resp = self._request_and_raise('GET', 'v1/apps/{}/config/'.format(app_id))
+        return resp.json()['values']
