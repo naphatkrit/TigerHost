@@ -34,3 +34,10 @@ def test_create_application_success(deis_authenticated_client, fake_deis_url):
     responses.add(responses.POST, urlparse.urljoin(
         fake_deis_url, 'v1/apps/'), status=201)
     deis_authenticated_client.create_application('testid')
+
+
+@responses.activate
+def test_delete_application_success(deis_authenticated_client, fake_deis_url):
+    responses.add(responses.DELETE, urlparse.urljoin(
+        fake_deis_url, 'v1/apps/{}/'.format('testid')), status=204)
+    deis_authenticated_client.delete_application('testid')

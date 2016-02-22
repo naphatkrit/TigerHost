@@ -45,3 +45,12 @@ class DeisAuthenticatedClient(DeisClient):
         self._request_and_raise('POST', 'v1/apps/', json={
             'id': app_id
         })
+
+    def delete_application(self, app_id):
+        """Delete an application with the specified ID.
+
+        @type app_id: str
+
+        @raises DeisClientResponseError
+        """
+        self._request_and_raise('DELETE', 'v1/apps/{}/'.format(app_id))
