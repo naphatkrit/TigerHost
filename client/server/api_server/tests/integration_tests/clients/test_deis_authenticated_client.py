@@ -43,6 +43,23 @@ def test_application(deis_authenticated_client, app_id):
         app_id)
     assert old_vars == new_vars_deleted
 
+    # test domains
+    domain = '{}.example.com'.format(app_id)
+    old_domains = deis_authenticated_client.get_application_domains(app_id)
+    deis_authenticated_client.add_application_domain(app_id, domain)
+    assert deis_authenticated_client.get_application_domains(app_id) == old_domains + [domain]
+
+    # can't add a domain twice
+    with pytest.raises(DeisClientResponseError):
+        deis_authenticated_client.add_application_domain(app_id, domain)
+
+    deis_authenticated_client.remove_application_domain(app_id, domain)
+    assert deis_authenticated_client.get_application_domains(app_id) == old_domains
+
+    # can't remove a non-existent domain
+    with pytest.raises(DeisClientResponseError):
+        deis_authenticated_client.remove_application_domain(app_id, domain)
+
     # delete application
     deis_authenticated_client.delete_application(app_id)
 

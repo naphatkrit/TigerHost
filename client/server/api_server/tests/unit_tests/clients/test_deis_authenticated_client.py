@@ -66,3 +66,28 @@ def test_get_application_env_variables_success(deis_authenticated_client, fake_d
         fake_deis_url, 'v1/apps/{}/config/'.format('testid')), status=200, json={'values': bindings})
     ret = deis_authenticated_client.get_application_env_variables('testid')
     assert ret == bindings
+
+
+@responses.activate
+def test_get_application_domains(deis_authenticated_client, fake_deis_url):
+    domains = ['a.com', 'b.com']
+    responses.add(responses.GET, urlparse.urljoin(
+        fake_deis_url, 'v1/apps/{}/domains/'.format('testid')), status=200, json={'results': [{'domain': x} for x in domains]})
+    ret = deis_authenticated_client.get_application_domains('testid')
+    assert ret == domains
+
+
+@responses.activate
+def test_add_application_domain(deis_authenticated_client, fake_deis_url):
+    domain = 'a.example.com'
+    responses.add(responses.POST, urlparse.urljoin(
+        fake_deis_url, 'v1/apps/{}/domains/'.format('testid')), status=201)
+    deis_authenticated_client.add_application_domain('testid', domain)
+
+
+@responses.activate
+def test_remove_application_domain(deis_authenticated_client, fake_deis_url):
+    domain = 'a.example.com'
+    responses.add(responses.DELETE, urlparse.urljoin(
+        fake_deis_url, 'v1/apps/{}/domains/{}'.format('testid', domain)), status=204)
+    deis_authenticated_client.remove_application_domain('testid', domain)
