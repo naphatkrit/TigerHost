@@ -96,3 +96,40 @@ class DeisAuthenticatedClient(DeisClient):
         resp = self._request_and_raise(
             'GET', 'v1/apps/{}/config/'.format(app_id))
         return resp.json()['values']
+
+    def get_application_domains(self, app_id):
+        """Get all domains associated with the specified app ID.
+
+        @type app_id: str
+
+        @rtype: list
+            List of domains (str)
+
+        @raises e: DeisClientResponseError
+        """
+        # TODO may have to page
+        resp = self._request_and_raise(
+            'GET', 'v1/apps/{}/domains/'.format(app_id))
+        return [x['domain'] for x in resp.json()['results']]
+
+    def add_application_domain(self, app_id, domain):
+        """Add a new domain to the specified app ID.
+
+        @type app_id: str
+        @type domain: str
+
+        @raises e: DeisClientResponseError
+        """
+        self._request_and_raise(
+            'POST', 'v1/apps/{}/domains/'.format(app_id), json={'domain': domain})
+
+    def remove_application_domain(self, app_id, domain):
+        """Remove a domain from the specified app ID.
+
+        @type app_id: str
+        @type domain: str
+
+        @raises e: DeisClientResponseError
+        """
+        self._request_and_raise(
+            'DELETE', 'v1/apps/{}/domains/{}'.format(app_id, domain))
