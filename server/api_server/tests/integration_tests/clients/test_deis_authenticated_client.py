@@ -9,7 +9,19 @@ def deis_authenticated_client(deis_client, username, password, email):
     return deis_client.login(username, password)
 
 
-def test_application(deis_authenticated_client, app_id):
+@pytest.yield_fixture
+def create_application(deis_authenticated_client, app_id):
+    """
+    @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    """
+    deis_authenticated_client.create_application(app_id)
+    try:
+        yield
+    finally:
+        deis_authenticated_client.delete_application(app_id)
+
+
+def test_application_creation(deis_authenticated_client, app_id):
     """
     @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
     """
@@ -22,6 +34,17 @@ def test_application(deis_authenticated_client, app_id):
     ids = deis_authenticated_client.get_all_applications()
     assert ids == [app_id]
 
+    # delete application
+    deis_authenticated_client.delete_application(app_id)
+
+    ids = deis_authenticated_client.get_all_applications()
+    assert ids == []
+
+    with pytest.raises(DeisClientResponseError):
+        deis_authenticated_client.delete_application(app_id)
+
+
+def test_application_env_variables(deis_authenticated_client, app_id, create_application):
     # test environmental variables
     bindings = {
         'TESTING1': '1',
@@ -43,28 +66,22 @@ def test_application(deis_authenticated_client, app_id):
         app_id)
     assert old_vars == new_vars_deleted
 
-    # test domains
+
+def test_application_domains(deis_authenticated_client, app_id, create_application):
     domain = '{}.example.com'.format(app_id)
     old_domains = deis_authenticated_client.get_application_domains(app_id)
     deis_authenticated_client.add_application_domain(app_id, domain)
-    assert deis_authenticated_client.get_application_domains(app_id) == old_domains + [domain]
+    assert deis_authenticated_client.get_application_domains(
+        app_id) == old_domains + [domain]
 
     # can't add a domain twice
     with pytest.raises(DeisClientResponseError):
         deis_authenticated_client.add_application_domain(app_id, domain)
 
     deis_authenticated_client.remove_application_domain(app_id, domain)
-    assert deis_authenticated_client.get_application_domains(app_id) == old_domains
+    assert deis_authenticated_client.get_application_domains(
+        app_id) == old_domains
 
     # can't remove a non-existent domain
     with pytest.raises(DeisClientResponseError):
         deis_authenticated_client.remove_application_domain(app_id, domain)
-
-    # delete application
-    deis_authenticated_client.delete_application(app_id)
-
-    ids = deis_authenticated_client.get_all_applications()
-    assert ids == []
-
-    with pytest.raises(DeisClientResponseError):
-        deis_authenticated_client.delete_application(app_id)
