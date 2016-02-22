@@ -13,7 +13,7 @@ class DeisClient(object):
         """
         self.deis_url = deis_url
 
-    def _request(self, method, path, **kwargs):
+    def _request_and_raise(self, method, path, **kwargs):
         """Sends a request to Deis.
 
         @type method: str
@@ -23,8 +23,15 @@ class DeisClient(object):
             The extra http path to be appended to the deis URL
 
         @rtype: requests.Response
+
+        @raise e: DeisClientResponseError
+            if the response status code is not in the [200, 300) range.
         """
-        return requests.request(method, urlparse.urljoin(self.deis_url, path), **kwargs)
+        resp = requests.request(method, urlparse.urljoin(
+            self.deis_url, path), **kwargs)
+        if not 200 <= resp.status_code < 300:
+            raise DeisClientResponseError(resp)
+        return resp
 
     def register(self, username, password, email):
         """Register a new user with Deis.
@@ -35,13 +42,11 @@ class DeisClient(object):
 
         @raise e: DeisClientResponseError
         """
-        resp = self._request('POST', 'v1/auth/register/', json={
+        self._request_and_raise('POST', 'v1/auth/register/', json={
             "username": username,
             "password": password,
             "email": email
         })
-        if not 200 <= resp.status_code < 300:
-            raise DeisClientResponseError(resp)
 
     def login(self, username, password):
         """Login to Deis and return an authenticated client.
@@ -56,11 +61,9 @@ class DeisClient(object):
         # this avoids circular imports
         from api_server.clients.deis_authenticated_client import DeisAuthenticatedClient
 
-        resp = self._request('POST', 'v1/auth/login/', json={
+        resp = self._request_and_raise('POST', 'v1/auth/login/', json={
             "username": username,
             "password": password
         })
-        if not 200 <= resp.status_code < 300:
-            raise DeisClientResponseError(resp)
         token = resp.json()['token']
         return DeisAuthenticatedClient(self.deis_url, token)
