@@ -159,6 +159,46 @@ class DeisAuthenticatedClient(DeisClient):
             'owner': username
         })
 
+    def get_application_collaborators(self, app_id):
+        """Returns the list of users sharing this application.
+        This does NOT include the application owner.
+
+        @type app_id: str
+
+        @rtype: list
+            The list of usernames of collaborators (str)
+
+        @raises e: DeisClientResponseError
+        """
+        resp = self._request_and_raise(
+            'GET', 'v1/apps/{}/perms/'.format(app_id))
+        return resp.json()['users']
+
+    def add_application_collaborator(self, app_id, username):
+        """Adds the user with the specified username to the list of
+        collaborators
+
+        @type app_id: str
+        @type username: str
+
+        @raises e: DeisClientResponseError
+        """
+        self._request_and_raise('POST', 'v1/apps/{}/perms/'.format(app_id), json={
+            'username': username
+        })
+
+    def remove_application_collaborator(self, app_id, username):
+        """Removes the user with the specified username from the list of
+        collaborators
+
+        @type app_id: str
+        @type username: str
+
+        @raises e: DeisClientResponseError
+        """
+        self._request_and_raise(
+            'DELETE', 'v1/apps/{}/perms/{}'.format(app_id, username))
+
     def get_keys(self):
         """Get all public keys associated with this user.
 

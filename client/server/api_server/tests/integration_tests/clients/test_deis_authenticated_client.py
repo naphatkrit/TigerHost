@@ -111,6 +111,39 @@ def test_application_ownership(deis_authenticated_client, app_id, create_applica
     deis_authenticated_client2.set_application_owner(app_id, username)
 
 
+def test_application_collaborators(deis_authenticated_client, app_id, create_application, deis_authenticated_client2, username, username2):
+    """
+    @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    @type deis_authenticated_client2: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    """
+    assert deis_authenticated_client.get_application_collaborators(app_id) == [
+    ]
+
+    # add collaborator
+    deis_authenticated_client.add_application_collaborator(app_id, username2)
+    assert deis_authenticated_client.get_application_collaborators(app_id) == [
+        username2]
+
+    # check if collaborator actually has some permissions
+    deis_authenticated_client2.get_application_owner(app_id) == username
+    # ...but not all permissions
+    with pytest.raises(DeisClientResponseError):
+        deis_authenticated_client2.set_application_owner(app_id, username2)
+
+    # remove collaborator
+    deis_authenticated_client.remove_application_collaborator(
+        app_id, username2)
+    assert deis_authenticated_client.get_application_collaborators(app_id) == [
+    ]
+    with pytest.raises(DeisClientResponseError):
+        deis_authenticated_client.remove_application_collaborator(
+            app_id, username2)
+
+    # no longer has any permissions
+    with pytest.raises(DeisClientResponseError):
+        deis_authenticated_client2.get_application_owner(app_id)
+
+
 def test_keys(deis_authenticated_client, public_key):
     """
     @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
