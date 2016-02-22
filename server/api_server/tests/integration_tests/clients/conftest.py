@@ -16,8 +16,18 @@ def username():
 
 
 @pytest.fixture(scope='function')
+def username2():
+    return crypto.get_random_string()
+
+
+@pytest.fixture(scope='function')
 def email(username):
     return '{}@princeton.edu'.format(username)
+
+
+@pytest.fixture(scope='function')
+def email2(username2):
+    return '{}@princeton.edu'.format(username2)
 
 
 @pytest.fixture(scope='function')

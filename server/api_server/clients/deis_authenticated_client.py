@@ -134,6 +134,31 @@ class DeisAuthenticatedClient(DeisClient):
         self._request_and_raise(
             'DELETE', 'v1/apps/{}/domains/{}'.format(app_id, domain))
 
+    def get_application_owner(self, app_id):
+        """Get the username of the owner of the specified app ID.
+
+        @type app_id: str
+
+        @rtype: str
+
+        @raises e: DeisClientResponseError
+        """
+        resp = self._request_and_raise('GET', 'v1/apps/{}/'.format(app_id))
+        return resp.json()['owner']
+
+    def set_application_owner(self, app_id, username):
+        """Set the owner of the application to be the specified username.
+        Can only be done by someone with admin privilege on this application.
+
+        @type app_id: str
+        @type username: str
+
+        @raises e: DeisClientResponseError
+        """
+        self._request_and_raise('POST', 'v1/apps/{}/'.format(app_id), json={
+            'owner': username
+        })
+
     def get_keys(self):
         """Get all public keys associated with this user.
 
