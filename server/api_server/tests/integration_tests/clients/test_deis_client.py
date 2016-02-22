@@ -27,7 +27,11 @@ def password():
 
 
 def test_register(deis_client, username, password, email):
-    """@type deis_client: DeisClient
+    """
+    @type deis_client: DeisClient
+    @type username: str
+    @type password: str
+    @type email: str
     """
     # register one user
     deis_client.register(username, password, email)
@@ -35,3 +39,15 @@ def test_register(deis_client, username, password, email):
     # test the failure case when we register a user twice
     with pytest.raises(DeisClientResponseError):
         deis_client.register(username, "any", "any")
+
+    # try logging in
+    deis_client.login(username, password)
+
+def test_login_failure(deis_client, username, password):
+    """
+    @type deis_client: DeisClient
+    @type username: str
+    @type password: str
+    """
+    with pytest.raises(DeisClientResponseError):
+        deis_client.login(username, password)
