@@ -18,6 +18,8 @@ def test_application(deis_authenticated_client, app_id):
     ids = deis_authenticated_client.get_all_applications()
     assert ids == [app_id]
 
+    deis_authenticated_client.set_application_env_variables(app_id, {'TESTING': 'testing'})
+
     deis_authenticated_client.delete_application(app_id)
 
     ids = deis_authenticated_client.get_all_applications()
