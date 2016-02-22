@@ -43,6 +43,7 @@ def test_register(deis_client, username, password, email):
     # try logging in
     deis_client.login(username, password)
 
+
 def test_login_failure(deis_client, username, password):
     """
     @type deis_client: DeisClient

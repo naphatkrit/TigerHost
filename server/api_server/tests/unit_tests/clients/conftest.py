@@ -2,6 +2,7 @@ import pytest
 
 from django.utils import crypto
 
+
 @pytest.fixture
 def fake_deis_url():
     return "http://fake"
