@@ -54,3 +54,17 @@ class DeisAuthenticatedClient(DeisClient):
         @raises DeisClientResponseError
         """
         self._request_and_raise('DELETE', 'v1/apps/{}/'.format(app_id))
+
+    def set_application_env_variables(self, app_id, bindings):
+        """Set the environmental variables for the specified app ID.
+
+        @type app_id: str
+
+        @type bindings: dict
+            The key-value pair to set in the environmental.
+
+        @raises DeisClientResponseError
+        """
+        self._request_and_raise('POST', 'v1/apps/{}/config/'.format(app_id), json={
+            'values': bindings
+        })
