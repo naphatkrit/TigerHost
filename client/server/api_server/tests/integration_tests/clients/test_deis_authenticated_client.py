@@ -9,6 +9,12 @@ def deis_authenticated_client(deis_client, username, password, email):
     return deis_client.login(username, password)
 
 
+@pytest.fixture
+def deis_authenticated_client2(deis_client, username2, password, email2):
+    deis_client.register(username2, password, email2)
+    return deis_client.login(username2, password)
+
+
 @pytest.yield_fixture
 def create_application(deis_authenticated_client, app_id):
     """
@@ -85,6 +91,24 @@ def test_application_domains(deis_authenticated_client, app_id, create_applicati
     # can't remove a non-existent domain
     with pytest.raises(DeisClientResponseError):
         deis_authenticated_client.remove_application_domain(app_id, domain)
+
+
+def test_application_ownership(deis_authenticated_client, app_id, create_application, deis_authenticated_client2, username, username2):
+    """
+    @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    @type deis_authenticated_client2: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    """
+    assert deis_authenticated_client.get_application_owner(app_id) == username
+
+    deis_authenticated_client.set_application_owner(app_id, username2)
+    with pytest.raises(DeisClientResponseError):
+        deis_authenticated_client.get_application_owner(
+            app_id)  # no permissions
+
+    deis_authenticated_client2.get_application_owner(app_id) == username2
+
+    # set the ownership back so the fixture can delete the application
+    deis_authenticated_client2.set_application_owner(app_id, username)
 
 
 def test_keys(deis_authenticated_client, public_key):
