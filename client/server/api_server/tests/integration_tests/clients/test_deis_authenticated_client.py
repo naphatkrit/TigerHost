@@ -10,6 +10,10 @@ def deis_authenticated_client(deis_client, username, password, email):
 
 
 def test_application(deis_authenticated_client, app_id):
+    """
+    @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    """
+    # create application
     deis_authenticated_client.create_application(app_id)
 
     with pytest.raises(DeisClientResponseError):
@@ -18,8 +22,15 @@ def test_application(deis_authenticated_client, app_id):
     ids = deis_authenticated_client.get_all_applications()
     assert ids == [app_id]
 
-    deis_authenticated_client.set_application_env_variables(app_id, {'TESTING': 'testing'})
+    # test environmental variables
+    old_vars = deis_authenticated_client.get_application_env_variables(app_id)
+    deis_authenticated_client.set_application_env_variables(
+        app_id, {'TESTING': 'testing'})
+    old_vars['TESTING'] = 'testing'
+    new_vars = deis_authenticated_client.get_application_env_variables(app_id)
+    assert new_vars == old_vars
 
+    # delete application
     deis_authenticated_client.delete_application(app_id)
 
     ids = deis_authenticated_client.get_all_applications()

@@ -49,3 +49,12 @@ def test_set_application_env_variables_success(deis_authenticated_client, fake_d
         fake_deis_url, 'v1/apps/{}/config/'.format('testid')), status=201)
     deis_authenticated_client.set_application_env_variables(
         'testid', {'TESTING': 'testing'})
+
+
+@responses.activate
+def test_get_application_env_variables_success(deis_authenticated_client, fake_deis_url):
+    bindings = {'TESTING': 'testing'}
+    responses.add(responses.GET, urlparse.urljoin(
+        fake_deis_url, 'v1/apps/{}/config/'.format('testid')), status=200, json={'values': bindings})
+    ret = deis_authenticated_client.get_application_env_variables('testid')
+    assert ret == bindings
