@@ -91,3 +91,27 @@ def test_remove_application_domain(deis_authenticated_client, fake_deis_url):
     responses.add(responses.DELETE, urlparse.urljoin(
         fake_deis_url, 'v1/apps/{}/domains/{}'.format('testid', domain)), status=204)
     deis_authenticated_client.remove_application_domain('testid', domain)
+
+
+@responses.activate
+def test_get_application_keys(deis_authenticated_client, fake_deis_url):
+    keys = ['key1', 'key2']
+    responses.add(responses.GET, urlparse.urljoin(
+        fake_deis_url, 'v1/keys/'), status=200, json={'results': [{'id': x, 'public': x} for x in keys]})
+    ret = deis_authenticated_client.get_keys()
+    assert ret == [{'key_name': x, 'key': x} for x in keys]
+
+
+@responses.activate
+def test_add_application_key(deis_authenticated_client, fake_deis_url):
+    responses.add(responses.POST, urlparse.urljoin(
+        fake_deis_url, 'v1/keys/'), status=201)
+    deis_authenticated_client.add_key('key_name', 'key')
+
+
+@responses.activate
+def test_remove_application_key(deis_authenticated_client, fake_deis_url):
+    key_name = 'key_name'
+    responses.add(responses.DELETE, urlparse.urljoin(
+        fake_deis_url, 'v1/keys/{}'.format(key_name)), status=204)
+    deis_authenticated_client.remove_key(key_name)
