@@ -4,5 +4,5 @@ from api_server import views
 
 
 urlpatterns = [
-    url(r'^token/$', views.token_generate_page, name='token_generation')
+    url(r'^api_key/$', views.api_key_view, name='api_key')
 ]
