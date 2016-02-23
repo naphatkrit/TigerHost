@@ -3,7 +3,7 @@ import pytest
 from django.contrib.auth.models import User
 
 from wsse.test_data import valid_wsse_headers, invalid_wsse_headers, valid_wsse_digests
-from wsse.utils import parse_wsse_header, verify_wsse_digest, wsse_digest, get_secret
+from wsse.utils import parse_wsse_header, verify_wsse_digest, wsse_digest, get_secret, regenerate_secret
 
 
 @pytest.mark.parametrize('wsse_header,correct', valid_wsse_headers)
@@ -36,9 +36,20 @@ def test_verify_wsse_digest(data):
 @pytest.mark.django_db
 def test_get_secret(username, email, password):
     User.objects.create_user(username, email, password)
-    get_secret(username)
+    secret1 = get_secret(username)
+    secret2 = get_secret(username)
+    assert secret1 == secret2
 
 
 @pytest.mark.django_db
 def test_get_secret_failure(username):
     assert get_secret(username) is None
+
+
+@pytest.mark.django_db
+def test_regenerate_secret(username, email, password):
+    User.objects.create_user(username, email, password)
+    secret1 = get_secret(username)
+    regenerate_secret(username)
+    secret2 = get_secret(username)
+    assert secret1 != secret2
