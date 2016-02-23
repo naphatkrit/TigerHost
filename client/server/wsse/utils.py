@@ -1,6 +1,10 @@
 import base64
 import hashlib
 
+from django.core.signing import Signer
+
+from wsse.models import WsseProfile
+
 
 def parse_wsse_header(wsse_header):
     """Take a wsse header and parses it, returning a tuple of username,
@@ -56,3 +60,19 @@ def verify_wsse_digest(secret, nonce, timestamp, digest, max_age=None):
         pass
     correct_digest = wsse_digest(secret, nonce, timestamp)
     return correct_digest == digest
+
+
+def get_secret(username):
+    """Get the secret for this user.
+
+    @type username: str
+
+    @rtype: str
+        returns a base64 encoded string. Returns None if the user does not exist.
+    """
+    try:
+        profile = WsseProfile.objects.get(user__username__iexact=username)
+    except WsseProfile.DoesNotExist:
+        return None
+    signer = Signer()
+    return base64.standard_b64encode(signer.sign(profile.secret.bytes))
