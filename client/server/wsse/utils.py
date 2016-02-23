@@ -2,6 +2,7 @@ import base64
 import hashlib
 
 from django.core.signing import Signer
+from uuid import uuid4
 
 from wsse.models import WsseProfile
 
@@ -76,3 +77,9 @@ def get_secret(username):
         return None
     signer = Signer()
     return base64.standard_b64encode(signer.sign(profile.secret.bytes))
+
+
+def regenerate_secret(username):
+    profile = WsseProfile.objects.get(user__username__iexact=username)
+    profile.secret = uuid4()
+    profile.save()
