@@ -1,7 +1,7 @@
 import pytest
 
 from wsse.test_data import valid_wsse_headers, invalid_wsse_headers, valid_wsse_digests
-from wsse.utils import parse_wsse_header, wsse_digest
+from wsse.utils import parse_wsse_header, verify_wsse_digest, wsse_digest
 
 
 @pytest.mark.parametrize('wsse_header,correct', valid_wsse_headers)
@@ -23,3 +23,9 @@ def test_parse_wsse_header_success_failure(wsse_header):
 def test_wsse_digest(data):
     digest = wsse_digest(data['secret'], data['nonce'], data['timestamp'])
     assert digest == data['digest']
+
+
+@pytest.mark.parametrize('data', valid_wsse_digests)
+def test_verify_wsse_digest(data):
+    assert verify_wsse_digest(data['secret'], data['nonce'], data[
+                              'timestamp'], data['digest'])

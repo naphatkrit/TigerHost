@@ -31,3 +31,28 @@ def wsse_digest(secret, nonce, timestamp):
     m.update(secret)
     digest = m.digest()
     return base64.standard_b64encode(digest)
+
+
+def verify_wsse_digest(secret, nonce, timestamp, digest, max_age=None):
+    """Verify the WSSE digest, which means to check the output
+    of the digest and to verify that the timestamp is within max_age.
+
+    @type secret: str
+
+    @type nonce: str
+
+    @type timestamp: str
+
+    @type digest: str
+
+    @type max_age: int
+        time in seconds. Should be a nonnegative number.
+
+    @rtype: bool
+        True if the WSSE digest is valid
+    """
+    if max_age is not None:
+        # TODO verify max age
+        pass
+    correct_digest = wsse_digest(secret, nonce, timestamp)
+    return correct_digest == digest
