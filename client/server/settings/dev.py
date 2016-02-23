@@ -78,6 +78,7 @@ WSGI_APPLICATION = 'api_server.wsgi.application'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'wsse.backends.WsseBackend',
     'cas.backends.CASBackend',
 )
 

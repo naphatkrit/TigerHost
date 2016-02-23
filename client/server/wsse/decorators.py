@@ -39,7 +39,7 @@ def check_wsse_token(view_func):
             return create_401_response()
 
         user = auth.authenticate(
-            username=username, password_digest=digest, nonce=nonce, timestamp=timestamp)
+            username=username, digest=digest, nonce=nonce, timestamp=timestamp)
         if user is None:
             return create_401_response()
         auth.login(request, user)
