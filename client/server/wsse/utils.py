@@ -2,9 +2,11 @@ import base64
 import hashlib
 
 from django.core.signing import Signer
-from uuid import uuid4
+from django.utils import crypto
 
-from wsse.models import WsseProfile
+
+def make_secret():
+    return crypto.get_random_string(length=50)
 
 
 def parse_wsse_header(wsse_header):
@@ -71,15 +73,17 @@ def get_secret(username):
     @rtype: str
         returns a base64 encoded string. Returns None if the user does not exist.
     """
+    from wsse.models import WsseProfile
     try:
         profile = WsseProfile.objects.get(user__username__iexact=username)
     except WsseProfile.DoesNotExist:
         return None
     signer = Signer()
-    return base64.standard_b64encode(signer.sign(profile.secret.bytes))
+    return base64.standard_b64encode(signer.sign(profile.secret))
 
 
 def regenerate_secret(username):
+    from wsse.models import WsseProfile
     profile = WsseProfile.objects.get(user__username__iexact=username)
-    profile.secret = uuid4()
+    profile.secret = make_secret()
     profile.save()

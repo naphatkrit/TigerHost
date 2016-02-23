@@ -1,16 +1,16 @@
 from __future__ import unicode_literals
 
-from uuid import uuid4
-
-from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.signals import post_save
+
+from wsse.utils import make_secret
 
 
 class WsseProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    secret = models.UUIDField(default=uuid4)
+    secret = models.CharField(default=make_secret, max_length=50)
 
 
 def make_new_wsse_profile(sender, instance, created, **kwargs):
