@@ -1,3 +1,7 @@
+import base64
+import hashlib
+
+
 def parse_wsse_header(wsse_header):
     """Take a wsse header and parses it, returning a tuple of username,
     password digest, nonce, and timestamp.
@@ -18,3 +22,12 @@ def parse_wsse_header(wsse_header):
     except IndexError:
         raise ValueError
     return username, digest, nonce, timestamp
+
+
+def wsse_digest(secret, nonce, timestamp):
+    m = hashlib.sha1()
+    m.update(nonce)
+    m.update(timestamp)
+    m.update(secret)
+    digest = m.digest()
+    return base64.standard_b64encode(digest)
