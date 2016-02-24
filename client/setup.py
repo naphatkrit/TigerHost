@@ -10,7 +10,8 @@ tests_require = [
 ]
 
 install_requires = [
-    'Click>=5.0',
+    'Click>=6.0',
+    'subprocess32>=3.2.6',
 ]
 
 setup(
