@@ -59,7 +59,7 @@ def _verify_cas2(ticket, service):
         #from xml.etree import ElementTree
         #txt = ElementTree.tostring(tree)
         #print parseString(txt).toprettyxml()
-        
+
         if tree[0].tag.endswith('authenticationSuccess'):
             if settings.CAS_RESPONSE_CALLBACKS:
                 cas_response_callbacks(tree)
@@ -129,7 +129,7 @@ class CASBackend(object):
             user = User.objects.get(username__iexact=username)
         except User.DoesNotExist:
             # user will have an "unusable" password
-            user = User.objects.create_user(username, '')
+            user = User.objects.create_user(username, email='{username}@{domain}'.format(username=username, domain=settings.CAS_EMAIL_DOMAIN))
             user.save()
         return user
 
