@@ -74,6 +74,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api_server.wsgi.application'
 
+DEIS_URL = 'http://deis.local3.deisapp.com'
+
 # START AUTHENTICATION CONFIGURATION
 
 AUTHENTICATION_BACKENDS = (
