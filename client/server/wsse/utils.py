@@ -31,22 +31,22 @@ def parse_wsse_header(wsse_header):
     return username, digest, nonce, timestamp
 
 
-def wsse_digest(secret, nonce, timestamp):
-    m = hashlib.sha1()
-    m.update(nonce)
+def wsse_digest(secret, b64_encoded_nonce, timestamp):
+    m = hashlib.sha256()
+    m.update(base64.standard_b64decode(b64_encoded_nonce))
     m.update(timestamp)
     m.update(secret)
     digest = m.digest()
     return base64.standard_b64encode(digest)
 
 
-def verify_wsse_digest(secret, nonce, timestamp, digest, max_age=None):
+def verify_wsse_digest(secret, b64_encoded_nonce, timestamp, digest, max_age=None):
     """Verify the WSSE digest, which means to check the output
     of the digest and to verify that the timestamp is within max_age.
 
     @type secret: str
 
-    @type nonce: str
+    @type b64_encoded_nonce: str
 
     @type timestamp: str
 
@@ -61,7 +61,7 @@ def verify_wsse_digest(secret, nonce, timestamp, digest, max_age=None):
     if max_age is not None:
         # TODO verify max age
         pass
-    correct_digest = wsse_digest(secret, nonce, timestamp)
+    correct_digest = wsse_digest(secret, b64_encoded_nonce, timestamp)
     return correct_digest == digest
 
 
