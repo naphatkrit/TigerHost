@@ -7,7 +7,7 @@ import cas.views
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^', include('api_server.urls')),
+    url(r'^api/', include('api_server.urls')),
     url(r'^login$', cas.views.login, name='cas_login'),
     url(r'^logout$', cas.views.login, name='cas_logout'),
 ]
