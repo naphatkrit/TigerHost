@@ -86,6 +86,8 @@ CAS_SERVER_URL = 'https://fed.princeton.edu/cas/'
 
 CAS_REDIRECT_URL = '/'
 
+CAS_EMAIL_DOMAIN = 'princeton.edu'
+
 LOGIN_URL = '/login'
 
 # END AUTHENTICATION CONFIGURATION
