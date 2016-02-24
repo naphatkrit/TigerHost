@@ -67,3 +67,23 @@ class DeisClient(object):
         })
         token = resp.json()['token']
         return DeisAuthenticatedClient(self.deis_url, token)
+
+    def login_or_register(self, username, password, email):
+        """Try to log the user in. If the user has not been created yet, then
+        attempt to register the user and then log in.
+
+        @type username: str
+        @type password: str
+        @type email: str
+
+        @rtype: tuple
+            (DeisAuthenticatedClient, bool) - the bool is true if a new user
+            was registered with Deis
+
+        @raise e: DeisClientResponseError
+        """
+        try:
+            return self.login(username, password), False
+        except DeisClientResponseError:
+            self.register(username, password, email)
+            return self.login(username, password), True

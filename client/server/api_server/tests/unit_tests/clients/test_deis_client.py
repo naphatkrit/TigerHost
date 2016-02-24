@@ -1,3 +1,4 @@
+import json
 import responses
 import pytest
 import urlparse
@@ -45,4 +46,46 @@ def test_login_success(deis_client, fake_deis_url, username, password):
     responses.add(responses.POST, urlparse.urljoin(
         fake_deis_url, 'v1/auth/login/'), status=201, json={"token": "sometoken"})
     auth_client = deis_client.login(username, password)
+    assert auth_client.token == 'sometoken'
+
+
+@responses.activate
+def test_login_or_register_not_created(deis_client, fake_deis_url, username, password, email):
+    """
+    @type deis_client: DeisClient
+    @type fake_deis_url: str
+    @type username: str
+    @type password: str
+    @type email: str
+    """
+    responses.add(responses.POST, urlparse.urljoin(
+        fake_deis_url, 'v1/auth/login/'), status=201, json={"token": "sometoken"})
+    auth_client, created = deis_client.login_or_register(username, password, email)
+    assert not created
+    assert auth_client.token == 'sometoken'
+
+
+@responses.activate
+def test_login_or_register_created(deis_client, fake_deis_url, username, password, email):
+    """
+    @type deis_client: DeisClient
+    @type fake_deis_url: str
+    @type username: str
+    @type password: str
+    @type email: str
+    """
+    count = [0]
+
+    def request_callback(request):
+        if count[0] == 0:
+            count[0] += 1
+            return (400, {}, '')
+        return (201, {}, json.dumps({'token': 'sometoken'}))
+
+    responses.add_callback(responses.POST, urlparse.urljoin(fake_deis_url, 'v1/auth/login/'),
+                           content_type='application/json', callback=request_callback)
+    responses.add(responses.POST, urlparse.urljoin(
+        fake_deis_url, 'v1/auth/register/'), status=201)
+    auth_client, created = deis_client.login_or_register(username, password, email)
+    assert created
     assert auth_client.token == 'sometoken'
