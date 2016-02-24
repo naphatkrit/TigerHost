@@ -1,7 +1,7 @@
 from functools import wraps
 
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import available_attrs, method_decorator
 from django.views.generic import View
 
@@ -32,3 +32,20 @@ class ApiBaseView(View):
         @rtype: django.http.HttpResponse
         """
         return JsonResponse({'results': items})
+
+    def respond(self, item=None, status=None):
+        """Returns a HTTP response. If ``item`` is None,
+        then the HTTP status will be 204. Otherwise,
+        the HTTP status will be ``status``, defaulting
+        to 200.
+
+        @type item: dict
+            Must be json-serializable
+
+        @rtype: django.http.HttpResponse
+        """
+        if item is None:
+            return HttpResponse(status=204)
+        else:
+            status = 200 if status is None else status
+            return JsonResponse(item, status=status)
