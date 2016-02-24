@@ -52,3 +52,18 @@ def test_login_failure(deis_client, username, password):
     """
     with pytest.raises(DeisClientResponseError):
         deis_client.login(username, password)
+
+
+def test_login_or_register(deis_client, username, password, email):
+    """
+    @type deis_client: DeisClient
+    @type username: str
+    @type password: str
+    @type email: str
+    """
+    auth, created = deis_client.login_or_register(username, password, email)
+    assert created
+
+    auth2, created = deis_client.login_or_register(username, password, email)
+    assert not created
+    assert auth.token == auth2.token
