@@ -1,7 +1,10 @@
 import json
+import mock
+import os
 import pytest
 
-from tigerhost.user import User, UserFormatError
+from tigerhost.user import User, UserFormatError, save_user, load_user, has_saved_user
+from tigerhost.utils.contextmanagers import temp_dir
 
 
 def test_to_json():
@@ -41,3 +44,19 @@ def test_from_json_malformed_string():
 def test_symmetry():
     user = User(username='username', api_key='api_key')
     assert User.from_json(user.to_json()) == user
+
+
+@pytest.yield_fixture(scope='function')
+def fake_user_path():
+    with temp_dir() as path:
+        new_user_path = os.path.join(path, 'user.json')
+        with mock.patch('tigerhost.user._user_path', new=new_user_path):
+            yield
+
+
+def test_save_user(fake_user_path):
+    assert not has_saved_user()
+    user = User(username='username', api_key='api_key')
+    save_user(user)
+    assert has_saved_user()
+    assert load_user() == user

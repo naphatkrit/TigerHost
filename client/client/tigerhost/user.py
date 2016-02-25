@@ -1,4 +1,10 @@
 import json
+import os
+
+from tigerhost.private_dir import private_dir_path
+
+
+_user_path = os.path.join(private_dir_path, 'user.json')
 
 
 class UserFormatError(Exception):
@@ -44,3 +50,32 @@ class User(object):
 
     def __eq__(self, other):
         return self.username == other.username and self.api_key == other.api_key
+
+
+def save_user(user):
+    """Save user to the private directory
+
+    @type user: User
+    """
+    json_string = user.to_json()
+    with open(_user_path, 'w') as f:
+        f.write(json_string)
+
+
+def has_saved_user():
+    """Check if a user has been saved.
+
+    @rtype: bool
+    """
+    return os.path.exists(_user_path)
+
+
+def load_user():
+    """Load the user from the saved location.
+
+    @rtype: User
+    """
+    assert has_saved_user()
+    with open(_user_path, 'r') as f:
+        json_string = f.read()
+    return User.from_json(json_string)
