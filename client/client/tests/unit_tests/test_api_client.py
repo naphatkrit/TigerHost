@@ -34,6 +34,17 @@ def test_request_and_raise_failure_authentication(api_client, fake_api_server_ur
 
 
 @responses.activate
+def test_test_api_key_success(api_client, fake_api_server_url):
+    """
+    @type api_client: ApiClient
+    @type fake_api_server_url: str
+    """
+    responses.add(responses.GET, urlparse.urljoin(
+        fake_api_server_url, 'api/test_api_key/'), status=200)
+    api_client.test_api_key()
+
+
+@responses.activate
 def test_get_all_applications_success(api_client, fake_api_server_url):
     """
     @type api_client: ApiClient

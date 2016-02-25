@@ -17,7 +17,10 @@ class ApiClientResponseError(Exception):
         return """Response Code {code}
 
         {body}
-        """.format(code=self.response.status_code, body=self.response.json())
+        """.format(code=self.response.status_code, body=self.response.text)
+
+    def __str__(self):
+        return self.__unicode__().encode('utf-8')
 
 
 class ApiClientAuthenticationError(ApiClientResponseError):
@@ -61,6 +64,14 @@ class ApiClient(object):
         if not 200 <= resp.status_code < 300:
             raise ApiClientResponseError(resp)
         return resp
+
+    def test_api_key(self):
+        """Hit the test end point for API key
+
+        @raise e: ApiClientResponseError
+        @raise e: ApiClientAuthenticationError
+        """
+        self._request_and_raise('GET', 'api/test_api_key/')
 
     def get_all_applications(self):
         """Get all application IDs associated with this user.

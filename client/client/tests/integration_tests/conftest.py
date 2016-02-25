@@ -1,5 +1,7 @@
 import pytest
 
+from tigerhost.api_client import ApiClient
+
 
 def pytest_addoption(parser):
     parser.addoption('--api-server-url', action='store', required=True,
@@ -23,3 +25,10 @@ def username(request):
 @pytest.fixture
 def api_key(request):
     return request.config.getoption("--test-api-key")
+
+
+@pytest.fixture(autouse=True)
+def api_client(api_server_url, username, api_key):
+    client = ApiClient(api_server_url, username, api_key)
+    client.test_api_key()
+    return client
