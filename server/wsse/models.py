@@ -19,6 +19,9 @@ def make_new_wsse_profile(sender, instance, created, **kwargs):
     # That is, this fails during syncdb upon initial database setup, because
     # it creates a superuser before User_Profile table is added (we add that
     # by running migrations after).
+    if kwargs.get('raw', False):
+        # raw = fixtures
+        return
     try:
         if created:
             profile, created = WsseProfile.objects.get_or_create(
