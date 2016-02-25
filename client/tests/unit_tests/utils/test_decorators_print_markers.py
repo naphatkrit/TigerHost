@@ -5,10 +5,9 @@ from tigerhost.utils import decorators
 
 
 @click.command()
-@click.pass_context
 @decorators.print_markers
-def passing_command(ctx):
-    click.echo('Passing command with context')
+def passing_command():
+    click.echo('Passing command without context')
 
 
 @click.command()
