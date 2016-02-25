@@ -1,3 +1,4 @@
+import mock
 import pytest
 
 from tigerhost.api_client import ApiClient
@@ -32,3 +33,9 @@ def api_client(api_server_url, username, api_key):
     client = ApiClient(api_server_url, username, api_key)
     client.test_api_key()
     return client
+
+
+@pytest.yield_fixture(autouse=True)
+def settings(api_server_url):
+    with mock.patch('tigerhost.settings.API_SERVER_URL', new=api_server_url):
+        yield
