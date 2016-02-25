@@ -2,6 +2,8 @@ import click
 
 from functools import update_wrapper
 
+from tigerhost.vcs.git import GitVcs
+
 
 def print_markers(f):
     @click.pass_context
@@ -25,3 +27,13 @@ def _print_marker(text):
         click.echo('=' * (leftovers / 2), nl=False)
         click.echo(text, nl=False)
         click.echo('=' * (leftovers / 2 + leftovers % 2))
+
+
+def pass_vcs(f):
+    # TODO ideally we should detect the type of VCS.
+    # But for now, we only support git
+    @click.pass_context
+    def new_func(ctx, *args, **kwargs):
+        vcs = GitVcs()
+        return ctx.invoke(f, vcs, *args, **kwargs)
+    return update_wrapper(new_func, f)
