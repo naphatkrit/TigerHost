@@ -7,8 +7,10 @@ from tigerhost.utils import decorators
 class ErrorA(Exception):
     pass
 
+
 class ErrorB(Exception):
     pass
+
 
 @click.command()
 @decorators.catch_exception(ErrorA)
