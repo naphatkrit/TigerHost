@@ -46,7 +46,6 @@ def catch_exception(exception):
             try:
                 return ctx.invoke(f, *args, **kwargs)
             except exception as e:
-                print 'Exception: {}'.format(e)
-                raise click.Abort
+                ctx.fail('Exceptoin: {}'.format(e))
         return update_wrapper(new_func, f)
     return decorator

@@ -39,8 +39,10 @@ def throw_B_with_context(ctx):
 
 
 @pytest.mark.parametrize('command,exit_code', [
-    (throw_A, 1),
+    (throw_A, 2),
     (throw_B, -1),
+    (throw_A_with_context, 2),
+    (throw_B_with_context, -1),
 ])
 def test_simple(runner, command, exit_code):
     result = runner.invoke(command)
