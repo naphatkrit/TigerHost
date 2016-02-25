@@ -51,6 +51,9 @@ def test_application_creation(deis_authenticated_client, app_id):
 
 
 def test_application_env_variables(deis_authenticated_client, app_id, create_application):
+    """
+    @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    """
     # test environmental variables
     bindings = {
         'TESTING1': '1',
@@ -66,11 +69,18 @@ def test_application_env_variables(deis_authenticated_client, app_id, create_app
     new_vars = deis_authenticated_client.get_application_env_variables(app_id)
     assert new_vars == old_vars_updated
 
-    deis_authenticated_client.unset_application_env_variables(
-        app_id, [key for key in bindings])
+    deis_authenticated_client.set_application_env_variables(
+        app_id, {key: None for key in bindings})
     new_vars_deleted = deis_authenticated_client.get_application_env_variables(
         app_id)
     assert old_vars == new_vars_deleted
+
+    # test deletion and creation at the same time
+    deis_authenticated_client.set_application_env_variables(app_id, {"TESTING1": '1'})
+    deis_authenticated_client.set_application_env_variables(app_id, {"TESTING1": None, "TESTING2": "2"})
+    assert deis_authenticated_client.get_application_env_variables(app_id) == {
+        'TESTING2': '2'
+    }
 
 
 def test_application_domains(deis_authenticated_client, app_id, create_application):
