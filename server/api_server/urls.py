@@ -14,6 +14,7 @@ from api_server.api.key_details_api_view import KeyDetailsApiView
 
 urlpatterns = [
     url(r'^api_key/$', views.api_key_view, name='api_key'),
+    url(r'^test_api_key/$', views.test_api_key, name='test_api_key'),
     url(r'^v1/apps/$', AppsApiView.as_view(), name='apps'),
     url(r'^v1/apps/([a-z0-9]+)/$',
         AppDetailsApiView.as_view(), name='app_details'),
