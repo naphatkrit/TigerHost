@@ -1,10 +1,8 @@
 import json
-import mock
-import os
 import pytest
 
+from tigerhost.private_dir import ensure_private_dir_exists
 from tigerhost.user import User, UserFormatError, save_user, load_user, has_saved_user
-from tigerhost.utils.contextmanagers import temp_dir
 
 
 def test_to_json():
@@ -46,15 +44,8 @@ def test_symmetry():
     assert User.from_json(user.to_json()) == user
 
 
-@pytest.yield_fixture(scope='function')
-def fake_user_path():
-    with temp_dir() as path:
-        new_user_path = os.path.join(path, 'user.json')
-        with mock.patch('tigerhost.user._user_path', new=new_user_path):
-            yield
-
-
-def test_save_user(fake_user_path):
+def test_save_user():
+    ensure_private_dir_exists()
     assert not has_saved_user()
     user = User(username='username', api_key='api_key')
     save_user(user)
