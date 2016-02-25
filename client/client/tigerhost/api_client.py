@@ -59,6 +59,7 @@ class ApiClient(object):
         """
         resp = requests.request(method, urlparse.urljoin(
             self.api_server_url, path), auth=WSSEAuth(self.username, self.api_key), **kwargs)
+
         if resp.status_code == 401:
             raise ApiClientAuthenticationError(resp)
         if not 200 <= resp.status_code < 300:
