@@ -56,7 +56,7 @@ class DeisAuthenticatedClient(DeisClient):
         self._request_and_raise('DELETE', 'v1/apps/{}/'.format(app_id))
 
     def set_application_env_variables(self, app_id, bindings):
-        """Set the environmental variables for the specified app ID.
+        """Set the environmental variables for the specified app ID. To unset a variable, set it to ``None``.
 
         @type app_id: str
 
@@ -67,20 +67,6 @@ class DeisAuthenticatedClient(DeisClient):
         """
         self._request_and_raise('POST', 'v1/apps/{}/config/'.format(app_id), json={
             'values': bindings
-        })
-
-    def unset_application_env_variables(self, app_id, env_vars):
-        """Unset the environmental variables for the specified app ID
-
-        @type app_id: str
-
-        @type env_vars: list
-            The list of variables to unset
-
-        @raises e: DeisClientResponseError
-        """
-        self._request_and_raise('POST', 'v1/apps/{}/config/'.format(app_id), json={
-            'values': {key: None for key in env_vars}
         })
 
     def get_application_env_variables(self, app_id):
