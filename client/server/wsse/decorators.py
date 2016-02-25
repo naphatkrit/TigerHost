@@ -25,9 +25,6 @@ def check_wsse_token(view_func):
         if request.user.is_authenticated():
             return view_func(request, *args, **kwargs)
 
-        if 'HTTP_AUTHORIZATION' not in request.META or (request.META['HTTP_AUTHORIZATION'] != 'WSSE profile="UsernameToken"'):
-            return create_401_response()
-
         if 'HTTP_X_WSSE' not in request.META:
             return create_401_response()
 
