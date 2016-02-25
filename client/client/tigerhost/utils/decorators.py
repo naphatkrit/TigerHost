@@ -37,3 +37,16 @@ def pass_vcs(f):
         vcs = GitVcs()
         return ctx.invoke(f, vcs, *args, **kwargs)
     return update_wrapper(new_func, f)
+
+
+def catch_exception(exception):
+    def decorator(f):
+        @click.pass_context
+        def new_func(ctx, *args, **kwargs):
+            try:
+                return ctx.invoke(f, *args, **kwargs)
+            except exception as e:
+                print 'Exception: {}'.format(e)
+                raise click.Abort
+        return update_wrapper(new_func, f)
+    return decorator
