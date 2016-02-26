@@ -190,6 +190,14 @@ class Vcs(object):
         """
         raise NotImplementedError  # pragma: no cover
 
+    def remove_remote(self, name):
+        """Remove a remote from this repository.
+
+        Args:
+            name (str)
+        """
+        raise NotImplementedError  # pragma: no cover
+
     def get_remotes(self):
         """Returns all the remotes in this repository.
 

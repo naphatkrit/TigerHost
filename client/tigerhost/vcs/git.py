@@ -162,6 +162,14 @@ class GitVcs(Vcs):
         """
         self.run('remote', 'add', name, url)
 
+    def remove_remote(self, name):
+        """Remove a remote from this repository.
+
+        Args:
+            name (str)
+        """
+        self.run('remote', 'remove', name)
+
     def get_remotes(self):
         """Returns all the remotes in this repository.
 
@@ -169,6 +177,8 @@ class GitVcs(Vcs):
             Dict[str:str] - mapping from remote name to remote URLs
         """
         remotes = self.run('remote', '--verbose').strip().split('\n')
+        if remotes == ['']:
+            return {}
         remotes = [x.split() for x in remotes]
         answer = {}
         for name, url, _ in remotes:

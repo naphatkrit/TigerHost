@@ -130,6 +130,9 @@ def test_remotes(git, repo_path):
     for name, url in remotes.iteritems():
         git.add_remote(name, url)
     assert git.get_remotes() == remotes
+    for name in remotes:
+        git.remove_remote(name)
+    assert git.get_remotes() == {}
 
 
 def test_path_is_ignored(git, repo_path):
