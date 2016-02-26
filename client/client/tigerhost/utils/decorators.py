@@ -5,6 +5,7 @@ from functools import update_wrapper
 from tigerhost import exit_codes, settings
 from tigerhost.api_client import ApiClient, ApiClientAuthenticationError
 from tigerhost.user import load_user, has_saved_user
+from tigerhost.vcs.base import CommandError
 from tigerhost.vcs.git import GitVcs
 
 
@@ -40,7 +41,11 @@ def pass_vcs(f):
     # But for now, we only support git
     @click.pass_context
     def new_func(ctx, *args, **kwargs):
-        vcs = GitVcs()
+        # if not a repository, pass ``None``
+        try:
+            vcs = GitVcs()
+        except CommandError:
+            vcs = None
         return ctx.invoke(f, vcs, *args, **kwargs)
     return update_wrapper(new_func, f)
 
