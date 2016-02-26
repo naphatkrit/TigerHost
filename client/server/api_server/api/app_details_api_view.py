@@ -3,6 +3,7 @@ import json
 from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
+from api_server.utils import git_remote
 from wsse.decorators import check_wsse_token
 
 
@@ -14,7 +15,8 @@ class AppDetailsApiView(ApiBaseView):
 
         Returns a JSON with the following fields:
         {
-            "owner": "userid"
+            "owner": "userid",
+            "remote": "ssh://git@hostname.com/app.git"
         }
 
         @type request: django.http.HttpRequest
@@ -27,7 +29,8 @@ class AppDetailsApiView(ApiBaseView):
 
         owner = auth_client.get_application_owner(app_id)
         return self.respond({
-            'owner': owner
+            'owner': owner,
+            'remote': git_remote(self.deis_client.deis_url, app_id)
         })
 
     def post(self, request, app_id):
