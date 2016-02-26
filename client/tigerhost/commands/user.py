@@ -44,9 +44,9 @@ def login(ctx, username, api_key):
 
 
 @click.command()
+@decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.pass_user
-@decorators.print_markers
 def user_info(user):
     """Display information about the logged in user.
     """
@@ -57,9 +57,9 @@ def user_info(user):
 
 
 @click.command()
+@decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @click.pass_context
-@decorators.print_markers
 def logout(ctx):
     """Log the user out, deleting the API key.
     """
