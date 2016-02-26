@@ -4,6 +4,7 @@ import pytest
 
 from click.testing import CliRunner
 
+from tigerhost.private_dir import ensure_private_dir_exists
 from tigerhost.utils.contextmanagers import temp_dir
 
 
@@ -22,3 +23,8 @@ def fake_private_dir():
         new_private_dir = os.path.join(path, '.tigerhost')
         with mock.patch('tigerhost.private_dir._private_dir_path', new=new_private_dir):
             yield
+
+
+@pytest.fixture(scope='function')
+def ensure_private_dir(fake_private_dir):
+    ensure_private_dir_exists()

@@ -2,6 +2,9 @@ import click
 
 from functools import update_wrapper
 
+from tigerhost import settings
+from tigerhost.api_client import ApiClient, ApiClientAuthenticationError
+from tigerhost.user import load_user, has_saved_user
 from tigerhost.vcs.git import GitVcs
 
 
@@ -49,3 +52,24 @@ def catch_exception(exception):
                 ctx.fail('Exceptoin: {}'.format(e))
         return update_wrapper(new_func, f)
     return decorator
+
+
+def pass_api_client(f):
+    @click.pass_context
+    def new_func(ctx, *args, **kwargs):
+        if not has_saved_user():
+            ctx.fail('Not logged in. Please run `tigerhost login`.')
+        else:
+            user = load_user()
+            client = ApiClient(
+                api_server_url=settings.API_SERVER_URL,
+                username=user.username,
+                api_key=user.api_key,
+            )
+            try:
+                client.test_api_key()
+            except ApiClientAuthenticationError:
+                ctx.fail(
+                    'Credentials no longer valid. Please run `tigerhost login` again.')
+            return ctx.invoke(f, client, *args, **kwargs)
+    return update_wrapper(new_func, f)
