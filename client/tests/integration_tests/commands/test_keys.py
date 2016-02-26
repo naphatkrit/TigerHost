@@ -3,7 +3,7 @@ import pytest
 from tigerhost.entry import entry
 
 
-@pytest.mark.parametrize('key_name', ['keyname', 'key_name', 'key-name'])
+@pytest.mark.parametrize('key_name', ['keyname', 'key_name', 'key-name', 'KeyName'])
 def test_keys(runner, logged_in_user, public_key_path, key_name):
     """
     @type runner: click.testing.CliRunner
