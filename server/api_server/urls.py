@@ -29,6 +29,6 @@ urlpatterns = [
     url(r'^v1/apps/([a-z0-9-]+)/env/$',
         AppEnvVariablesApiView.as_view(), name='app_env_variables'),
     url(r'^v1/keys/$', KeysApiView.as_view(), name='keys'),
-    url(r'^v1/keys/([a-z0-9_-]+)/$',
+    url(r'^v1/keys/([A-Za-z0-9_-]+)/$',
         KeyDetailsApiView.as_view(), name='key_details'),
 ]
