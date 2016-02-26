@@ -27,6 +27,7 @@ import logging
 
 if "logger" not in vars():
   logger = logging.getLogger(__name__)
+  logger.disabled = True
 
 
 
