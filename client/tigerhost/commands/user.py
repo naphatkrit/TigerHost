@@ -3,7 +3,7 @@ import urlparse
 
 from tigerhost import exit_codes, settings
 from tigerhost.api_client import ApiClient, ApiClientAuthenticationError, ApiClientResponseError
-from tigerhost.user import User, save_user
+from tigerhost.user import User, save_user, delete_user, has_saved_user
 from tigerhost.utils import decorators
 
 
@@ -41,3 +41,31 @@ def login(ctx, username, api_key):
         click.secho('OK', bg='green', fg='black')
         user = User(username=username, api_key=api_key)
         save_user(user)
+
+
+@click.command()
+@decorators.catch_exception(ApiClientResponseError)
+@decorators.pass_user
+@decorators.print_markers
+def user_info(user):
+    """Display information about the logged in user.
+    """
+    click.echo('Username: {}'.format(user.username))
+    click.echo('API key: {}'.format(user.api_key))
+    click.echo()
+    click.echo('Credentials still valid.')
+
+
+@click.command()
+@decorators.catch_exception(ApiClientResponseError)
+@click.pass_context
+@decorators.print_markers
+def logout(ctx):
+    """Log the user out, deleting the API key.
+    """
+    if not has_saved_user():
+        click.echo('Not logged in.')
+        ctx.exit(code=exit_codes.OTHER_FAILURE)
+    else:
+        delete_user()
+        click.echo('Logged out.')
