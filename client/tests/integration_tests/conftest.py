@@ -1,5 +1,7 @@
 import mock
 import pytest
+import random
+import string
 
 from tigerhost.api_client import ApiClient
 
@@ -60,3 +62,8 @@ def api_client2(api_server_url, username2, api_key2):
 def settings(api_server_url):
     with mock.patch('tigerhost.settings.API_SERVER_URL', new=api_server_url):
         yield
+
+
+@pytest.fixture(scope='function')
+def app_id():
+    return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(12))

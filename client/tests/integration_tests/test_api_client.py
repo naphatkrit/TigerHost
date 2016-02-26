@@ -1,14 +1,6 @@
 import pytest
 
-import random
-import string
-
 from tigerhost.api_client import ApiClientAuthenticationError, ApiClientResponseError
-
-
-@pytest.fixture(scope='function')
-def app_id():
-    return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(12))
 
 
 def test_authentication_failure(api_client):

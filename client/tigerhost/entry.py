@@ -18,7 +18,11 @@ def entry():
 entry.add_command(login)
 entry.add_command(logout)
 entry.add_command(user_info, name='user:info')
+
 entry.add_command(apps.list_apps, name='apps')
+entry.add_command(apps.create_app, name='create')
+entry.add_command(apps.destroy_app, name='apps:destroy')
+
 entry.add_command(keys.add_key, name='keys:add')
 entry.add_command(keys.list_keys, name='keys')
 entry.add_command(keys.remove_key, name='keys:remove')
