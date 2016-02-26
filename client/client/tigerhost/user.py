@@ -71,6 +71,12 @@ def has_saved_user():
     return os.path.exists(_user_path())
 
 
+def delete_user():
+    """Delete the saved user account. Must be logged in.
+    """
+    os.remove(_user_path())
+
+
 def load_user():
     """Load the user from the saved location.
 

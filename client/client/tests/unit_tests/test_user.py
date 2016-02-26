@@ -2,7 +2,7 @@ import json
 import pytest
 
 from tigerhost.private_dir import ensure_private_dir_exists
-from tigerhost.user import User, UserFormatError, save_user, load_user, has_saved_user
+from tigerhost.user import User, UserFormatError, save_user, load_user, has_saved_user, delete_user
 
 
 def test_to_json():
@@ -51,3 +51,5 @@ def test_save_user():
     save_user(user)
     assert has_saved_user()
     assert load_user() == user
+    delete_user()
+    assert not has_saved_user()

@@ -1,3 +1,5 @@
+# NOTE: this is a separate file because it needs to mock a different
+# instance of ApiClient
 import mock
 import pytest
 
@@ -11,7 +13,7 @@ def fake_api_client():
 
     def new(api_server_url, username, api_key):
         return mocked
-    with mock.patch('tigerhost.commands.login.ApiClient', new=new):
+    with mock.patch('tigerhost.commands.user.ApiClient', new=new):
         yield mocked
 
 
