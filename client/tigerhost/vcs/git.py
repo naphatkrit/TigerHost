@@ -153,6 +153,29 @@ class GitVcs(Vcs):
         """
         return '.gitignore'
 
+    def add_remote(self, name, url):
+        """Add a new remote to this repository.
+
+        Args:
+            name (str)
+            url (str)
+        """
+        self.run('remote', 'add', name, url)
+
+    def get_remotes(self):
+        """Returns all the remotes in this repository.
+
+        Returns:
+            Dict[str:str] - mapping from remote name to remote URLs
+        """
+        remotes = self.run('remote', '--verbose').strip().split('\n')
+        remotes = [x.split() for x in remotes]
+        answer = {}
+        for name, url, _ in remotes:
+            # note that each name has a duplicate (fetch vs. push)
+            answer[name] = url
+        return answer
+
     def path_is_ignored(self, path):
         """Given a path, check if the path would be ignored.
 
