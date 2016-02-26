@@ -121,6 +121,17 @@ def test_get_ignored_files(git, repo_path):
             [os.path.join(repo_path, 'a/1.txt'), os.path.join(repo_path, 'a/2.txt')])
 
 
+def test_remotes(git, repo_path):
+    remotes = {
+        'origin': 'git@origin.com',
+        'test': 'ssh://git@test.com',
+        'example': 'git:pass@example.com',
+    }
+    for name, url in remotes.iteritems():
+        git.add_remote(name, url)
+    assert git.get_remotes() == remotes
+
+
 def test_path_is_ignored(git, repo_path):
     with contextmanagers.chdir(repo_path):
         with open('.gitignore', 'w') as f:

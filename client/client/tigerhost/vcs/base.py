@@ -181,6 +181,23 @@ class Vcs(object):
         """
         raise NotImplementedError  # pragma: no cover
 
+    def add_remote(self, name, url):
+        """Add a new remote to this repository.
+
+        Args:
+            name (str)
+            url (str)
+        """
+        raise NotImplementedError  # pragma: no cover
+
+    def get_remotes(self):
+        """Returns all the remotes in this repository.
+
+        Returns:
+            Dict[str:str] - mapping from remote name to remote URLs
+        """
+        raise NotImplementedError  # pragma: no cover
+
     @contextmanager
     def temp_copy(self):
         """Yields a new Vcs object that represents a temporary, disposable
