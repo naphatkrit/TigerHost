@@ -120,6 +120,14 @@ def test_remove_application_domain(api_client, fake_api_server_url):
 
 
 @responses.activate
+def test_get_application_git_remote(api_client, fake_api_server_url):
+    responses.add(responses.GET, urlparse.urljoin(
+        fake_api_server_url, 'api/v1/apps/{}/'.format('testid')), status=200, json={'remote': 'git@fake'})
+    assert api_client.get_application_git_remote(
+        'testid') == 'git@fake'
+
+
+@responses.activate
 def test_get_application_owner(api_client, fake_api_server_url):
     responses.add(responses.GET, urlparse.urljoin(
         fake_api_server_url, 'api/v1/apps/{}/'.format('testid')), status=200, json={'owner': 'username'})

@@ -165,6 +165,18 @@ class ApiClient(object):
         self._request_and_raise(
             'DELETE', 'api/v1/apps/{}/domains/{}/'.format(app_id, domain))
 
+    def get_application_git_remote(self, app_id):
+        """Get the git remote for the specified app ID.
+
+        @type app_id: str
+
+        @rtype: str
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise('GET', 'api/v1/apps/{}/'.format(app_id))
+        return resp.json()['remote']
+
     def get_application_owner(self, app_id):
         """Get the username of the owner of the specified app ID.
 
