@@ -2,6 +2,7 @@ import click
 
 import tigerhost
 
+from tigerhost.commands import apps
 from tigerhost.commands.login import login
 from tigerhost.private_dir import ensure_private_dir_exists
 
@@ -15,3 +16,4 @@ def entry():
     ensure_private_dir_exists()
 
 entry.add_command(login)
+entry.add_command(apps.list_apps, name='apps')
