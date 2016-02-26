@@ -1,7 +1,7 @@
 import requests
 import urlparse
 
-from api_server.clients.deis_client_errors import DeisClientResponseError
+from api_server.clients.deis_client_errors import DeisClientResponseError, DeisClientError, DeisClientTimeoutError
 
 
 class DeisClient(object):
@@ -26,9 +26,18 @@ class DeisClient(object):
 
         @raise e: DeisClientResponseError
             if the response status code is not in the [200, 300) range.
+        @raise e: DeisClientTimeoutError
+        @raise e: DeisClientError
         """
-        resp = requests.request(method, urlparse.urljoin(
-            self.deis_url, path), **kwargs)
+        if 'timeout' not in kwargs:
+            kwargs['timeout'] = 3
+        try:
+            resp = requests.request(method, urlparse.urljoin(
+                self.deis_url, path), **kwargs)
+        except requests.exceptions.Timeout:
+            raise DeisClientTimeoutError
+        except requests.exceptions.RequestException:
+            raise DeisClientError
         if not 200 <= resp.status_code < 300:
             raise DeisClientResponseError(resp)
         return resp
