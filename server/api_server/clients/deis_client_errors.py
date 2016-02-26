@@ -2,6 +2,10 @@ class DeisClientError(Exception):
     pass
 
 
+class DeisClientTimeoutError(Exception):
+    pass
+
+
 class DeisClientResponseError(DeisClientError):
 
     def __init__(self, response):
