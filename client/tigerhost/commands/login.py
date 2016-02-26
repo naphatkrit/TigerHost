@@ -1,7 +1,7 @@
 import click
 import urlparse
 
-from tigerhost import settings
+from tigerhost import exit_codes, settings
 from tigerhost.api_client import ApiClient, ApiClientAuthenticationError, ApiClientResponseError
 from tigerhost.user import User, save_user
 from tigerhost.utils import decorators
@@ -35,7 +35,8 @@ def login(ctx, username, api_key):
         client.test_api_key()
     except ApiClientAuthenticationError:
         click.secho('invalid', bg='red', fg='black')
-        ctx.fail('Please try again')
+        click.echo('Please try again.')
+        ctx.exit(code=exit_codes.OTHER_FAILURE)
     else:
         click.secho('OK', bg='green', fg='black')
         user = User(username=username, api_key=api_key)

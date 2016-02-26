@@ -2,7 +2,7 @@ import click
 
 from functools import update_wrapper
 
-from tigerhost import settings
+from tigerhost import exit_codes, settings
 from tigerhost.api_client import ApiClient, ApiClientAuthenticationError
 from tigerhost.user import load_user, has_saved_user
 from tigerhost.vcs.git import GitVcs
@@ -42,14 +42,16 @@ def pass_vcs(f):
     return update_wrapper(new_func, f)
 
 
-def catch_exception(exception):
+def catch_exception(exception, message=None):
     def decorator(f):
         @click.pass_context
         def new_func(ctx, *args, **kwargs):
             try:
                 return ctx.invoke(f, *args, **kwargs)
             except exception as e:
-                ctx.fail('Exceptoin: {}'.format(e))
+                message1 = message if message is not None else '{}'.format(e)
+                click.echo(message1)
+                ctx.exit(code=exit_codes.OTHER_FAILURE)
         return update_wrapper(new_func, f)
     return decorator
 
@@ -58,7 +60,8 @@ def pass_api_client(f):
     @click.pass_context
     def new_func(ctx, *args, **kwargs):
         if not has_saved_user():
-            ctx.fail('Not logged in. Please run `tigerhost login`.')
+            click.echo('Not logged in. Please run `tigerhost login`.')
+            ctx.exit(code=exit_codes.OTHER_FAILURE)
         else:
             user = load_user()
             client = ApiClient(
@@ -69,7 +72,8 @@ def pass_api_client(f):
             try:
                 client.test_api_key()
             except ApiClientAuthenticationError:
-                ctx.fail(
+                click.echo(
                     'Credentials no longer valid. Please run `tigerhost login` again.')
+                ctx.exit(code=exit_codes.OTHER_FAILURE)
             return ctx.invoke(f, client, *args, **kwargs)
     return update_wrapper(new_func, f)
