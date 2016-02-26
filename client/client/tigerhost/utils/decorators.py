@@ -17,6 +17,7 @@ def print_markers(f):
         try:
             return ctx.invoke(f, *args, **kwargs)
         finally:
+            click.echo()
             _print_marker(' end of tigerhost ' + command + ' ')
     return update_wrapper(new_func, f)
 
