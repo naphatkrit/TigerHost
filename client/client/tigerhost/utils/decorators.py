@@ -56,7 +56,7 @@ def catch_exception(exception, message=None):
     return decorator
 
 
-def pass_api_client(f):
+def pass_user(f):
     @click.pass_context
     def new_func(ctx, *args, **kwargs):
         if not has_saved_user():
@@ -75,5 +75,18 @@ def pass_api_client(f):
                 click.echo(
                     'Credentials no longer valid. Please run `tigerhost login` again.')
                 ctx.exit(code=exit_codes.OTHER_FAILURE)
-            return ctx.invoke(f, client, *args, **kwargs)
+            return ctx.invoke(f, user, *args, **kwargs)
+    return update_wrapper(new_func, f)
+
+
+def pass_api_client(f):
+    @pass_user
+    @click.pass_context
+    def new_func(ctx, user, *args, **kwargs):
+        client = ApiClient(
+            api_server_url=settings.API_SERVER_URL,
+            username=user.username,
+            api_key=user.api_key,
+        )
+        return ctx.invoke(f, client, *args, **kwargs)
     return update_wrapper(new_func, f)
