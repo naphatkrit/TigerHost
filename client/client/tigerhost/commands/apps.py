@@ -5,9 +5,9 @@ from tigerhost.utils import decorators
 
 
 @click.command()
+@decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.pass_api_client
-@decorators.print_markers
 def list_apps(api_client):
     """List apps for this user
 
