@@ -21,7 +21,7 @@ class AppCollaboratorsApiView(ApiBaseView):
         auth_client, _ = self.deis_client.login_or_register(
             request.user.username, request.user.profile.get_paas_password(), request.user.email)
 
-        users = auth_client.get_application_collaborators()
+        users = auth_client.get_application_collaborators(app_id)
         return self.respond_multiple(users)
 
     def post(self, request, app_id):

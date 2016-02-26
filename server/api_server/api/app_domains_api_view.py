@@ -20,7 +20,7 @@ class AppDomainsApiView(ApiBaseView):
         auth_client, _ = self.deis_client.login_or_register(
             request.user.username, request.user.profile.get_paas_password(), request.user.email)
 
-        domains = auth_client.get_application_domains()
+        domains = auth_client.get_application_domains(app_id)
         return self.respond_multiple(domains)
 
     def post(self, request, app_id):
