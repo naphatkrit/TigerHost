@@ -17,7 +17,10 @@ def _handle_deis_client_response_error(f):
         try:
             return f(request, *args, **kwargs)
         except DeisClientResponseError as e:
-            return JsonResponse(e.response.json(), status=e.response.status_code)
+            try:
+                return JsonResponse(e.response.json(), status=e.response.status_code)
+            except ValueError:
+                return HttpResponse(e.response.text, status=e.response.status_code)
     return wrapped_view
 
 
