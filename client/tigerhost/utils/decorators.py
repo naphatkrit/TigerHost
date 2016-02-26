@@ -13,12 +13,14 @@ def print_markers(f):
     def new_func(ctx, *args, **kwargs):
         command = ctx.info_name
         assert command is not None
-        _print_marker(' tigerhost ' + command + ' ')
+        _print_marker(' {app_name} {command} '.format(
+            app_name=settings.APP_NAME, command=command))
         try:
             return ctx.invoke(f, *args, **kwargs)
         finally:
             click.echo()
-            _print_marker(' end of tigerhost ' + command + ' ')
+            _print_marker(' end of {app_name} {command} '.format(
+                app_name=settings.APP_NAME, command=command))
     return update_wrapper(new_func, f)
 
 
@@ -61,7 +63,7 @@ def pass_user(f):
     @click.pass_context
     def new_func(ctx, *args, **kwargs):
         if not has_saved_user():
-            click.echo('Not logged in. Please run `tigerhost login`.')
+            click.echo('Not logged in. Please run `{app_name} login`.'.format(app_name=settings.APP_NAME))
             ctx.exit(code=exit_codes.OTHER_FAILURE)
         else:
             user = load_user()
@@ -74,7 +76,7 @@ def pass_user(f):
                 client.test_api_key()
             except ApiClientAuthenticationError:
                 click.echo(
-                    'Credentials no longer valid. Please run `tigerhost login` again.')
+                    'Credentials no longer valid. Please run `{app_name} login` again.'.format(app_name=settings.APP_NAME))
                 ctx.exit(code=exit_codes.OTHER_FAILURE)
             return ctx.invoke(f, user, *args, **kwargs)
     return update_wrapper(new_func, f)

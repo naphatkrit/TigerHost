@@ -2,6 +2,8 @@ from setuptools import setup, find_packages
 
 import tigerhost
 
+from tigerhost import settings
+
 
 tests_require = [
     'flake8>=2.4.0',
@@ -17,7 +19,7 @@ install_requires = [
 ]
 
 setup(
-    name='tigerhost',
+    name=settings.APP_NAME,
     version=tigerhost.__version__,
     author='Naphat Sanguansin',
     author_email='naphat.krit@gmail.com',
@@ -28,6 +30,6 @@ setup(
     tests_require=tests_require,
     entry_points='''
         [console_scripts]
-        tigerhost=tigerhost.entry:entry
-    ''',
+        {app_name}=tigerhost.entry:entry
+    '''.format(app_name=settings.APP_NAME),
 )

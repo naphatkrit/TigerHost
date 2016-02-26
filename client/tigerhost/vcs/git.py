@@ -2,6 +2,7 @@ import hashlib
 import os
 import stat
 
+from tigerhost import settings
 from tigerhost.vcs.base import CommandError, Vcs
 
 
@@ -67,7 +68,7 @@ class GitVcs(Vcs):
         Returns:
             str - absolute path
         """
-        return os.path.join(self.repository_dir(), 'tigerhost')
+        return os.path.join(self.repository_dir(), settings.APP_NAME)
 
     def repository_dir(self):
         """Get the directory used by the VCS to store repository info.

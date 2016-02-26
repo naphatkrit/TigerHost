@@ -1,7 +1,7 @@
 import click
 import os
 
-_private_dir_name = '.tigerhost'
+from tigerhost import settings
 
 
 class PrivateDirConflictError(Exception):
@@ -9,7 +9,7 @@ class PrivateDirConflictError(Exception):
 
 
 _private_dir_path = os.path.expanduser(click.get_app_dir(
-    'tigerhost',
+    settings.APP_NAME,
     force_posix=True,  # forces to ~/.tigerhost on Mac and Unix
 ))
 
