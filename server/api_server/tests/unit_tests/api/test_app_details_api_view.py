@@ -14,10 +14,12 @@ def test_GET(client, http_headers, mock_deis_authenticated_client):
     mock_deis_authenticated_client.get_application_owner.return_value = owner
     with mock.patch('api_server.api.api_base_view.ApiBaseView.deis_client') as mock_deis_client:
         mock_deis_client.login_or_register.return_value = mock_deis_authenticated_client, False
+        mock_deis_client.deis_url = 'http://fake'
         resp = client.get('/api/v1/apps/testid/', **http_headers)
     assert resp.status_code == 200
     assert resp.json() == {
         'owner': owner,
+        'remote': 'ssh://git@fake:2222/testid.git',
     }
 
 
