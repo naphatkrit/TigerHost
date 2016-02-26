@@ -29,6 +29,26 @@ def user(username, email):
 
 
 @pytest.fixture(scope='function')
+def username2():
+    return crypto.get_random_string()
+
+
+@pytest.fixture(scope='function')
+def email2(username2):
+    return '{}@princeton.edu'.format(username2)
+
+
+@pytest.fixture(scope='function')
+def password2():
+    return crypto.get_random_string()
+
+
+@pytest.fixture(scope='function')
+def user2(username2, email2):
+    return User.objects.create_user(username2, email=email2)
+
+
+@pytest.fixture(scope='function')
 def api_key(user):
     return get_secret(user.username)  # uses user fixture so user is created
 

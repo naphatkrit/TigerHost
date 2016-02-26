@@ -1,8 +1,10 @@
 from functools import wraps
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import available_attrs, method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from api_server.clients.deis_client_errors import DeisClientResponseError, DeisClientError, DeisClientTimeoutError
@@ -32,6 +34,7 @@ def _handle_error(exception, status, message=None):
     return decorator
 
 
+@method_decorator(csrf_exempt, 'dispatch')
 @method_decorator(_handle_error(DeisClientError, status=500), 'dispatch')
 @method_decorator(_handle_error(DeisClientTimeoutError, status=500, message='PaaS server timeout'), 'dispatch')
 @method_decorator(_handle_deis_client_response_error, 'dispatch')
@@ -64,3 +67,36 @@ class ApiBaseView(View):
         else:
             status = 200 if status is None else status
             return JsonResponse(item, status=status)
+
+    def respond_error(self, message, status):
+        """Returns a HTTP response to indicate an error.
+
+        @type message: str
+        @type status: int
+
+        @rtype django.http.HttpResponse
+        """
+        return JsonResponse({
+            'error': message
+        }, status=status)
+
+    def ensure_user_exists(self, username):
+        """Ensure the user with ``username`` exists, both locally
+        and on Deis. If the user does not exist locally, returns
+        False. If the user does not exist on Deis,
+        create it, but return True.
+
+        @type username: str
+
+        @rtype: bool
+            Return False if the user does not exist and cannot be created.
+
+        @raises e: DeisClientError
+        """
+        try:
+            user2 = User.objects.get(username__iexact=username)
+        except User.DoesNotExist:
+            return False
+        self.deis_client.login_or_register(
+            user2.username, user2.profile.get_paas_password(), user2.email)
+        return True

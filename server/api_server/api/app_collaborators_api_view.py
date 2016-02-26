@@ -38,6 +38,9 @@ class AppCollaboratorsApiView(ApiBaseView):
         @rtype: django.http.HttpResponse
         """
         username = json.loads(request.body)['username']
+        # needs to first make sure the second user is registered with Deis
+        if not self.ensure_user_exists(username):
+            return self.respond_error('User {} does not exist'.format(username), status=404)
         auth_client, _ = self.deis_client.login_or_register(
             request.user.username, request.user.profile.get_paas_password(), request.user.email)
 

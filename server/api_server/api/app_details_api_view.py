@@ -48,6 +48,8 @@ class AppDetailsApiView(ApiBaseView):
             request.user.username, request.user.profile.get_paas_password(), request.user.email)
 
         if 'owner' in data:
+            if not self.ensure_user_exists(data['owner']):
+                return self.respond_error('User {} does not exist'.format(data['owner']), status=404)
             auth_client.set_application_owner(app_id, data['owner'])
         return self.respond()
 
