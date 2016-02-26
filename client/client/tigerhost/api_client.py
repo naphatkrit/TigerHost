@@ -74,10 +74,195 @@ class ApiClient(object):
         """
         self._request_and_raise('GET', 'api/test_api_key/')
 
+    def create_application(self, app_id):
+        """Create a new application with the specified ID.
+
+        @type app_id: str
+
+        @raises ApiClientResponseError
+        """
+        self._request_and_raise('POST', 'api/v1/apps/', json={
+            'id': app_id
+        })
+
+    def delete_application(self, app_id):
+        """Delete an application with the specified ID.
+
+        @type app_id: str
+
+        @raises ApiClientResponseError
+        """
+        self._request_and_raise('DELETE', 'api/v1/apps/{}/'.format(app_id))
+
     def get_all_applications(self):
         """Get all application IDs associated with this user.
 
         @rtype: list
         """
-        resp = self._request_and_raise('GET', 'api/v1/apps')
+        resp = self._request_and_raise('GET', 'api/v1/apps/')
         return resp.json()['results']
+
+    def set_application_env_variables(self, app_id, bindings):
+        """Set the environmental variables for the specified app ID. To unset a variable, set it to ``None``.
+
+        @type app_id: str
+
+        @type bindings: dict
+            The key-value pair to set in the environmental. ``None`` value = unset.
+
+        @raises ApiClientResponseError
+        """
+        self._request_and_raise(
+            'POST', 'api/v1/apps/{}/env/'.format(app_id), json=bindings)
+
+    def get_application_env_variables(self, app_id):
+        """Get the environmental variables for the specified app ID.
+
+        @type app_id: str
+
+        @rtype: dict
+            The key-value pair representing the environmental variables
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise(
+            'GET', 'api/v1/apps/{}/env/'.format(app_id))
+        return resp.json()
+
+    def get_application_domains(self, app_id):
+        """Get all domains associated with the specified app ID.
+
+        @type app_id: str
+
+        @rtype: list
+            List of domains (str)
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise(
+            'GET', 'api/v1/apps/{}/domains/'.format(app_id))
+        return resp.json()['results']
+
+    def add_application_domain(self, app_id, domain):
+        """Add a new domain to the specified app ID.
+
+        @type app_id: str
+        @type domain: str
+
+        @raises e: ApiClientResponseError
+        """
+        self._request_and_raise(
+            'POST', 'api/v1/apps/{}/domains/'.format(app_id), json={'domain': domain})
+
+    def remove_application_domain(self, app_id, domain):
+        """Remove a domain from the specified app ID.
+
+        @type app_id: str
+        @type domain: str
+
+        @raises e: ApiClientResponseError
+        """
+        self._request_and_raise(
+            'DELETE', 'api/v1/apps/{}/domains/{}/'.format(app_id, domain))
+
+    def get_application_owner(self, app_id):
+        """Get the username of the owner of the specified app ID.
+
+        @type app_id: str
+
+        @rtype: str
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise('GET', 'api/v1/apps/{}/'.format(app_id))
+        return resp.json()['owner']
+
+    def set_application_owner(self, app_id, username):
+        """Set the owner of the application to be the specified username.
+        Can only be done by someone with admin privilege on this application.
+
+        @type app_id: str
+        @type username: str
+
+        @raises e: ApiClientResponseError
+        """
+        self._request_and_raise('POST', 'api/v1/apps/{}/'.format(app_id), json={
+            'owner': username
+        })
+
+    def get_application_collaborators(self, app_id):
+        """Returns the list of users sharing this application.
+        This does NOT include the application owner.
+
+        @type app_id: str
+
+        @rtype: list
+            The list of usernames of collaborators (str)
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise(
+            'GET', 'api/v1/apps/{}/collaborators/'.format(app_id))
+        return resp.json()['results']
+
+    def add_application_collaborator(self, app_id, username):
+        """Adds the user with the specified username to the list of
+        collaborators
+
+        @type app_id: str
+        @type username: str
+
+        @raises e: ApiClientResponseError
+        """
+        self._request_and_raise('POST', 'api/v1/apps/{}/collaborators/'.format(app_id), json={
+            'username': username
+        })
+
+    def remove_application_collaborator(self, app_id, username):
+        """Removes the user with the specified username from the list of
+        collaborators
+
+        @type app_id: str
+        @type username: str
+
+        @raises e: ApiClientResponseError
+        """
+        self._request_and_raise(
+            'DELETE', 'api/v1/apps/{}/collaborators/{}/'.format(app_id, username))
+
+    def get_keys(self):
+        """Get all public keys associated with this user.
+
+        @rtype: dict
+            A dictionary with two keys: 'key_name' and 'key'
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise(
+            'GET', 'api/v1/keys/')
+        return resp.json()['results']
+
+    def add_key(self, key_name, key):
+        """Add a public key to this user.
+
+        @type key_name: str
+            An ID to be associated with this key
+
+        @type key: str
+
+        @raises e: ApiClientResponseError
+        """
+        self._request_and_raise('POST', 'api/v1/keys/', json={
+            'key_name': key_name,
+            'key': key
+        })
+
+    def remove_key(self, key_name):
+        """Remove the specified key from this user.
+
+        @type key_name: str
+            The ID associated with this key when added.
+
+        @raises e: ApiClientResponseError
+        """
+        self._request_and_raise('DELETE', 'api/v1/keys/{}/'.format(key_name))
