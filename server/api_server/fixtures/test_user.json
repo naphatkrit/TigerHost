@@ -14,5 +14,21 @@
             "user": 1,
             "secret": "alekfjdaoiw3lrjk21ADSFASFAWErwer234rwefsDFRektg"
         }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "username": "testuser2",
+            "email": "testuser2@example.com"
+        }
+    },
+    {
+        "model": "wsse.WsseProfile",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "secret": "afjladsflkjadklffADADALKADFDfaflkadj2345red32"
+        }
     }
 ]
