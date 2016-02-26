@@ -14,9 +14,12 @@ from tigerhost.utils.contextmanagers import temp_dir, temp_file
 def runner():
     runner = CliRunner()
     with runner.isolated_filesystem():
-        assert not os.system('git init')
-        os.mkdir('.git/tigerhost')
         yield runner
+
+
+@pytest.fixture(scope='function')
+def make_git_repo(runner):
+    assert not os.system('git init')
 
 
 @pytest.yield_fixture(scope='function', autouse=True)
