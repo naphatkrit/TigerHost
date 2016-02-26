@@ -77,6 +77,13 @@ def test_application_env_variables(api_client, app_id, create_application):
     }
 
 
+def test_application_git_remote(api_client, app_id, create_application):
+    remote = api_client.get_application_git_remote(app_id)
+    assert 'ssh' in remote
+    assert 'git@' in remote
+    assert '.git' in remote
+
+
 def test_application_domains(api_client, app_id, create_application):
     domain = '{}.example.com'.format(app_id)
     old_domains = api_client.get_application_domains(app_id)
