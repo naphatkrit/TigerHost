@@ -34,3 +34,19 @@ def temp_dir():
         yield path
     finally:
         shutil.rmtree(path)
+
+
+@contextmanager
+def temp_file():
+    """Create a temporary file for the duration of this context manager,
+    deleting it afterwards.
+
+    Yields:
+        str - path to the file
+    """
+    fd, path = tempfile.mkstemp()
+    os.close(fd)
+    try:
+        yield path
+    finally:
+        os.remove(path)
