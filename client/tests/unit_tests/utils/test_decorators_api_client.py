@@ -32,8 +32,8 @@ class ErrorB(Exception):
 
 
 @click.command()
-@decorators.pass_api_client
-def sample_cmd(client):
+@decorators.store_api_client
+def sample_cmd():
     pass
 
 

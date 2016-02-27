@@ -46,10 +46,12 @@ def login(ctx, username, api_key):
 @click.command()
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
-@decorators.pass_user
-def user_info(user):
+@decorators.store_user
+@click.pass_context
+def user_info(ctx):
     """Display information about the logged in user.
     """
+    user = ctx.obj['user']
     click.echo('Username: {}'.format(user.username))
     click.echo('API key: {}'.format(user.api_key))
     click.echo()
