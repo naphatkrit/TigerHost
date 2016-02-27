@@ -70,15 +70,15 @@ This can happen if you created multiple {app_name} apps for your project.'''.for
 
 
 @click.command()
-@click.option('--app', '-a', help='Optionally specify which app to work with. Defaults to the current app.')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.store_api_client
+@decorators.store_app
 @click.pass_context
-def destroy_app(ctx, app):
+def destroy_app(ctx):
     """Delete the current application.
     """
+    app = ctx.obj['app']
     api_client = ctx.obj['api_client']
-    assert app
     api_client.delete_application(app)
     click.echo('App {} destroyed.'.format(app))
