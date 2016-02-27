@@ -32,8 +32,9 @@ class ErrorB(Exception):
 
 
 @click.command()
-@decorators.pass_user
-def sample_cmd(user):
+@decorators.store_user
+@click.pass_context
+def sample_cmd(ctx):
     pass
 
 

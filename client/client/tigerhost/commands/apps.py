@@ -8,12 +8,14 @@ from tigerhost.utils import decorators
 @click.command()
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
-@decorators.pass_api_client
-def list_apps(api_client):
+@decorators.store_api_client
+@click.pass_context
+def list_apps(ctx):
     """List apps for this user
 
     @type api_client: tigerhost.api_client.ApiClient
     """
+    api_client = ctx.obj['api_client']
     apps = api_client.get_all_applications()
     for app in apps:
         click.echo(app)
@@ -23,11 +25,14 @@ def list_apps(api_client):
 @click.argument('name')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
-@decorators.pass_api_client
-@decorators.pass_vcs
-def create_app(vcs, api_client, name):
+@decorators.store_api_client
+@decorators.store_vcs
+@click.pass_context
+def create_app(ctx, name):
     """Create a new app with the specified NAME.
     """
+    vcs = ctx.obj['vcs']
+    api_client = ctx.obj['api_client']
     api_client.create_application(name)
     click.echo('App {} created.'.format(name))
     click.echo()
@@ -68,10 +73,12 @@ This can happen if you created multiple {app_name} apps for your project.'''.for
 @click.option('--app', '-a', help='Optionally specify which app to work with. Defaults to the current app.')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
-@decorators.pass_api_client
-def destroy_app(api_client, app):
+@decorators.store_api_client
+@click.pass_context
+def destroy_app(ctx, app):
     """Delete the current application.
     """
+    api_client = ctx.obj['api_client']
     assert app
     api_client.delete_application(app)
     click.echo('App {} destroyed.'.format(app))

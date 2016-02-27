@@ -5,20 +5,11 @@ from tigerhost.utils import decorators
 
 
 @click.command()
-@decorators.pass_vcs
-@decorators.print_markers
-def command(vcs):
-    if vcs is None:
-        click.echo('no git')
-    else:
-        click.echo('has git')
-
-
-@click.command()
-@decorators.pass_vcs
+@decorators.store_vcs
 @click.pass_context
 @decorators.print_markers
-def command_with_context(ctx, vcs):
+def command_with_context(ctx):
+    vcs = ctx.obj['vcs']
     if vcs is None:
         click.echo('no git')
     else:
@@ -26,7 +17,6 @@ def command_with_context(ctx, vcs):
 
 
 @pytest.mark.parametrize('command,exit_code', [
-    (command, 0),
     (command_with_context, 0),
 ])
 def test_no_git(runner, command, exit_code):
@@ -36,7 +26,6 @@ def test_no_git(runner, command, exit_code):
 
 
 @pytest.mark.parametrize('command,exit_code', [
-    (command, 0),
     (command_with_context, 0),
 ])
 def test_has_git(runner, make_git_repo, command, exit_code):

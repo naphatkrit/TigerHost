@@ -11,12 +11,14 @@ from tigerhost.utils import decorators
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.catch_exception(IOError)
-@decorators.pass_api_client
-def add_key(api_client, name, path):
+@decorators.store_api_client
+@click.pass_context
+def add_key(ctx, name, path):
     """Add a public key. The NAME is the human readable label to attach
     to this key. PATH is the path to the public key, defaulting to
     ~/.ssh/id_rsa.pub.
     """
+    api_client = ctx.obj['api_client']
     path = os.path.expanduser(path)
     with open(path, 'r') as f:
         key = f.read()
@@ -36,10 +38,12 @@ def _truncate(text):
 @click.command()
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
-@decorators.pass_api_client
-def list_keys(api_client):
+@decorators.store_api_client
+@click.pass_context
+def list_keys(ctx):
     """Show the list of keys for this user.
     """
+    api_client = ctx.obj['api_client']
     keys = api_client.get_keys()
     first = True
     for key in keys:
@@ -56,9 +60,11 @@ def list_keys(api_client):
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.catch_exception(IOError)
-@decorators.pass_api_client
-def remove_key(api_client, name):
+@decorators.store_api_client
+@click.pass_context
+def remove_key(ctx, name):
     """Removes the key with label NAME.
     """
+    api_client = ctx.obj['api_client']
     api_client.remove_key(name)
     click.echo('Key {} removed.'.format(name))
