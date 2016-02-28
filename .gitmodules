@@ -1,0 +1,3 @@
+[submodule "deis"]
+	path = deis
+	url = git@github.com:deis/deis.git
