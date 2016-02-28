@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-URL=${1:-'http://deis.local3.deisapp.com'}
-
-py.test api_server/tests/integration_tests --deis-url="$URL"

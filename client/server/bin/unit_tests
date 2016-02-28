@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-py.test api_server/tests/unit_tests
