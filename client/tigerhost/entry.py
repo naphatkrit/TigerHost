@@ -2,7 +2,7 @@ import click
 
 import tigerhost
 
-from tigerhost.commands import apps, keys
+from tigerhost.commands import apps, config, keys
 from tigerhost.commands.user import login, user_info, logout
 from tigerhost.private_dir import ensure_private_dir_exists
 
@@ -22,6 +22,10 @@ entry.add_command(user_info, name='user:info')
 entry.add_command(apps.list_apps, name='apps')
 entry.add_command(apps.create_app, name='create')
 entry.add_command(apps.destroy_app, name='apps:destroy')
+
+entry.add_command(config.list_config, name='config')
+entry.add_command(config.set_config, name='config:set')
+entry.add_command(config.unset_config, name='config:unset')
 
 entry.add_command(keys.add_key, name='keys:add')
 entry.add_command(keys.list_keys, name='keys')
