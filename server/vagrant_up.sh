@@ -29,8 +29,10 @@ sudo aptitude -y install python-psycopg2
 
 ## should be in requirements
 ##sudo pip install django
+export DATABASE_URL=postgres://vagrant@10.0.2.2:5432/vagrant
 sudo pip install -r /vagrant/requirements.txt
 python /vagrant/manage.py migrate
+python /vagrant/manage.py loaddata /vagrant/api_server/fixtures/test_user.json
 
 
 export DJANGO_DEBUG=True
