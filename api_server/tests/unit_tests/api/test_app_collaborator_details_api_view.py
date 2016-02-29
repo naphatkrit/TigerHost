@@ -2,6 +2,7 @@ import mock
 import pytest
 
 
+@pytest.mark.xfail(reason='provider model refactor')
 @pytest.mark.django_db
 def test_DELETE(client, http_headers, mock_deis_authenticated_client):
     """

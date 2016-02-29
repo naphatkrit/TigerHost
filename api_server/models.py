@@ -14,11 +14,19 @@ def make_secret():
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    paas_password_seed = models.CharField(default=make_secret, max_length=50)
 
-    def get_paas_password(self):
+
+class PaasCredential(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='paas_credential_set')
+    provider_name = models.CharField(max_length=50)
+    password_seed = models.CharField(default=make_secret, max_length=50)
+
+    def get_password(self):
         signer = Signer()
-        return signer.sign(self.paas_password_seed)
+        return signer.sign(self.password_seed)
+
+    class Meta:
+        unique_together = ('profile', 'provider_name')
 
 
 def make_new_profile(sender, instance, created, **kwargs):
