@@ -1,14 +1,13 @@
 from functools import wraps
 
-from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import available_attrs, method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from api_server.clients.deis_client_errors import DeisClientResponseError, DeisClientError, DeisClientTimeoutError
-from api_server.models import App, Profile
-from api_server.providers import get_provider_client, ProvidersError
+from api_server.models import App
+from api_server.providers import get_provider_authenticated_client, ProvidersError, ProvidersUserError
 
 
 def _handle_deis_client_response_error(f):
@@ -42,9 +41,8 @@ def _handle_error(exception, status, message=None):
 @method_decorator(_handle_error(DeisClientError, status=500), 'dispatch')
 @method_decorator(_handle_error(DeisClientTimeoutError, status=500, message='PaaS server timeout'), 'dispatch')
 @method_decorator(_handle_error(ProvidersError, status=500), 'dispatch')
+@method_decorator(_handle_error(ProvidersUserError, status=400), 'dispatch')
 @method_decorator(_handle_error(App.DoesNotExist, status=400, message="App does not exist."), 'dispatch')
-@method_decorator(_handle_error(User.DoesNotExist, status=400), 'dispatch')
-@method_decorator(_handle_error(Profile.NoCredentials, status=400), 'dispatch')
 @method_decorator(_handle_deis_client_response_error, 'dispatch')
 class ApiBaseView(View):
 
@@ -98,17 +96,5 @@ class ApiBaseView(View):
 
         @raises e: DeisClientError
         @raises e: ProvidersError
-        @raises e: User.DoesNotExist
-        @raises e: Profile.NoCredentials
         """
-        try:
-            user2 = User.objects.get(username__iexact=username)
-        except User.DoesNotExist:
-            raise User.DoesNotExist('{} does not exist.'.format(username))
-        client = get_provider_client(provider)
-        try:
-            password = user2.profile.get_credential(provider).get_password()
-        except Profile.NoCredentials:
-            raise Profile.NoCredentials('{user} does not have access to {provider}.'.format(user=username, provider=provider))
-        client.login_or_register(
-            user2.username, password, user2.email)
+        get_provider_authenticated_client(username, provider)

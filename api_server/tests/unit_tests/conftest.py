@@ -1,10 +1,13 @@
 import base64
 import datetime
+import mock
 import pytest
 
 from django.contrib.auth.models import User
 from django.utils import crypto
 
+from api_server.clients.base_client import BaseClient
+from api_server.clients.base_authenticated_client import BaseAuthenticatedClient
 from wsse.utils import get_secret, wsse_digest
 
 
@@ -69,3 +72,15 @@ def http_headers(wsse_header):
         'HTTP_AUTHORIZATION': 'WSSE profile="UsernameToken"',
         'HTTP_X_WSSE': wsse_header,
     }
+
+
+@pytest.fixture
+def mock_provider_authenticated_client():
+    mocked = mock.Mock(spec=BaseAuthenticatedClient)
+    mocked.get_all_applications.return_value = ['app1', 'app2']
+    return mocked
+
+
+@pytest.fixture
+def mock_provider_client():
+    return mock.Mock(spec=BaseClient)

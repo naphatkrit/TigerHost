@@ -1,7 +1,9 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.utils.module_loading import import_string
 
 from api_server.clients.base_client import BaseClient
+from api_server.models import Profile
 
 
 class ProvidersError(Exception):
@@ -17,6 +19,10 @@ class ProvidersConfigError(ProvidersError):
 
 
 class ProvidersImportError(ProvidersError):
+    pass
+
+
+class ProvidersUserError(ProvidersError):
     pass
 
 
@@ -40,3 +46,29 @@ def get_provider_client(provider_name):
         raise ProvidersImportError
     except KeyError:
         raise ProvidersConfigError
+
+
+def get_provider_authenticated_client(username, provider):
+    """Creates a new authenticated client for the user
+    and provider
+
+    @type username: str
+    @type provider: str
+
+    @rtype: api_server.clients.base_client.BaseAuthenticatedClient
+
+    @raises e: DeisClientError
+    @raises e: ProvidersError
+    """
+    try:
+        user = User.objects.get(username__iexact=username)
+    except User.DoesNotExist:
+        raise ProvidersUserError('{} does not exist.'.format(username))
+    client = get_provider_client(provider)
+    try:
+        password = user.profile.get_credential(provider).get_password()
+    except Profile.NoCredentials:
+        raise ProvidersUserError('{user} does not have access to {provider}.'.format(user=username, provider=provider))
+    c, _ = client.login_or_register(
+        user.username, password, user.email)
+    return c
