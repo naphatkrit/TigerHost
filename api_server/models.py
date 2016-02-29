@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.signing import Signer
+from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
 from django.db import models
 from django.utils import crypto
@@ -55,6 +56,30 @@ class PaasCredential(models.Model):
 
     class Meta:
         unique_together = ('profile', 'provider_name')
+
+
+class App(models.Model):
+
+    # don't call this id to avoid conflicting with
+    # Django's generated primary key
+    # NOTE: unique implies index
+    app_id = models.CharField(max_length=128, unique=True, validators=[
+                              RegexValidator(regex=r'^[a-z0-9-]+$')])
+    provider_name = models.CharField(max_length=50)
+
+    @classmethod
+    def get_provider_name(cls, app_id):
+        """Given an app ID, return the provider name.
+
+        @rtype: str
+        @raises e: App.DoesNotExist
+        """
+        return cls.objects.get(app_id=app_id).provider_name
+
+    def save(self, *args, **kwargs):
+        # call the validation methods
+        self.full_clean()
+        super(App, self).save(*args, **kwargs)
 
 
 def make_new_profile(sender, instance, created, **kwargs):
