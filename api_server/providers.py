@@ -23,7 +23,7 @@ class ProvidersImportError(ProvidersError):
 def get_provider_client(provider_name):
     """Instantiates and returns a new client for the provider
 
-    @rtype: @api_server.clients.base_client.BaseClient
+    @rtype: api_server.clients.base_client.BaseClient
 
     @raises: ProvidersError
     """
