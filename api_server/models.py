@@ -13,11 +13,39 @@ def make_secret():
 
 
 class Profile(models.Model):
+
+    class NoCredentials(Exception):
+        pass
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def get_providers(self):
+        """Return the list of names of providers that this user has
+        a credential for.
+
+        @rtype: list
+            provider names (str)
+        """
+        return [x.provider_name for x in self.paas_credential_set.all()]
+
+    def get_credential(self, provider_name):
+        """Get the credential for this provider.
+
+        @type provider_name: str
+
+        @rtype: PaasCredential
+
+        @raises e: Profile.NoCredentials
+        """
+        for x in self.paas_credential_set.all():
+            if x.provider_name == provider_name:
+                return x
+        raise Profile.NoCredentials
 
 
 class PaasCredential(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='paas_credential_set')
+    profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='paas_credential_set')
     provider_name = models.CharField(max_length=50)
     password_seed = models.CharField(default=make_secret, max_length=50)
 
@@ -50,3 +78,21 @@ def make_new_profile(sender, instance, created, **kwargs):
             raise e
 
 post_save.connect(make_new_profile, sender=User)
+
+
+def make_default_credential(sender, instance, created, **kwargs):
+    try:
+        if created:
+            credential, created = PaasCredential.objects.get_or_create(
+                profile=instance, provider_name=settings.DEFAULT_PAAS_PROVIDER)
+            if created:
+                try:
+                    credential.save()
+                except Exception:
+                    if settings.DEBUG:
+                        raise
+    except Exception:
+        if settings.DEBUG:
+            raise
+
+post_save.connect(make_default_credential, sender=Profile)
