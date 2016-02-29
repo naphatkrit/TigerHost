@@ -82,3 +82,24 @@ def destroy_app(ctx):
     api_client = ctx.obj['api_client']
     api_client.delete_application(app)
     click.echo('App {} destroyed.'.format(app))
+
+
+@click.command()
+@click.argument('username')
+@decorators.print_markers
+@decorators.catch_exception(ApiClientResponseError)
+@decorators.store_api_client
+@decorators.store_app
+@click.pass_context
+def transfer_app(ctx, username):
+    """Transfer the ownership of this app to another
+    person
+    """
+    app = ctx.obj['app']
+    api_client = ctx.obj['api_client']
+    click.echo('Will transfer {app} to {username}. YOU WILL LOSE ACCESS to this app, unless {username} adds you back as a collaborator.'.format(app=app, username=username))
+    if click.confirm('Are you sure?'):
+        api_client.set_application_owner(app, username)
+        click.echo('Transfer complete.')
+    else:
+        click.echo('Did not transfer.')

@@ -22,6 +22,7 @@ entry.add_command(user_info, name='user:info')
 entry.add_command(apps.list_apps, name='apps')
 entry.add_command(apps.create_app, name='create')
 entry.add_command(apps.destroy_app, name='apps:destroy')
+entry.add_command(apps.transfer_app, name='apps:transfer')
 
 entry.add_command(config.list_config, name='config')
 entry.add_command(config.set_config, name='config:set')

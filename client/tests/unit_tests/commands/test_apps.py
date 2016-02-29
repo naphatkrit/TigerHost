@@ -36,7 +36,8 @@ def test_create_app_in_repo(runner, make_git_repo, saved_user, fake_api_client):
 
 def test_create_app_in_repo_failed_connection(runner, make_git_repo, saved_user, fake_api_client):
     app = 'app1'
-    fake_api_client.get_application_git_remote.side_effect = ApiClientResponseError(None)
+    fake_api_client.get_application_git_remote.side_effect = ApiClientResponseError(
+        None)
     result = runner.invoke(entry, ['create', app])
     assert result.exit_code == 0
     assert app in result.output
@@ -75,3 +76,19 @@ def test_destroy_app(runner, saved_user, fake_api_client):
     assert result.exit_code == 0
     assert app in result.output
     fake_api_client.delete_application.assert_called_once_with(app)
+
+
+def test_transfer_app(runner, saved_user, fake_api_client):
+    """
+    @type runner: click.testing.CliRunner
+    @type fake_api_client: mock.Mock
+    """
+    user = 'username'
+    result = runner.invoke(entry, ['apps:transfer', '--app', 'app', user], input='y')
+    assert result.exit_code == 0
+    fake_api_client.set_application_owner.assert_called_once_with('app', user)
+
+    result = runner.invoke(entry, ['apps:transfer', '--app', 'app', user], input='n')
+    assert result.exit_code == 0
+    # did not call set_application_owner again
+    assert fake_api_client.set_application_owner.call_count == 1
