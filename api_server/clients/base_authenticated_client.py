@@ -1,27 +1,9 @@
-from api_server.clients.base_authenticated_client import BaseAuthenticatedClient
-from api_server.clients.deis_client import DeisClient
+from api_server.clients.base_client import BaseClient
 
 
-class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
-    """The Deis client for API that requires authentication
+class BaseAuthenticatedClient(BaseClient):
+    """The provider client for API that requires authentication
     """
-
-    def __init__(self, deis_url, token):
-        """Create a new ``DeisAuthenticatedClient``.
-
-        @type deis_url: str
-
-        @type token: str
-            Authentication token for this user.
-        """
-        super(self.__class__, self).__init__(deis_url)
-        self.token = token
-
-    def _request_and_raise(self, *args, **kwargs):
-        if 'headers' not in kwargs:
-            kwargs['headers'] = {}
-        kwargs['headers']['Authorization'] = 'token {}'.format(self.token)
-        return super(self.__class__, self)._request_and_raise(*args, **kwargs)
 
     def get_all_applications(self):
         """Get all application IDs associated with this user.
@@ -31,10 +13,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises DeisClientResponseError
         """
-        # TODO this may not work correctly if there are too many apps
-        # will need to look at "next" key in the response
-        resp = self._request_and_raise('GET', 'v1/apps')
-        return [x['id'] for x in resp.json()['results']]
+        raise NotImplementedError
 
     def create_application(self, app_id):
         """Create a new application with the specified ID.
@@ -43,9 +22,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises DeisClientResponseError
         """
-        self._request_and_raise('POST', 'v1/apps/', json={
-            'id': app_id
-        })
+        raise NotImplementedError
 
     def delete_application(self, app_id):
         """Delete an application with the specified ID.
@@ -54,7 +31,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises DeisClientResponseError
         """
-        self._request_and_raise('DELETE', 'v1/apps/{}/'.format(app_id))
+        raise NotImplementedError
 
     def set_application_env_variables(self, app_id, bindings):
         """Set the environmental variables for the specified app ID. To unset a variable, set it to ``None``.
@@ -66,9 +43,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises DeisClientResponseError
         """
-        self._request_and_raise('POST', 'v1/apps/{}/config/'.format(app_id), json={
-            'values': bindings
-        })
+        raise NotImplementedError
 
     def get_application_env_variables(self, app_id):
         """Get the environmental variables for the specified app ID.
@@ -80,9 +55,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        resp = self._request_and_raise(
-            'GET', 'v1/apps/{}/config/'.format(app_id))
-        return resp.json()['values']
+        raise NotImplementedError
 
     def get_application_domains(self, app_id):
         """Get all domains associated with the specified app ID.
@@ -94,10 +67,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        # TODO may have to page
-        resp = self._request_and_raise(
-            'GET', 'v1/apps/{}/domains/'.format(app_id))
-        return [x['domain'] for x in resp.json()['results']]
+        raise NotImplementedError
 
     def add_application_domain(self, app_id, domain):
         """Add a new domain to the specified app ID.
@@ -107,8 +77,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        self._request_and_raise(
-            'POST', 'v1/apps/{}/domains/'.format(app_id), json={'domain': domain})
+        raise NotImplementedError
 
     def remove_application_domain(self, app_id, domain):
         """Remove a domain from the specified app ID.
@@ -118,8 +87,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        self._request_and_raise(
-            'DELETE', 'v1/apps/{}/domains/{}'.format(app_id, domain))
+        raise NotImplementedError
 
     def get_application_owner(self, app_id):
         """Get the username of the owner of the specified app ID.
@@ -130,8 +98,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        resp = self._request_and_raise('GET', 'v1/apps/{}/'.format(app_id))
-        return resp.json()['owner']
+        raise NotImplementedError
 
     def set_application_owner(self, app_id, username):
         """Set the owner of the application to be the specified username.
@@ -142,9 +109,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        self._request_and_raise('POST', 'v1/apps/{}/'.format(app_id), json={
-            'owner': username
-        })
+        raise NotImplementedError
 
     def get_application_collaborators(self, app_id):
         """Returns the list of users sharing this application.
@@ -157,9 +122,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        resp = self._request_and_raise(
-            'GET', 'v1/apps/{}/perms/'.format(app_id))
-        return resp.json()['users']
+        raise NotImplementedError
 
     def add_application_collaborator(self, app_id, username):
         """Adds the user with the specified username to the list of
@@ -170,9 +133,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        self._request_and_raise('POST', 'v1/apps/{}/perms/'.format(app_id), json={
-            'username': username
-        })
+        raise NotImplementedError
 
     def remove_application_collaborator(self, app_id, username):
         """Removes the user with the specified username from the list of
@@ -183,8 +144,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        self._request_and_raise(
-            'DELETE', 'v1/apps/{}/perms/{}'.format(app_id, username))
+        raise NotImplementedError
 
     def get_keys(self):
         """Get all public keys associated with this user.
@@ -194,10 +154,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        # TODO may have to page
-        resp = self._request_and_raise(
-            'GET', 'v1/keys/')
-        return [{'key_name': x['id'], 'key': x['public']} for x in resp.json()['results']]
+        raise NotImplementedError
 
     def add_key(self, key_name, key):
         """Add a public key to this user.
@@ -209,10 +166,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        self._request_and_raise('POST', 'v1/keys/', json={
-            'id': key_name,
-            'public': key
-        })
+        raise NotImplementedError
 
     def remove_key(self, key_name):
         """Remove the specified key from this user.
@@ -222,4 +176,4 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @raises e: DeisClientResponseError
         """
-        self._request_and_raise('DELETE', 'v1/keys/{}'.format(key_name))
+        raise NotImplementedError

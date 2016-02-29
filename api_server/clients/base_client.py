@@ -1,27 +1,26 @@
 import requests
 import urlparse
 
-from api_server.clients.base_client import BaseClient
 from api_server.clients.deis_client_errors import DeisClientResponseError, DeisClientError, DeisClientTimeoutError
 
 
-class DeisClient(BaseClient):
+class BaseClient(object):
 
-    def __init__(self, deis_url):
-        """Create a new ``DeisClient``.
+    def __init__(self, url):
+        """Create a new ``BaseClient``.
 
-        @type deis_url: str
+        @type url: str
         """
-        self.deis_url = deis_url
+        self.provider_url = url
 
     def _request_and_raise(self, method, path, **kwargs):
-        """Sends a request to Deis.
+        """Sends a request to the provider.
 
         @type method: str
             HTTP method, such as "POST", "GET", "PUT"
 
         @type path: str
-            The extra http path to be appended to the deis URL
+            The extra http path to be appended to the provider URL
 
         @rtype: requests.Response
 
@@ -34,7 +33,7 @@ class DeisClient(BaseClient):
             kwargs['timeout'] = 3
         try:
             resp = requests.request(method, urlparse.urljoin(
-                self.deis_url, path), **kwargs)
+                self.provider_url, path), **kwargs)
         except requests.exceptions.Timeout:
             raise DeisClientTimeoutError
         except requests.exceptions.RequestException:
@@ -44,7 +43,7 @@ class DeisClient(BaseClient):
         return resp
 
     def register(self, username, password, email):
-        """Register a new user with Deis.
+        """Register a new user with the provider.
 
         @type username: str
         @type password: str
@@ -52,31 +51,19 @@ class DeisClient(BaseClient):
 
         @raise e: DeisClientResponseError
         """
-        self._request_and_raise('POST', 'v1/auth/register/', json={
-            "username": username,
-            "password": password,
-            "email": email
-        })
+        raise NotImplementedError
 
     def login(self, username, password):
-        """Login to Deis and return an authenticated client.
+        """Login to the provider and return an authenticated client.
 
         @type username: str
         @type password: str
 
-        @rtype: DeisAuthenticatedClient
+        @rtype: api_server.client.base_authenticated_client.AuthenticatedClient
 
         @raise e: DeisClientResponseError
         """
-        # this avoids circular imports
-        from api_server.clients.deis_authenticated_client import DeisAuthenticatedClient
-
-        resp = self._request_and_raise('POST', 'v1/auth/login/', json={
-            "username": username,
-            "password": password
-        })
-        token = resp.json()['token']
-        return DeisAuthenticatedClient(self.deis_url, token)
+        return NotImplementedError
 
     def login_or_register(self, username, password, email):
         """Try to log the user in. If the user has not been created yet, then
@@ -87,8 +74,8 @@ class DeisClient(BaseClient):
         @type email: str
 
         @rtype: tuple
-            (DeisAuthenticatedClient, bool) - the bool is true if a new user
-            was registered with Deis
+            (api_server.client.base_authenticated_client.AuthenticatedClient, bool) - the bool is true if a new user
+            was registered with the provider
 
         @raise e: DeisClientResponseError
         """
