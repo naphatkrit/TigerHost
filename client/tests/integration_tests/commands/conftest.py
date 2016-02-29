@@ -9,7 +9,11 @@ def logged_in_user(runner, username, api_key, ensure_private_dir):
     assert result.exit_code == 0
 
 
-@pytest.fixture(scope='function')
+@pytest.yield_fixture(scope='function')
 def make_app(runner, make_git_repo, logged_in_user, app_id):
     result = runner.invoke(entry, ['create', app_id])
     assert result.exit_code == 0
+    try:
+        yield
+    finally:
+        runner.invoke(entry, ['apps:destroy', '--app', app_id])
