@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from api_server.clients.deis_client_errors import DeisClientResponseError, DeisClientError, DeisClientTimeoutError
-from api_server.clients.deis_client import DeisClient
+from api_server.providers import get_provider_client
 
 
 def _handle_deis_client_response_error(f):
@@ -42,7 +42,7 @@ def _handle_error(exception, status, message=None):
 @method_decorator(_handle_error(DeisClientTimeoutError, status=500, message='PaaS server timeout'), 'dispatch')
 @method_decorator(_handle_deis_client_response_error, 'dispatch')
 class ApiBaseView(View):
-    deis_client = DeisClient(settings.DEIS_URL)
+    deis_client = get_provider_client(settings.DEFAULT_PAAS_PROVIDER)
 
     def respond_multiple(self, items):
         """Returns a HTTP response for multiple items.

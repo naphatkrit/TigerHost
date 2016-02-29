@@ -76,7 +76,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api_server.wsgi.application'
 
-DEIS_URL = 'http://deis.local3.deisapp.com'
+# START PAAS CONFIGURATION
+
+PAAS_PROVIDERS = {
+    'deis_prod': {
+        'API_URL': 'http://deis.local3.deisapp.com',
+        'CLIENT': 'api_server.clients.deis_client.DeisClient',
+    },
+}
+
+DEFAULT_PAAS_PROVIDER = 'deis_prod'
+
+# END PAAS CONFIGURATION
 
 # START AUTHENTICATION CONFIGURATION
 
