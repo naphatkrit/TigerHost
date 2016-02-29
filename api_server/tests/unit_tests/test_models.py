@@ -1,16 +1,9 @@
 import pytest
 
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 
 from api_server.models import App, PaasCredential, Profile
-
-
-@pytest.fixture(scope='function')
-def user(username, email, password):
-    user = User.objects.create_user(username, email, password)
-    return user
 
 
 @pytest.mark.django_db
