@@ -22,8 +22,6 @@ class ProvidersApiView(ApiBaseView):
         @rtype: django.http.HttpResponse
         """
 
-        # TODO how do we ensure that the default provider is in the list of
-        # providers?
         return self.respond({
             'providers': request.user.profile.get_providers(),
             'default': settings.DEFAULT_PAAS_PROVIDER,

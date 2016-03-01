@@ -13,6 +13,20 @@ def make_secret():
     return crypto.get_random_string(length=50)
 
 
+class PaasCredential(models.Model):
+    profile = models.ForeignKey(
+        'Profile', on_delete=models.CASCADE, related_name='paas_credential_set')
+    provider_name = models.CharField(max_length=50)
+    password_seed = models.CharField(default=make_secret, max_length=50)
+
+    def get_password(self):
+        signer = Signer()
+        return signer.sign(self.password_seed)
+
+    class Meta:
+        unique_together = ('profile', 'provider_name')
+
+
 class Profile(models.Model):
 
     class NoCredentials(Exception):
@@ -27,7 +41,12 @@ class Profile(models.Model):
         @rtype: list
             provider names (str)
         """
-        return [x.provider_name for x in self.paas_credential_set.all()]
+        providers = [x.provider_name for x in self.paas_credential_set.all()]
+        if settings.DEFAULT_PAAS_PROVIDER not in providers:
+            PaasCredential.objects.create(
+                profile=self, provider_name=settings.DEFAULT_PAAS_PROVIDER)
+            providers.append(settings.DEFAULT_PAAS_PROVIDER)
+        return providers
 
     def get_credential(self, provider_name):
         """Get the credential for this provider.
@@ -42,20 +61,6 @@ class Profile(models.Model):
             if x.provider_name == provider_name:
                 return x
         raise Profile.NoCredentials
-
-
-class PaasCredential(models.Model):
-    profile = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, related_name='paas_credential_set')
-    provider_name = models.CharField(max_length=50)
-    password_seed = models.CharField(default=make_secret, max_length=50)
-
-    def get_password(self):
-        signer = Signer()
-        return signer.sign(self.password_seed)
-
-    class Meta:
-        unique_together = ('profile', 'provider_name')
 
 
 class App(models.Model):

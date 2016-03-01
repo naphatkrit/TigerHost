@@ -15,6 +15,13 @@ def test_profile_get_providers(user, settings):
     assert set(profile.get_providers()) == {
         settings.DEFAULT_PAAS_PROVIDER, 'provider1'}
 
+    c = PaasCredential.objects.get(profile=profile, provider_name=settings.DEFAULT_PAAS_PROVIDER)
+    c.delete()
+    assert profile.paas_credential_set.count() == 1
+    assert set(profile.get_providers()) == {
+        settings.DEFAULT_PAAS_PROVIDER, 'provider1'}
+    assert profile.paas_credential_set.count() == 2
+
 
 @pytest.mark.django_db
 def test_profile_get_credential(user, settings):
