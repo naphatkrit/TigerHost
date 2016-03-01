@@ -41,13 +41,36 @@ def test_application_creation(api_client, app_id):
     # delete application
     api_client.delete_application(app_id)
 
-    ids = api_client.get_all_applications()
     found = False
     for provider, ids in api_client.get_all_applications().iteritems():
         if app_id in ids:
             found = True
             break
     assert not found
+
+    with pytest.raises(ApiClientResponseError):
+        api_client.delete_application(app_id)
+
+
+def test_application_creation_with_provider(api_client, app_id):
+    """
+    @type api_client: tigerhost.api_client.ApiClient
+    """
+    # pick a provider
+    provider = api_client.get_providers()['providers'][0]
+
+    # create application
+    api_client.create_application(app_id, provider)
+
+    with pytest.raises(ApiClientResponseError):
+        api_client.create_application(app_id)
+
+    assert api_client.get_all_applications()[provider] == [app_id]
+
+    # delete application
+    api_client.delete_application(app_id)
+
+    assert api_client.get_all_applications()[provider] == []
 
     with pytest.raises(ApiClientResponseError):
         api_client.delete_application(app_id)
@@ -80,7 +103,8 @@ def test_application_env_variables(api_client, app_id, create_application):
 
     # test deletion and creation at the same time
     api_client.set_application_env_variables(app_id, {"TESTING1": '1'})
-    api_client.set_application_env_variables(app_id, {"TESTING1": None, "TESTING2": "2"})
+    api_client.set_application_env_variables(
+        app_id, {"TESTING1": None, "TESTING2": "2"})
     assert api_client.get_application_env_variables(app_id) == {
         'TESTING2': '2'
     }

@@ -74,6 +74,19 @@ class ApiClient(object):
         """
         self._request_and_raise('GET', 'api/test_api_key/')
 
+    def get_providers(self):
+        """Get the providers that this user has access to.
+
+        @rtype: dict
+            dictionary with the following format:
+            {
+                'providers': ['provider1', 'provider2', ...]
+                'default': 'provider1'
+            }
+        """
+        resp = self._request_and_raise('GET', 'api/v1/providers/')
+        return resp.json()
+
     def create_application(self, app_id, provider=None):
         """Create a new application with the specified ID.
 
