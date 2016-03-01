@@ -77,7 +77,6 @@ def http_headers(wsse_header):
 @pytest.fixture
 def mock_provider_authenticated_client():
     mocked = mock.Mock(spec=BaseAuthenticatedClient)
-    mocked.get_all_applications.return_value = ['app1', 'app2']
     return mocked
 
 
