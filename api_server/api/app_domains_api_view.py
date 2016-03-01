@@ -3,6 +3,7 @@ import json
 from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
+from api_server.providers import get_provider_authenticated_client
 from wsse.decorators import check_wsse_token
 
 
@@ -17,8 +18,9 @@ class AppDomainsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        auth_client, _ = self.deis_client.login_or_register(
-            request.user.username, request.user.profile.get_paas_password(), request.user.email)
+        provider = self.get_provider_for_app(app_id)
+        auth_client = get_provider_authenticated_client(
+            request.user.username, provider)
 
         domains = auth_client.get_application_domains(app_id)
         return self.respond_multiple(domains)
@@ -37,8 +39,9 @@ class AppDomainsApiView(ApiBaseView):
         @rtype: django.http.HttpResponse
         """
         domain = json.loads(request.body)['domain']
-        auth_client, _ = self.deis_client.login_or_register(
-            request.user.username, request.user.profile.get_paas_password(), request.user.email)
+        provider = self.get_provider_for_app(app_id)
+        auth_client = get_provider_authenticated_client(
+            request.user.username, provider)
 
         auth_client.add_application_domain(app_id, domain)
         return self.respond()
