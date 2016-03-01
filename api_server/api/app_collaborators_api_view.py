@@ -3,6 +3,7 @@ import json
 from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
+from api_server.providers import get_provider_authenticated_client
 from wsse.decorators import check_wsse_token
 
 
@@ -18,8 +19,9 @@ class AppCollaboratorsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        auth_client, _ = self.deis_client.login_or_register(
-            request.user.username, request.user.profile.get_paas_password(), request.user.email)
+        provider = self.get_provider_for_app(app_id)
+        auth_client = get_provider_authenticated_client(
+            request.user.username, provider)
 
         users = auth_client.get_application_collaborators(app_id)
         return self.respond_multiple(users)
@@ -38,11 +40,12 @@ class AppCollaboratorsApiView(ApiBaseView):
         @rtype: django.http.HttpResponse
         """
         username = json.loads(request.body)['username']
-        # needs to first make sure the second user is registered with Deis
-        if not self.ensure_user_exists(username):
-            return self.respond_error('User {} does not exist'.format(username), status=404)
-        auth_client, _ = self.deis_client.login_or_register(
-            request.user.username, request.user.profile.get_paas_password(), request.user.email)
+
+        provider = self.get_provider_for_app(app_id)
+        auth_client = get_provider_authenticated_client(
+            request.user.username, provider)
+
+        self.ensure_user_exists(username, provider)
 
         auth_client.add_application_collaborator(app_id, username)
         return self.respond()
