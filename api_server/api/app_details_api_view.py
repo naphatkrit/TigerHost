@@ -3,6 +3,8 @@ import json
 from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
+from api_server.models import App
+from api_server.providers import get_provider_authenticated_client, get_provider_api_url
 from api_server.utils import git_remote
 from wsse.decorators import check_wsse_token
 
@@ -24,13 +26,13 @@ class AppDetailsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        auth_client, _ = self.deis_client.login_or_register(
-            request.user.username, request.user.profile.get_paas_password(), request.user.email)
+        provider = self.get_provider_for_app(app_id)
+        auth_client = get_provider_authenticated_client(request.user.username, provider)
 
         owner = auth_client.get_application_owner(app_id)
         return self.respond({
             'owner': owner,
-            'remote': git_remote(self.deis_client.deis_url, app_id)
+            'remote': git_remote(get_provider_api_url(provider), app_id)
         })
 
     def post(self, request, app_id):
@@ -47,12 +49,11 @@ class AppDetailsApiView(ApiBaseView):
         @rtype: django.http.HttpResponse
         """
         data = json.loads(request.body)
-        auth_client, _ = self.deis_client.login_or_register(
-            request.user.username, request.user.profile.get_paas_password(), request.user.email)
+        provider = self.get_provider_for_app(app_id)
+        auth_client = get_provider_authenticated_client(request.user.username, provider)
 
         if 'owner' in data:
-            if not self.ensure_user_exists(data['owner']):
-                return self.respond_error('User {} does not exist'.format(data['owner']), status=404)
+            self.ensure_user_exists(data['owner'], provider)
             auth_client.set_application_owner(app_id, data['owner'])
         return self.respond()
 
@@ -64,8 +65,9 @@ class AppDetailsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        auth_client, _ = self.deis_client.login_or_register(
-            request.user.username, request.user.profile.get_paas_password(), request.user.email)
-
+        provider = self.get_provider_for_app(app_id)
+        auth_client = get_provider_authenticated_client(request.user.username, provider)
         auth_client.delete_application(app_id)
+        app = App.objects.get(app_id=app_id)
+        app.delete()
         return self.respond()

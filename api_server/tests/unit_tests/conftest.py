@@ -8,6 +8,7 @@ from django.utils import crypto
 
 from api_server.clients.base_client import BaseClient
 from api_server.clients.base_authenticated_client import BaseAuthenticatedClient
+from api_server.models import App
 from wsse.utils import get_secret, wsse_digest
 
 
@@ -83,3 +84,13 @@ def mock_provider_authenticated_client():
 @pytest.fixture
 def mock_provider_client():
     return mock.Mock(spec=BaseClient)
+
+
+@pytest.fixture(scope='function')
+def app_id():
+    return crypto.get_random_string(allowed_chars='abcdefghijklmnopqrstuvwxyz1234567890-')
+
+
+@pytest.fixture(scope='function')
+def make_app(app_id, settings):
+    App.objects.create(app_id=app_id, provider_name=settings.DEFAULT_PAAS_PROVIDER)

@@ -36,14 +36,30 @@ def _handle_error(exception, status, message=None):
     return decorator
 
 
+class ErrorResponse(Exception):
+    def __init__(self, message, status):
+        super(ErrorResponse, self).__init__(message)
+        self.status = status
+
+
+def _handle_error_response(f):
+    @wraps(f, assigned=available_attrs(f))
+    def wrapped_view(request, *args, **kwargs):
+        try:
+            return f(request, *args, **kwargs)
+        except ErrorResponse as e:
+            return JsonResponse({'error': '{}'.format(e)}, status=e.status)
+    return wrapped_view
+
+
 @method_decorator(csrf_exempt, 'dispatch')
 @method_decorator(_handle_error(Exception, status=500), 'dispatch')
 @method_decorator(_handle_error(DeisClientError, status=500), 'dispatch')
 @method_decorator(_handle_error(DeisClientTimeoutError, status=500, message='PaaS server timeout'), 'dispatch')
 @method_decorator(_handle_error(ProvidersError, status=500), 'dispatch')
 @method_decorator(_handle_error(ProvidersUserError, status=400), 'dispatch')
-@method_decorator(_handle_error(App.DoesNotExist, status=400, message="App does not exist."), 'dispatch')
 @method_decorator(_handle_deis_client_response_error, 'dispatch')
+@method_decorator(_handle_error_response, 'dispatch')
 class ApiBaseView(View):
 
     def respond_multiple(self, items):
@@ -98,3 +114,19 @@ class ApiBaseView(View):
         @raises e: ProvidersError
         """
         get_provider_authenticated_client(username, provider)
+
+    def get_provider_for_app(self, app_id):
+        """Returns the provider for this app, throwing
+        an exception with an appropriate error message
+        if the app does not exist.
+
+        @type app_id: str
+
+        @rtype: str
+
+        @raises e: ErrorResponse
+        """
+        try:
+            return App.objects.get(app_id=app_id).provider_name
+        except App.DoesNotExist:
+            raise ErrorResponse(message='App {} does not exist.'.format(app_id), status=400)

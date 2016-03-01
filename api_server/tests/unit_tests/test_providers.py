@@ -20,8 +20,11 @@ def test_get_provider_api_url_error_config(settings):
     settings.PAAS_PROVIDERS['new'] = {
         'CLIENT': 'api_server.clients.base_client.BaseClient',
     }
-    with pytest.raises(providers.ProvidersConfigError):
-        providers.get_provider_api_url('new')
+    try:
+        with pytest.raises(providers.ProvidersConfigError):
+            providers.get_provider_api_url('new')
+    finally:
+        settings.PAAS_PROVIDERS.pop('new')
 
 
 def test_get_provider_client_simple(settings):
@@ -39,31 +42,39 @@ def test_get_provider_client_error_config(settings):
     settings.PAAS_PROVIDERS['new'] = {
         'API_URL': 'http://example.com',
     }
-    with pytest.raises(providers.ProvidersConfigError):
-        providers.get_provider_client('new')
-
-    settings.PAAS_PROVIDERS['new'] = {
-        'CLIENT': 'api_server.clients.base_client.BaseClient',
-    }
-    with pytest.raises(providers.ProvidersConfigError):
-        providers.get_provider_client('new')
-
-    class DummyObject(object):
-
-        def __init__(self, url):
-            pass
-
-    with mock.patch('api_server.providers.import_string') as mocked:
-        mocked.return_value = DummyObject
+    try:
         with pytest.raises(providers.ProvidersConfigError):
-            providers.get_provider_client(settings.DEFAULT_PAAS_PROVIDER)
+            providers.get_provider_client('new')
+
+        settings.PAAS_PROVIDERS['new'] = {
+            'CLIENT': 'api_server.clients.base_client.BaseClient',
+        }
+        with pytest.raises(providers.ProvidersConfigError):
+            providers.get_provider_client('new')
+
+        class DummyObject(object):
+
+            def __init__(self, url):
+                pass
+
+        with mock.patch('api_server.providers.import_string') as mocked:
+            mocked.return_value = DummyObject
+            with pytest.raises(providers.ProvidersConfigError):
+                providers.get_provider_client(settings.DEFAULT_PAAS_PROVIDER)
+    finally:
+        settings.PAAS_PROVIDERS.pop('new')
 
 
 def test_get_provider_client_error_import(settings):
+    old = settings.PAAS_PROVIDERS[settings.DEFAULT_PAAS_PROVIDER][
+        'CLIENT']
     settings.PAAS_PROVIDERS[settings.DEFAULT_PAAS_PROVIDER][
         'CLIENT'] = 'not.real.class'
-    with pytest.raises(providers.ProvidersImportError):
-        providers.get_provider_client(settings.DEFAULT_PAAS_PROVIDER)
+    try:
+        with pytest.raises(providers.ProvidersImportError):
+            providers.get_provider_client(settings.DEFAULT_PAAS_PROVIDER)
+    finally:
+        settings.PAAS_PROVIDERS[settings.DEFAULT_PAAS_PROVIDER]['CLIENT'] = old
 
 
 @pytest.mark.django_db
