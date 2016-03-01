@@ -8,12 +8,13 @@ from tigerhost.utils import decorators
 @click.command()
 @click.argument('name')
 @click.argument('path', default='~/.ssh/id_rsa.pub')
+@click.option('--provider', '-p', required=True, help='The provider to add this key to.')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.catch_exception(IOError)
 @decorators.store_api_client
 @click.pass_context
-def add_key(ctx, name, path):
+def add_key(ctx, name, path, provider):
     """Add a public key. The NAME is the human readable label to attach
     to this key. PATH is the path to the public key, defaulting to
     ~/.ssh/id_rsa.pub.
@@ -22,8 +23,8 @@ def add_key(ctx, name, path):
     path = os.path.expanduser(path)
     with open(path, 'r') as f:
         key = f.read()
-    api_client.add_key(name, key)
-    click.echo('Added key {}.'.format(name))
+    api_client.add_key(name, key, provider)
+    click.echo('Added key {} to {}.'.format(name, provider))
 
 
 def _truncate(text):
@@ -44,27 +45,29 @@ def list_keys(ctx):
     """Show the list of keys for this user.
     """
     api_client = ctx.obj['api_client']
-    keys = api_client.get_keys()
     first = True
-    for key in keys:
+    for provider, keys in api_client.get_keys().iteritems():
         if first:
             first = False
         else:
             click.echo()
-        click.echo(key['key_name'].strip())
-        click.echo(_truncate(key['key'].strip()))
+        click.echo('Provider: {}'.format(provider))
+        content = '\n'.join(
+            ['{}\n{}'.format(key['key_name'], key['key']) for key in keys])
+        click.echo(content)
 
 
 @click.command()
 @click.argument('name')
+@click.option('--provider', '-p', required=True, help='The provider to remove this key from.')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.catch_exception(IOError)
 @decorators.store_api_client
 @click.pass_context
-def remove_key(ctx, name):
+def remove_key(ctx, name, provider):
     """Removes the key with label NAME.
     """
     api_client = ctx.obj['api_client']
-    api_client.remove_key(name)
-    click.echo('Key {} removed.'.format(name))
+    api_client.remove_key(name, provider)
+    click.echo('Key {} removed from {}.'.format(name, provider))

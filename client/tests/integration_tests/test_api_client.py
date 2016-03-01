@@ -192,18 +192,21 @@ def test_keys(api_client, public_key):
     """
     @type api_client: tigerhost.api_client.ApiClient
     """
+    # pick a provider
+    provider = api_client.get_providers()['default']
+
     key_name = 'key_name'
     old_keys = api_client.get_keys()
 
-    api_client.add_key(key_name, public_key)
+    api_client.add_key(key_name, public_key, provider)
     new_keys = api_client.get_keys()
-    assert new_keys == old_keys + [{'key_name': key_name, 'key': public_key}]
+    assert new_keys[provider] == old_keys[provider] + [{'key_name': key_name, 'key': public_key}]
 
     with pytest.raises(ApiClientResponseError):
-        api_client.add_key(key_name, public_key)
+        api_client.add_key(key_name, public_key, provider)
 
-    api_client.remove_key(key_name)
+    api_client.remove_key(key_name, provider)
     assert api_client.get_keys() == old_keys
 
     with pytest.raises(ApiClientResponseError):
-        api_client.remove_key(key_name)
+        api_client.remove_key(key_name, provider)

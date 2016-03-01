@@ -197,23 +197,30 @@ def test_remove_application_collaborator(api_client, fake_api_server_url):
 
 @responses.activate
 def test_get_application_keys(api_client, fake_api_server_url):
-    keys = ['key1', 'key2']
+    keys = [{
+        'key_name': 'key1',
+        'key': 'ssh-rsa key1',
+    }, {
+        'key_name': 'key2',
+        'key': 'ssh-rsa key2',
+    },
+    ]
     responses.add(responses.GET, urlparse.urljoin(
-        fake_api_server_url, 'api/v1/keys/'), status=200, json={'results': [{'key_name': x, 'key': x} for x in keys]})
+        fake_api_server_url, 'api/v1/keys/'), status=200, json={'provider1': keys})
     ret = api_client.get_keys()
-    assert ret == [{'key_name': x, 'key': x} for x in keys]
+    assert ret['provider1'] == keys
 
 
 @responses.activate
 def test_add_application_key(api_client, fake_api_server_url):
     responses.add(responses.POST, urlparse.urljoin(
         fake_api_server_url, 'api/v1/keys/'), status=201)
-    api_client.add_key('key_name', 'key')
+    api_client.add_key('key_name', 'key', 'provider1')
 
 
 @responses.activate
 def test_remove_application_key(api_client, fake_api_server_url):
     key_name = 'key_name'
     responses.add(responses.DELETE, urlparse.urljoin(
-        fake_api_server_url, 'api/v1/keys/{}/'.format(key_name)), status=204)
-    api_client.remove_key(key_name)
+        fake_api_server_url, 'api/v1/keys/provider1/{}/'.format(key_name)), status=204)
+    api_client.remove_key(key_name, 'provider1')

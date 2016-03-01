@@ -269,30 +269,40 @@ class ApiClient(object):
         """Get all public keys associated with this user.
 
         @rtype: dict
-            A dictionary with two keys: 'key_name' and 'key'
+        format:
+        {
+            'provider1': [{
+                            "key_name": "my_key_name",
+                            "key": "ssh-rsa ..."
+                            }, ...],
+            'provider2': [...],
+            ...
+        }
 
         @raises e: ApiClientResponseError
         """
         resp = self._request_and_raise(
             'GET', 'api/v1/keys/')
-        return resp.json()['results']
+        return resp.json()
 
-    def add_key(self, key_name, key):
+    def add_key(self, key_name, key, provider):
         """Add a public key to this user.
 
         @type key_name: str
             An ID to be associated with this key
 
         @type key: str
+        @type provider: str
 
         @raises e: ApiClientResponseError
         """
         self._request_and_raise('POST', 'api/v1/keys/', json={
             'key_name': key_name,
-            'key': key
+            'key': key,
+            'provider': provider,
         })
 
-    def remove_key(self, key_name):
+    def remove_key(self, key_name, provider):
         """Remove the specified key from this user.
 
         @type key_name: str
@@ -300,4 +310,4 @@ class ApiClient(object):
 
         @raises e: ApiClientResponseError
         """
-        self._request_and_raise('DELETE', 'api/v1/keys/{}/'.format(key_name))
+        self._request_and_raise('DELETE', 'api/v1/keys/{}/{}/'.format(provider, key_name))
