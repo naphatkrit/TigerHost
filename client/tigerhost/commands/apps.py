@@ -16,9 +16,15 @@ def list_apps(ctx):
     @type api_client: tigerhost.api_client.ApiClient
     """
     api_client = ctx.obj['api_client']
-    apps = api_client.get_all_applications()
-    for app in apps:
-        click.echo(app)
+    first = True
+    for provider, apps in api_client.get_all_applications().iteritems():
+        if first:
+            first = False
+        else:
+            click.echo()
+        click.echo('Provider: {}'.format(provider))
+        for app in apps:
+            click.echo(app)
 
 
 @click.command()

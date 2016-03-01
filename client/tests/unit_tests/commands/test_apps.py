@@ -8,11 +8,15 @@ def test_list_apps_success(runner, saved_user, fake_api_client):
     @type runner: click.testing.CliRunner
     @type fake_api_client: mock.Mock
     """
-    fake_api_client.get_all_applications.return_value = ['app1', 'app2']
+    fake_api_client.get_all_applications.return_value = {
+        'provider1': ['app1', 'app2']
+    }
     result = runner.invoke(entry, ['apps'])
     assert result.exit_code == 0
+    assert 'provider1' in result.output
     assert 'app1' in result.output
     assert 'app2' in result.output
+    fake_api_client.get_all_applications.assert_called_once_with()
 
 
 def test_create_app(runner, saved_user, fake_api_client):

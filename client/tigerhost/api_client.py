@@ -97,10 +97,16 @@ class ApiClient(object):
     def get_all_applications(self):
         """Get all application IDs associated with this user.
 
-        @rtype: list
+        @rtype: dict
+        format:
+        {
+            'provider1': ['app1', ...],
+            'provider2': ['app1', ...],
+            ...
+        }
         """
         resp = self._request_and_raise('GET', 'api/v1/apps/')
-        return resp.json()['results']
+        return resp.json()
 
     def set_application_env_variables(self, app_id, bindings):
         """Set the environmental variables for the specified app ID. To unset a variable, set it to ``None``.

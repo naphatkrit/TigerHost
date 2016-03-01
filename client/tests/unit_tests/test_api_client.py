@@ -50,13 +50,12 @@ def test_get_all_applications_success(api_client, fake_api_server_url):
     @type api_client: ApiClient
     @type fake_api_server_url: str
     """
-    test_ids = ['testid1', 'testid2']
+    ret = {
+        'provider1': ['testid1', 'testid2']
+    }
     responses.add(responses.GET, urlparse.urljoin(
-        fake_api_server_url, 'api/v1/apps/'), status=200, json={
-        "results": test_ids
-    })
-    ids = api_client.get_all_applications()
-    assert set(ids) == set(test_ids)
+        fake_api_server_url, 'api/v1/apps/'), status=200, json=ret)
+    assert api_client.get_all_applications() == ret
 
 
 @responses.activate

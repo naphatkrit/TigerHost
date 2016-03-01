@@ -31,14 +31,23 @@ def test_application_creation(api_client, app_id):
     with pytest.raises(ApiClientResponseError):
         api_client.create_application(app_id)
 
-    ids = api_client.get_all_applications()
-    assert ids == [app_id]
+    found = False
+    for provider, ids in api_client.get_all_applications().iteritems():
+        if app_id in ids:
+            found = True
+            break
+    assert found
 
     # delete application
     api_client.delete_application(app_id)
 
     ids = api_client.get_all_applications()
-    assert ids == []
+    found = False
+    for provider, ids in api_client.get_all_applications().iteritems():
+        if app_id in ids:
+            found = True
+            break
+    assert not found
 
     with pytest.raises(ApiClientResponseError):
         api_client.delete_application(app_id)
