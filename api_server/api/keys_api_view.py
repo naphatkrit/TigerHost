@@ -1,6 +1,5 @@
 import json
 
-from django.conf import settings
 from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
@@ -14,16 +13,26 @@ class KeysApiView(ApiBaseView):
     def get(self, request):
         """Get the list of public keys for this user.
 
+        Return format (JSON):
+        {
+            'provider1': [{
+                            "key_name": "my_key_name",
+                            "key": "ssh-rsa ..."
+                            }, ...],
+            'provider2': [...],
+            ...
+        }
+
         @type request: django.http.HttpRequest
 
         @rtype: django.http.HttpResponse
         """
-        provider = settings.DEFAULT_PAAS_PROVIDER
-        auth_client = get_provider_authenticated_client(
-            request.user.username, provider)
-
-        info = auth_client.get_keys()
-        return self.respond_multiple(info)
+        result = {}
+        for provider in request.user.profile.get_providers():
+            auth_client = get_provider_authenticated_client(
+                request.user.username, provider)
+            result[provider] = auth_client.get_keys()
+        return self.respond(result)
 
     def post(self, request):
         """Add a key to the list of keys for this user.
@@ -31,7 +40,8 @@ class KeysApiView(ApiBaseView):
         The body of the request must be a JSON with the format
         {
             "key_name": "macbookpro",
-            "key": "ssh-rsa ..."
+            "key": "ssh-rsa ...",
+            "provider": "provider"
         }
 
         @type request: django.http.HttpRequest
@@ -40,7 +50,7 @@ class KeysApiView(ApiBaseView):
         """
         key_info = json.loads(request.body)
 
-        provider = settings.DEFAULT_PAAS_PROVIDER
+        provider = key_info['provider']
         auth_client = get_provider_authenticated_client(
             request.user.username, provider)
 

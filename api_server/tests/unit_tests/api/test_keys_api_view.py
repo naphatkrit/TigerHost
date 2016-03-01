@@ -4,7 +4,7 @@ import pytest
 
 
 @pytest.mark.django_db
-def test_GET(client, http_headers, mock_provider_authenticated_client):
+def test_GET(client, http_headers, mock_provider_authenticated_client, settings):
     """
     @type client: django.test.Client
     @type http_headers: dict
@@ -19,18 +19,20 @@ def test_GET(client, http_headers, mock_provider_authenticated_client):
         mocked.return_value = mock_provider_authenticated_client
         resp = client.get('/api/v1/keys/', **http_headers)
     assert resp.status_code == 200
-    assert resp.json()['results'] == keys
+    assert resp.json() == {
+        settings.DEFAULT_PAAS_PROVIDER: keys
+    }
     mock_provider_authenticated_client.get_keys.assert_called_once_with()
 
 
 @pytest.mark.django_db
-def test_POST(client, http_headers, mock_provider_authenticated_client):
+def test_POST(client, http_headers, mock_provider_authenticated_client, settings):
     """
     @type client: django.test.Client
     @type http_headers: dict
     @type mock_provider_authenticated_client: mock.Mock
     """
-    key = {'key_name': 'mbp', 'key': 'ssh-rsa1'}
+    key = {'key_name': 'mbp', 'key': 'ssh-rsa1', 'provider': settings.DEFAULT_PAAS_PROVIDER}
     with mock.patch('api_server.api.keys_api_view.get_provider_authenticated_client') as mocked:
         mocked.return_value = mock_provider_authenticated_client
         resp = client.post('/api/v1/keys/',
