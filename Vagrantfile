@@ -81,13 +81,6 @@ Vagrant.configure(2) do |config|
         #   sudo apt-get install -y apache2
         # SHELL
         web.vm.provision :shell, path: "vagrant_up.sh", args: ENV['NETID']
-
-        if Vagrant.has_plugin?("vagrant-triggers")
-            web.trigger.before :destroy do
-                info "Killing Django server before shutdown..."
-                run_remote  "bash /vagrant/vagrant_down.sh"
-            end
-        end
     end
 
 end
