@@ -26,6 +26,21 @@ class ProvidersUserError(ProvidersError):
     pass
 
 
+def get_provider_api_url(provider_name):
+    """Returns the API url for this provider
+
+    @rtype: str
+
+    @raises e: ProvidersError
+    """
+    if provider_name not in settings.PAAS_PROVIDERS:
+        raise ProvidersMissingError
+    try:
+        return settings.PAAS_PROVIDERS[provider_name]['API_URL']
+    except KeyError:
+        raise ProvidersConfigError
+
+
 def get_provider_client(provider_name):
     """Instantiates and returns a new client for the provider
 
@@ -68,7 +83,8 @@ def get_provider_authenticated_client(username, provider):
     try:
         password = user.profile.get_credential(provider).get_password()
     except Profile.NoCredentials:
-        raise ProvidersUserError('{user} does not have access to {provider}.'.format(user=username, provider=provider))
+        raise ProvidersUserError('{user} does not have access to {provider}.'.format(
+            user=username, provider=provider))
     c, _ = client.login_or_register(
         user.username, password, user.email)
     return c

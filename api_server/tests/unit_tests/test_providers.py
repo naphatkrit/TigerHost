@@ -6,6 +6,24 @@ from api_server import providers
 from api_server.clients.deis_client_errors import DeisClientError
 
 
+def test_get_provider_api_url_success(settings):
+    assert providers.get_provider_api_url(settings.DEFAULT_PAAS_PROVIDER) == settings.PAAS_PROVIDERS[
+        settings.DEFAULT_PAAS_PROVIDER]['API_URL']
+
+
+def test_get_provider_api_url_error_mising():
+    with pytest.raises(providers.ProvidersMissingError):
+        providers.get_provider_api_url('doesnotexist')
+
+
+def test_get_provider_api_url_error_config(settings):
+    settings.PAAS_PROVIDERS['new'] = {
+        'CLIENT': 'api_server.clients.base_client.BaseClient',
+    }
+    with pytest.raises(providers.ProvidersConfigError):
+        providers.get_provider_api_url('new')
+
+
 def test_get_provider_client_simple(settings):
     client = providers.get_provider_client(settings.DEFAULT_PAAS_PROVIDER)
     assert client.provider_url == settings.PAAS_PROVIDERS[
