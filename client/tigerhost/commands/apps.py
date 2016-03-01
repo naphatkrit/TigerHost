@@ -29,17 +29,18 @@ def list_apps(ctx):
 
 @click.command()
 @click.argument('name')
+@click.option('--provider', '-p', help='Pick a different provider from the default.')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_vcs
 @click.pass_context
-def create_app(ctx, name):
+def create_app(ctx, name, provider):
     """Create a new app with the specified NAME.
     """
     vcs = ctx.obj['vcs']
     api_client = ctx.obj['api_client']
-    api_client.create_application(name)
+    api_client.create_application(name, provider)
     click.echo('App {} created.'.format(name))
     click.echo()
     if vcs is not None:

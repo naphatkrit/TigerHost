@@ -24,7 +24,15 @@ def test_create_app(runner, saved_user, fake_api_client):
     result = runner.invoke(entry, ['create', app])
     assert result.exit_code == 0
     assert app in result.output
-    fake_api_client.create_application.assert_called_once_with(app)
+    fake_api_client.create_application.assert_called_once_with(app, None)
+
+
+def test_create_app_with_provider(runner, saved_user, fake_api_client):
+    app = 'app1'
+    result = runner.invoke(entry, ['create', app, '--provider', 'provider'])
+    assert result.exit_code == 0
+    assert app in result.output
+    fake_api_client.create_application.assert_called_once_with(app, 'provider')
 
 
 def test_create_app_in_repo(runner, make_git_repo, saved_user, fake_api_client):
@@ -33,7 +41,7 @@ def test_create_app_in_repo(runner, make_git_repo, saved_user, fake_api_client):
     result = runner.invoke(entry, ['create', app])
     assert result.exit_code == 0
     assert app in result.output
-    fake_api_client.create_application.assert_called_once_with(app)
+    fake_api_client.create_application.assert_called_once_with(app, None)
     git = GitVcs()
     assert git.get_remotes()['tigerhost'] == 'remote'
 
@@ -45,7 +53,7 @@ def test_create_app_in_repo_failed_connection(runner, make_git_repo, saved_user,
     result = runner.invoke(entry, ['create', app])
     assert result.exit_code == 0
     assert app in result.output
-    fake_api_client.create_application.assert_called_once_with(app)
+    fake_api_client.create_application.assert_called_once_with(app, None)
     git = GitVcs()
     assert 'tigerhost' not in git.get_remotes()
 
@@ -58,7 +66,7 @@ def test_create_app_in_repo_old_y(runner, make_git_repo, saved_user, fake_api_cl
     result = runner.invoke(entry, ['create', app], input='y')
     assert result.exit_code == 0
     assert app in result.output
-    fake_api_client.create_application.assert_called_once_with(app)
+    fake_api_client.create_application.assert_called_once_with(app, None)
     assert git.get_remotes()['tigerhost'] == 'remote'
 
 
@@ -70,7 +78,7 @@ def test_create_app_in_repo_old_n(runner, make_git_repo, saved_user, fake_api_cl
     result = runner.invoke(entry, ['create', app], input='n')
     assert result.exit_code == 0
     assert app in result.output
-    fake_api_client.create_application.assert_called_once_with(app)
+    fake_api_client.create_application.assert_called_once_with(app, None)
     assert git.get_remotes()['tigerhost'] == 'old'
 
 
