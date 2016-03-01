@@ -70,6 +70,17 @@ def test_create_application_success(api_client, fake_api_server_url):
 
 
 @responses.activate
+def test_create_application_with_provider_success(api_client, fake_api_server_url):
+    """
+    @type api_client: DeisAuthenticatedClient
+    @type fake_api_server_url: str
+    """
+    responses.add(responses.POST, urlparse.urljoin(
+        fake_api_server_url, 'api/v1/apps/'), status=201)
+    api_client.create_application('testid', 'provider')
+
+
+@responses.activate
 def test_delete_application_success(api_client, fake_api_server_url):
     responses.add(responses.DELETE, urlparse.urljoin(
         fake_api_server_url, 'api/v1/apps/{}/'.format('testid')), status=204)

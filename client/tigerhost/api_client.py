@@ -74,16 +74,20 @@ class ApiClient(object):
         """
         self._request_and_raise('GET', 'api/test_api_key/')
 
-    def create_application(self, app_id):
+    def create_application(self, app_id, provider=None):
         """Create a new application with the specified ID.
 
         @type app_id: str
+        @type provider: str
 
         @raises ApiClientResponseError
         """
-        self._request_and_raise('POST', 'api/v1/apps/', json={
+        body = {
             'id': app_id
-        })
+        }
+        if provider is not None:
+            body['provider'] = provider
+        self._request_and_raise('POST', 'api/v1/apps/', json=body)
 
     def delete_application(self, app_id):
         """Delete an application with the specified ID.
