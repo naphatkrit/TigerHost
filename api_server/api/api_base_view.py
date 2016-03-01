@@ -37,6 +37,7 @@ def _handle_error(exception, status, message=None):
 
 
 class ErrorResponse(Exception):
+
     def __init__(self, message, status):
         super(ErrorResponse, self).__init__(message)
         self.status = status
@@ -89,18 +90,6 @@ class ApiBaseView(View):
             status = 200 if status is None else status
             return JsonResponse(item, status=status)
 
-    def respond_error(self, message, status):
-        """Returns a HTTP response to indicate an error.
-
-        @type message: str
-        @type status: int
-
-        @rtype django.http.HttpResponse
-        """
-        return JsonResponse({
-            'error': message
-        }, status=status)
-
     def ensure_user_exists(self, username, provider):
         """Ensure the user with ``username`` exists, both locally
         and on Deis. If the user does not exist locally, returns
@@ -129,4 +118,5 @@ class ApiBaseView(View):
         try:
             return App.objects.get(app_id=app_id).provider_name
         except App.DoesNotExist:
-            raise ErrorResponse(message='App {} does not exist.'.format(app_id), status=400)
+            raise ErrorResponse(
+                message='App {} does not exist.'.format(app_id), status=400)

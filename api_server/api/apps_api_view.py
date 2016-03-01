@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import IntegrityError
 from django.utils.decorators import method_decorator
 
-from api_server.api.api_base_view import ApiBaseView
+from api_server.api.api_base_view import ApiBaseView, ErrorResponse
 from api_server.models import App
 from api_server.providers import get_provider_authenticated_client
 from wsse.decorators import check_wsse_token
@@ -53,7 +53,7 @@ class AppsApiView(ApiBaseView):
         try:
             app = App.objects.create(app_id=app_id, provider_name=provider)
         except IntegrityError:
-            return self.respond_error(message='App {} already exists. Please pick a new name.'.format(app), status=400)
+            raise ErrorResponse('App {} already exists. Please pick a new name.'.format(app_id), status=400)
 
         try:
             auth_client.create_application(app_id)
