@@ -3,7 +3,7 @@ import pytest
 from django.utils import crypto
 
 from api_server.clients.deis_client import DeisClient
-from api_server.clients.deis_client_errors import DeisClientResponseError
+from api_server.clients.exceptions import ClientResponseError
 
 
 @pytest.fixture
@@ -37,7 +37,7 @@ def test_register(deis_client, username, password, email):
     deis_client.register(username, password, email)
 
     # test the failure case when we register a user twice
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_client.register(username, "any", "any")
 
     # try logging in
@@ -50,7 +50,7 @@ def test_login_failure(deis_client, username, password):
     @type username: str
     @type password: str
     """
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_client.login(username, password)
 
 

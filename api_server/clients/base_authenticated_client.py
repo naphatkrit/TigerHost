@@ -11,7 +11,7 @@ class BaseAuthenticatedClient(BaseClient):
         @rtype: list
             The list of application IDs (str)
 
-        @raises DeisClientResponseError
+        @raises ClientResponseError
         """
         raise NotImplementedError
 
@@ -20,7 +20,7 @@ class BaseAuthenticatedClient(BaseClient):
 
         @type app_id: str
 
-        @raises DeisClientResponseError
+        @raises ClientResponseError
         """
         raise NotImplementedError
 
@@ -29,7 +29,7 @@ class BaseAuthenticatedClient(BaseClient):
 
         @type app_id: str
 
-        @raises DeisClientResponseError
+        @raises ClientResponseError
         """
         raise NotImplementedError
 
@@ -41,7 +41,7 @@ class BaseAuthenticatedClient(BaseClient):
         @type bindings: dict
             The key-value pair to set in the environmental.
 
-        @raises DeisClientResponseError
+        @raises ClientResponseError
         """
         raise NotImplementedError
 
@@ -53,7 +53,7 @@ class BaseAuthenticatedClient(BaseClient):
         @rtype: dict
             The key-value pair representing the environmental variables
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -65,7 +65,7 @@ class BaseAuthenticatedClient(BaseClient):
         @rtype: list
             List of domains (str)
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -75,7 +75,7 @@ class BaseAuthenticatedClient(BaseClient):
         @type app_id: str
         @type domain: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -85,7 +85,7 @@ class BaseAuthenticatedClient(BaseClient):
         @type app_id: str
         @type domain: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -96,7 +96,7 @@ class BaseAuthenticatedClient(BaseClient):
 
         @rtype: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -107,7 +107,7 @@ class BaseAuthenticatedClient(BaseClient):
         @type app_id: str
         @type username: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -120,7 +120,7 @@ class BaseAuthenticatedClient(BaseClient):
         @rtype: list
             The list of usernames of collaborators (str)
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -131,7 +131,7 @@ class BaseAuthenticatedClient(BaseClient):
         @type app_id: str
         @type username: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -142,7 +142,7 @@ class BaseAuthenticatedClient(BaseClient):
         @type app_id: str
         @type username: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -152,7 +152,7 @@ class BaseAuthenticatedClient(BaseClient):
         @rtype: dict
             A dictionary with two keys: 'key_name' and 'key'
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -164,7 +164,7 @@ class BaseAuthenticatedClient(BaseClient):
 
         @type key: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -174,6 +174,6 @@ class BaseAuthenticatedClient(BaseClient):
         @type key_name: str
             The ID associated with this key when added.
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         raise NotImplementedError

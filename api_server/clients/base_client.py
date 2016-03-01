@@ -1,7 +1,7 @@
 import requests
 import urlparse
 
-from api_server.clients.deis_client_errors import DeisClientResponseError, DeisClientError, DeisClientTimeoutError
+from api_server.clients.exceptions import ClientResponseError, ClientError, ClientTimeoutError
 
 
 class BaseClient(object):
@@ -24,10 +24,10 @@ class BaseClient(object):
 
         @rtype: requests.Response
 
-        @raise e: DeisClientResponseError
+        @raise e: ClientResponseError
             if the response status code is not in the [200, 300) range.
-        @raise e: DeisClientTimeoutError
-        @raise e: DeisClientError
+        @raise e: ClientTimeoutError
+        @raise e: ClientError
         """
         if 'timeout' not in kwargs:
             kwargs['timeout'] = 3
@@ -35,11 +35,11 @@ class BaseClient(object):
             resp = requests.request(method, urlparse.urljoin(
                 self.provider_url, path), **kwargs)
         except requests.exceptions.Timeout:
-            raise DeisClientTimeoutError
+            raise ClientTimeoutError
         except requests.exceptions.RequestException:
-            raise DeisClientError
+            raise ClientError
         if not 200 <= resp.status_code < 300:
-            raise DeisClientResponseError(resp)
+            raise ClientResponseError(resp)
         return resp
 
     def register(self, username, password, email):
@@ -49,7 +49,7 @@ class BaseClient(object):
         @type password: str
         @type email: str
 
-        @raise e: DeisClientResponseError
+        @raise e: ClientResponseError
         """
         raise NotImplementedError
 
@@ -61,7 +61,7 @@ class BaseClient(object):
 
         @rtype: api_server.client.base_authenticated_client.AuthenticatedClient
 
-        @raise e: DeisClientResponseError
+        @raise e: ClientResponseError
         """
         return NotImplementedError
 
@@ -77,10 +77,10 @@ class BaseClient(object):
             (api_server.client.base_authenticated_client.AuthenticatedClient, bool) - the bool is true if a new user
             was registered with the provider
 
-        @raise e: DeisClientResponseError
+        @raise e: ClientResponseError
         """
         try:
             return self.login(username, password), False
-        except DeisClientResponseError:
+        except ClientResponseError:
             self.register(username, password, email)
             return self.login(username, password), True

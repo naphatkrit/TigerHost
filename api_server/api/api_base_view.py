@@ -5,7 +5,7 @@ from django.utils.decorators import available_attrs, method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
-from api_server.clients.deis_client_errors import DeisClientResponseError, DeisClientError, DeisClientTimeoutError
+from api_server.clients.exceptions import ClientResponseError, ClientError, ClientTimeoutError
 from api_server.models import App
 from api_server.providers import get_provider_authenticated_client, ProvidersError, ProvidersUserError
 
@@ -15,7 +15,7 @@ def _handle_deis_client_response_error(f):
     def wrapped_view(request, *args, **kwargs):
         try:
             return f(request, *args, **kwargs)
-        except DeisClientResponseError as e:
+        except ClientResponseError as e:
             try:
                 return JsonResponse(e.response.json(), status=e.response.status_code)
             except ValueError:
@@ -55,8 +55,8 @@ def _handle_error_response(f):
 
 @method_decorator(csrf_exempt, 'dispatch')
 @method_decorator(_handle_error(Exception, status=500), 'dispatch')
-@method_decorator(_handle_error(DeisClientError, status=500), 'dispatch')
-@method_decorator(_handle_error(DeisClientTimeoutError, status=500, message='PaaS server timeout'), 'dispatch')
+@method_decorator(_handle_error(ClientError, status=500), 'dispatch')
+@method_decorator(_handle_error(ClientTimeoutError, status=500, message='PaaS server timeout'), 'dispatch')
 @method_decorator(_handle_error(ProvidersError, status=500), 'dispatch')
 @method_decorator(_handle_error(ProvidersUserError, status=400), 'dispatch')
 @method_decorator(_handle_deis_client_response_error, 'dispatch')
@@ -99,7 +99,7 @@ class ApiBaseView(View):
         @type username: str
         @type provider: str
 
-        @raises e: DeisClientError
+        @raises e: ClientError
         @raises e: ProvidersError
         """
         get_provider_authenticated_client(username, provider)

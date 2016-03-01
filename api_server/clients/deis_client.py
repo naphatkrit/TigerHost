@@ -2,7 +2,7 @@ import requests
 import urlparse
 
 from api_server.clients.base_client import BaseClient
-from api_server.clients.deis_client_errors import DeisClientResponseError, DeisClientError, DeisClientTimeoutError
+from api_server.clients.exceptions import ClientResponseError, ClientError, ClientTimeoutError
 
 
 class DeisClient(BaseClient):
@@ -25,10 +25,10 @@ class DeisClient(BaseClient):
 
         @rtype: requests.Response
 
-        @raise e: DeisClientResponseError
+        @raise e: ClientResponseError
             if the response status code is not in the [200, 300) range.
-        @raise e: DeisClientTimeoutError
-        @raise e: DeisClientError
+        @raise e: ClientTimeoutError
+        @raise e: ClientError
         """
         if 'timeout' not in kwargs:
             kwargs['timeout'] = 3
@@ -36,11 +36,11 @@ class DeisClient(BaseClient):
             resp = requests.request(method, urlparse.urljoin(
                 self.deis_url, path), **kwargs)
         except requests.exceptions.Timeout:
-            raise DeisClientTimeoutError
+            raise ClientTimeoutError
         except requests.exceptions.RequestException:
-            raise DeisClientError
+            raise ClientError
         if not 200 <= resp.status_code < 300:
-            raise DeisClientResponseError(resp)
+            raise ClientResponseError(resp)
         return resp
 
     def register(self, username, password, email):
@@ -50,7 +50,7 @@ class DeisClient(BaseClient):
         @type password: str
         @type email: str
 
-        @raise e: DeisClientResponseError
+        @raise e: ClientResponseError
         """
         self._request_and_raise('POST', 'v1/auth/register/', json={
             "username": username,
@@ -66,7 +66,7 @@ class DeisClient(BaseClient):
 
         @rtype: DeisAuthenticatedClient
 
-        @raise e: DeisClientResponseError
+        @raise e: ClientResponseError
         """
         # this avoids circular imports
         from api_server.clients.deis_authenticated_client import DeisAuthenticatedClient
@@ -90,10 +90,10 @@ class DeisClient(BaseClient):
             (DeisAuthenticatedClient, bool) - the bool is true if a new user
             was registered with Deis
 
-        @raise e: DeisClientResponseError
+        @raise e: ClientResponseError
         """
         try:
             return self.login(username, password), False
-        except DeisClientResponseError:
+        except ClientResponseError:
             self.register(username, password, email)
             return self.login(username, password), True

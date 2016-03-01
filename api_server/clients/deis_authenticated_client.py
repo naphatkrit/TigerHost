@@ -29,7 +29,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @rtype: list
             The list of application IDs (str)
 
-        @raises DeisClientResponseError
+        @raises ClientResponseError
         """
         # TODO this may not work correctly if there are too many apps
         # will need to look at "next" key in the response
@@ -41,7 +41,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @type app_id: str
 
-        @raises DeisClientResponseError
+        @raises ClientResponseError
         """
         self._request_and_raise('POST', 'v1/apps/', json={
             'id': app_id
@@ -52,7 +52,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @type app_id: str
 
-        @raises DeisClientResponseError
+        @raises ClientResponseError
         """
         self._request_and_raise('DELETE', 'v1/apps/{}/'.format(app_id))
 
@@ -64,7 +64,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @type bindings: dict
             The key-value pair to set in the environmental.
 
-        @raises DeisClientResponseError
+        @raises ClientResponseError
         """
         self._request_and_raise('POST', 'v1/apps/{}/config/'.format(app_id), json={
             'values': bindings
@@ -78,7 +78,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @rtype: dict
             The key-value pair representing the environmental variables
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         resp = self._request_and_raise(
             'GET', 'v1/apps/{}/config/'.format(app_id))
@@ -92,7 +92,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @rtype: list
             List of domains (str)
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         # TODO may have to page
         resp = self._request_and_raise(
@@ -105,7 +105,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @type app_id: str
         @type domain: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         self._request_and_raise(
             'POST', 'v1/apps/{}/domains/'.format(app_id), json={'domain': domain})
@@ -116,7 +116,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @type app_id: str
         @type domain: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         self._request_and_raise(
             'DELETE', 'v1/apps/{}/domains/{}'.format(app_id, domain))
@@ -128,7 +128,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @rtype: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         resp = self._request_and_raise('GET', 'v1/apps/{}/'.format(app_id))
         return resp.json()['owner']
@@ -140,7 +140,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @type app_id: str
         @type username: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         self._request_and_raise('POST', 'v1/apps/{}/'.format(app_id), json={
             'owner': username
@@ -155,7 +155,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @rtype: list
             The list of usernames of collaborators (str)
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         resp = self._request_and_raise(
             'GET', 'v1/apps/{}/perms/'.format(app_id))
@@ -168,7 +168,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @type app_id: str
         @type username: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         self._request_and_raise('POST', 'v1/apps/{}/perms/'.format(app_id), json={
             'username': username
@@ -181,7 +181,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @type app_id: str
         @type username: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         self._request_and_raise(
             'DELETE', 'v1/apps/{}/perms/{}'.format(app_id, username))
@@ -192,7 +192,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @rtype: dict
             A dictionary with two keys: 'key_name' and 'key'
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         # TODO may have to page
         resp = self._request_and_raise(
@@ -207,7 +207,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
 
         @type key: str
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         self._request_and_raise('POST', 'v1/keys/', json={
             'id': key_name,
@@ -220,6 +220,6 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         @type key_name: str
             The ID associated with this key when added.
 
-        @raises e: DeisClientResponseError
+        @raises e: ClientResponseError
         """
         self._request_and_raise('DELETE', 'v1/keys/{}'.format(key_name))

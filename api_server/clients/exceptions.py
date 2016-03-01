@@ -1,15 +1,15 @@
-class DeisClientError(Exception):
+class ClientError(Exception):
     pass
 
 
-class DeisClientTimeoutError(Exception):
+class ClientTimeoutError(Exception):
     pass
 
 
-class DeisClientResponseError(DeisClientError):
+class ClientResponseError(ClientError):
 
     def __init__(self, response):
-        """Create a new ``DeisClientResponseError``.
+        """Create a new ``ClientResponseError``.
 
         @type response: requests.Response
         """

@@ -1,6 +1,6 @@
 import pytest
 
-from api_server.clients.deis_client_errors import DeisClientResponseError
+from api_server.clients.exceptions import ClientResponseError
 
 
 @pytest.fixture
@@ -34,7 +34,7 @@ def test_application_creation(deis_authenticated_client, app_id):
     # create application
     deis_authenticated_client.create_application(app_id)
 
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client.create_application(app_id)
 
     ids = deis_authenticated_client.get_all_applications()
@@ -46,7 +46,7 @@ def test_application_creation(deis_authenticated_client, app_id):
     ids = deis_authenticated_client.get_all_applications()
     assert ids == []
 
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client.delete_application(app_id)
 
 
@@ -91,7 +91,7 @@ def test_application_domains(deis_authenticated_client, app_id, create_applicati
         app_id) == old_domains + [domain]
 
     # can't add a domain twice
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client.add_application_domain(app_id, domain)
 
     deis_authenticated_client.remove_application_domain(app_id, domain)
@@ -99,7 +99,7 @@ def test_application_domains(deis_authenticated_client, app_id, create_applicati
         app_id) == old_domains
 
     # can't remove a non-existent domain
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client.remove_application_domain(app_id, domain)
 
 
@@ -111,7 +111,7 @@ def test_application_ownership(deis_authenticated_client, app_id, create_applica
     assert deis_authenticated_client.get_application_owner(app_id) == username
 
     deis_authenticated_client.set_application_owner(app_id, username2)
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client.get_application_owner(
             app_id)  # no permissions
 
@@ -137,7 +137,7 @@ def test_application_collaborators(deis_authenticated_client, app_id, create_app
     # check if collaborator actually has some permissions
     deis_authenticated_client2.get_application_owner(app_id) == username
     # ...but not all permissions
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client2.set_application_owner(app_id, username2)
 
     # remove collaborator
@@ -145,12 +145,12 @@ def test_application_collaborators(deis_authenticated_client, app_id, create_app
         app_id, username2)
     assert deis_authenticated_client.get_application_collaborators(app_id) == [
     ]
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client.remove_application_collaborator(
             app_id, username2)
 
     # no longer has any permissions
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client2.get_application_owner(app_id)
 
 
@@ -165,11 +165,11 @@ def test_keys(deis_authenticated_client, public_key):
     new_keys = deis_authenticated_client.get_keys()
     assert new_keys == old_keys + [{'key_name': key_name, 'key': public_key}]
 
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client.add_key(key_name, public_key)
 
     deis_authenticated_client.remove_key(key_name)
     assert deis_authenticated_client.get_keys() == old_keys
 
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_authenticated_client.remove_key(key_name)

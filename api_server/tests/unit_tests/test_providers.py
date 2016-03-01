@@ -3,7 +3,7 @@ import pytest
 
 
 from api_server import providers
-from api_server.clients.deis_client_errors import DeisClientError
+from api_server.clients.exceptions import ClientError
 
 
 def test_get_provider_api_url_success(settings):
@@ -117,6 +117,6 @@ def test_ensure_user_exists_failure_client_error(client, user, mock_provider_cli
         mocked.return_value = mock_provider_client
         mock_provider_client.login_or_register.return_value = (
             mock_provider_authenticated_client, True)
-        mock_provider_authenticated_client.login_or_register.side_effect = DeisClientError
+        mock_provider_authenticated_client.login_or_register.side_effect = ClientError
         providers.get_provider_authenticated_client(
             user.username, settings.DEFAULT_PAAS_PROVIDER)

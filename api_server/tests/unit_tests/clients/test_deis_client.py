@@ -6,7 +6,7 @@ import pytest
 import urlparse
 
 from api_server.clients.deis_client import DeisClient
-from api_server.clients.deis_client_errors import DeisClientError, DeisClientTimeoutError, DeisClientResponseError
+from api_server.clients.exceptions import ClientError, ClientTimeoutError, ClientResponseError
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ def test_request_and_raise_failure_response(deis_client, fake_deis_url):
     path = 'v1/auth/register/'
     responses.add(responses.POST, urlparse.urljoin(
         fake_deis_url, path), status=400)
-    with pytest.raises(DeisClientResponseError):
+    with pytest.raises(ClientResponseError):
         deis_client._request_and_raise('POST', path)
 
 
@@ -27,7 +27,7 @@ def test_request_and_raise_failure_generic(deis_client, fake_deis_url):
     with mock.patch('requests.request') as mock_request:
         mock_request.side_effect = requests.exceptions.RequestException
         path = 'v1/auth/register/'
-        with pytest.raises(DeisClientError):
+        with pytest.raises(ClientError):
             deis_client._request_and_raise('POST', path)
 
 
@@ -35,7 +35,7 @@ def test_request_and_raise_failure_timeout(deis_client, fake_deis_url):
     with mock.patch('requests.request') as mock_request:
         mock_request.side_effect = requests.exceptions.Timeout
         path = 'v1/auth/register/'
-        with pytest.raises(DeisClientTimeoutError):
+        with pytest.raises(ClientTimeoutError):
             deis_client._request_and_raise('POST', path)
 
 

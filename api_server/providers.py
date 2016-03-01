@@ -72,7 +72,7 @@ def get_provider_authenticated_client(username, provider):
 
     @rtype: api_server.clients.base_client.BaseAuthenticatedClient
 
-    @raises e: DeisClientError
+    @raises e: ClientError
     @raises e: ProvidersError
     """
     try:
