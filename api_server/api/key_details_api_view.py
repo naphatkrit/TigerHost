@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
+from api_server.providers import get_provider_authenticated_client
 from wsse.decorators import check_wsse_token
 
 
@@ -15,8 +17,11 @@ class KeyDetailsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        auth_client, _ = self.deis_client.login_or_register(
-            request.user.username, request.user.profile.get_paas_password(), request.user.email)
+        # TODO figure out how this plays with providers
+
+        provider = settings.DEFAULT_PAAS_PROVIDER
+        auth_client = get_provider_authenticated_client(
+            request.user.username, provider)
 
         auth_client.remove_key(key_name)
         return self.respond()
