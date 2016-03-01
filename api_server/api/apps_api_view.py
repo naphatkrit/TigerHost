@@ -16,16 +16,23 @@ class AppsApiView(ApiBaseView):
     def get(self, request):
         """Return the list of applications associated with this user.
 
+        Return format (JSON):
+        {
+            'provider1': ['app1', ...],
+            'provider2': ['app1', ...],
+            ...
+        }
+
         @type request: django.http.HttpRequest
 
         @rtype: django.http.HttpResponse
         """
-        app_ids = []
+        result = {}
         for provider in request.user.profile.get_providers():
             auth_client = get_provider_authenticated_client(
                 request.user.username, provider)
-            app_ids += auth_client.get_all_applications()
-        return self.respond_multiple(app_ids)
+            result[provider] = auth_client.get_all_applications()
+        return self.respond(result)
 
     def post(self, request):
         """Create a new application.
