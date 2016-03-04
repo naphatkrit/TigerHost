@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b@4p$!j6-xy_&c401&krw#)0)jrv#1m2qt&7)%^9%5!+yv9*mj'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'b@4p$!j6-xy_&c401&krw#)0)jrv#1m2qt&7)%^9%5!+yv9*mj')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'api_server.wsgi.application'
 
 PAAS_PROVIDERS = {
     'deis_prod': {
-        'API_URL': 'http://deis.local3.deisapp.com',
+        'API_URL': os.environ.get('DEIS_URL', 'http://deis.local3.deisapp.com'),
         'CLIENT': 'api_server.clients.deis_client.DeisClient',
     },
 }
