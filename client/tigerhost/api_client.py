@@ -188,6 +188,22 @@ class ApiClient(object):
         self._request_and_raise(
             'DELETE', 'api/v1/apps/{}/domains/{}/'.format(app_id, domain))
 
+    def run_command(self, app_id, command):
+        """Run a one-off command for this application.
+
+        @type app_id: str
+        @type command: str
+
+        @rtype: dict
+            a dictionary with keys 'exit_code' and 'output'
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise('POST', 'api/v1/apps/{}/run/'.format(app_id), json={
+            'command': command
+        })
+        return resp.json()
+
     def get_application_git_remote(self, app_id):
         """Get the git remote for the specified app ID.
 
@@ -310,4 +326,5 @@ class ApiClient(object):
 
         @raises e: ApiClientResponseError
         """
-        self._request_and_raise('DELETE', 'api/v1/keys/{}/{}/'.format(provider, key_name))
+        self._request_and_raise(
+            'DELETE', 'api/v1/keys/{}/{}/'.format(provider, key_name))

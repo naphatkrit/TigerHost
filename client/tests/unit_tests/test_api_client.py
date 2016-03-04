@@ -147,6 +147,16 @@ def test_remove_application_domain(api_client, fake_api_server_url):
 
 
 @responses.activate
+def test_run_command(api_client, fake_api_server_url):
+    command = 'echo 1 2 3'
+    responses.add(responses.POST, urlparse.urljoin(
+        fake_api_server_url, 'api/v1/apps/{}/run/'.format('testid')), status=200, json={'exit_code': 0, 'output': '1 2 3\n'})
+    result = api_client.run_command('testid', command)
+    assert result['exit_code'] == 0
+    assert result['output'] == '1 2 3\n'
+
+
+@responses.activate
 def test_get_application_git_remote(api_client, fake_api_server_url):
     responses.add(responses.GET, urlparse.urljoin(
         fake_api_server_url, 'api/v1/apps/{}/'.format('testid')), status=200, json={'remote': 'git@fake'})

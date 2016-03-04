@@ -137,6 +137,11 @@ def test_application_domains(api_client, app_id, create_application):
         api_client.remove_application_domain(app_id, domain)
 
 
+def test_run_command(api_client, app_id, create_application):
+    with pytest.raises(ApiClientResponseError):
+        api_client.run_command(app_id, 'echo 1 2 3')
+
+
 def test_application_ownership(api_client, app_id, create_application, api_client2, username, username2):
     """
     @type api_client: tigerhost.api_client.ApiClient
