@@ -89,6 +89,17 @@ class BaseAuthenticatedClient(BaseClient):
         """
         raise NotImplementedError
 
+    def run_command(self, app_id, command):
+        """Run a one-off command on the host running application
+        with specified ID.
+
+        @type app_id: str
+        @type command: str
+
+        @raises e: ClientResponseError
+        """
+        raise NotImplementedError
+
     def get_application_owner(self, app_id):
         """Get the username of the owner of the specified app ID.
 

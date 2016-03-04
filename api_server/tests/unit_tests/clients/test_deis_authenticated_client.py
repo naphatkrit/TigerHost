@@ -86,6 +86,16 @@ def test_remove_application_domain(deis_authenticated_client, fake_deis_url):
 
 
 @responses.activate
+def test_run_command(deis_authenticated_client, fake_deis_url):
+    command = 'echo 1 2 3'
+    responses.add(responses.POST, urlparse.urljoin(
+        fake_deis_url, 'v1/apps/{}/run/'.format('testid')), status=204, json=[0, '1 2 3\n'])
+    result = deis_authenticated_client.run_command('testid', command)
+    assert result['exit_code'] == 0
+    assert result['output'] == '1 2 3\n'
+
+
+@responses.activate
 def test_get_application_owner(deis_authenticated_client, fake_deis_url):
     responses.add(responses.GET, urlparse.urljoin(
         fake_deis_url, 'v1/apps/{}/'.format('testid')), status=200, json={'owner': 'username'})

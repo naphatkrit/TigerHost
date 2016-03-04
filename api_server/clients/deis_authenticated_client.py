@@ -121,6 +121,26 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         self._request_and_raise(
             'DELETE', 'v1/apps/{}/domains/{}'.format(app_id, domain))
 
+    def run_command(self, app_id, command):
+        """Run a one-off command on the host running application
+        with specified ID.
+
+        @type app_id: str
+        @type command: str
+
+        @rtype: dict
+            dictionary with keys 'exit_code' and 'output'
+
+        @raises e: ClientResponseError
+        """
+        ret = self._request_and_raise('POST', 'v1/apps/{}/run/'.format(app_id), json={
+            'command': command
+        }).json()
+        return {
+            'exit_code': ret[0],
+            'output': ret[1],
+        }
+
     def get_application_owner(self, app_id):
         """Get the username of the owner of the specified app ID.
 

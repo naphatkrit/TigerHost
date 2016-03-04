@@ -76,8 +76,10 @@ def test_application_env_variables(deis_authenticated_client, app_id, create_app
     assert old_vars == new_vars_deleted
 
     # test deletion and creation at the same time
-    deis_authenticated_client.set_application_env_variables(app_id, {"TESTING1": '1'})
-    deis_authenticated_client.set_application_env_variables(app_id, {"TESTING1": None, "TESTING2": "2"})
+    deis_authenticated_client.set_application_env_variables(
+        app_id, {"TESTING1": '1'})
+    deis_authenticated_client.set_application_env_variables(
+        app_id, {"TESTING1": None, "TESTING2": "2"})
     assert deis_authenticated_client.get_application_env_variables(app_id) == {
         'TESTING2': '2'
     }
@@ -101,6 +103,16 @@ def test_application_domains(deis_authenticated_client, app_id, create_applicati
     # can't remove a non-existent domain
     with pytest.raises(ClientResponseError):
         deis_authenticated_client.remove_application_domain(app_id, domain)
+
+
+def test_run_command(deis_authenticated_client, app_id, create_application):
+    """
+    @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    """
+    # this will fail because we don't have a build associated with this app,
+    # and it takes too long to create a build to do this in testing
+    with pytest.raises(ClientResponseError):
+        deis_authenticated_client.run_command(app_id, 'echo 1 2 3')
 
 
 def test_application_ownership(deis_authenticated_client, app_id, create_application, deis_authenticated_client2, username, username2):
