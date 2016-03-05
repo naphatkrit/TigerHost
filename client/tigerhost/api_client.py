@@ -201,7 +201,7 @@ class ApiClient(object):
         """
         resp = self._request_and_raise('POST', 'api/v1/apps/{}/run/'.format(app_id), json={
             'command': command
-        })
+        }, timeout=None)
         return resp.json()
 
     def get_application_git_remote(self, app_id):
