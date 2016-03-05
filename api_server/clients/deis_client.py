@@ -1,47 +1,8 @@
-import requests
-import urlparse
-
 from api_server.clients.base_client import BaseClient
-from api_server.clients.exceptions import ClientResponseError, ClientError, ClientTimeoutError
+from api_server.clients.exceptions import ClientResponseError
 
 
 class DeisClient(BaseClient):
-
-    def __init__(self, deis_url):
-        """Create a new ``DeisClient``.
-
-        @type deis_url: str
-        """
-        self.deis_url = deis_url
-
-    def _request_and_raise(self, method, path, **kwargs):
-        """Sends a request to Deis.
-
-        @type method: str
-            HTTP method, such as "POST", "GET", "PUT"
-
-        @type path: str
-            The extra http path to be appended to the deis URL
-
-        @rtype: requests.Response
-
-        @raise e: ClientResponseError
-            if the response status code is not in the [200, 300) range.
-        @raise e: ClientTimeoutError
-        @raise e: ClientError
-        """
-        if 'timeout' not in kwargs:
-            kwargs['timeout'] = 3
-        try:
-            resp = requests.request(method, urlparse.urljoin(
-                self.deis_url, path), **kwargs)
-        except requests.exceptions.Timeout:
-            raise ClientTimeoutError
-        except requests.exceptions.RequestException:
-            raise ClientError
-        if not 200 <= resp.status_code < 300:
-            raise ClientResponseError(resp)
-        return resp
 
     def register(self, username, password, email):
         """Register a new user with Deis.
@@ -76,7 +37,7 @@ class DeisClient(BaseClient):
             "password": password
         })
         token = resp.json()['token']
-        return DeisAuthenticatedClient(self.deis_url, token)
+        return DeisAuthenticatedClient(self.provider_url, token)
 
     def login_or_register(self, username, password, email):
         """Try to log the user in. If the user has not been created yet, then
