@@ -2,7 +2,7 @@ import click
 
 import tigerhost
 
-from tigerhost.commands import access, apps, config, domains, git, keys, providers
+from tigerhost.commands import access, apps, config, domains, git, keys, providers, run_command
 from tigerhost.commands.user import login, user_info, logout
 from tigerhost.private_dir import ensure_private_dir_exists
 
@@ -35,6 +35,8 @@ entry.add_command(config.unset_config, name='config:unset')
 entry.add_command(domains.list_domains, name='domains')
 entry.add_command(domains.add_domain, name='domains:add')
 entry.add_command(domains.remove_domain, name='domains:remove')
+
+entry.add_command(run_command.run_one_off, name='run')
 
 entry.add_command(git.add_remote, name='git:remote')
 
