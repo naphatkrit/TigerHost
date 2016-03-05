@@ -68,7 +68,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         """
         self._request_and_raise('POST', 'v1/apps/{}/config/'.format(app_id), json={
             'values': bindings
-        })
+        }, timeout=None)
 
     def get_application_env_variables(self, app_id):
         """Get the environmental variables for the specified app ID.
