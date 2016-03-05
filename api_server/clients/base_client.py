@@ -30,7 +30,7 @@ class BaseClient(object):
         @raise e: ClientError
         """
         if 'timeout' not in kwargs:
-            kwargs['timeout'] = 3
+            kwargs['timeout'] = 10
         try:
             resp = requests.request(method, urlparse.urljoin(
                 self.provider_url, path), **kwargs)
