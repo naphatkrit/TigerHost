@@ -135,7 +135,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         """
         ret = self._request_and_raise('POST', 'v1/apps/{}/run/'.format(app_id), json={
             'command': command
-        }).json()
+        }, timeout=None).json()
         return {
             'exit_code': ret[0],
             'output': ret[1],
