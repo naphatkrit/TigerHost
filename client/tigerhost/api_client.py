@@ -74,32 +74,32 @@ class ApiClient(object):
         """
         self._request_and_raise('GET', 'api/test_api_key/')
 
-    def get_providers(self):
-        """Get the providers that this user has access to.
+    def get_backends(self):
+        """Get the backends that this user has access to.
 
         @rtype: dict
             dictionary with the following format:
             {
-                'providers': ['provider1', 'provider2', ...]
-                'default': 'provider1'
+                'backends': ['backend1', 'backend2', ...]
+                'default': 'backend1'
             }
         """
-        resp = self._request_and_raise('GET', 'api/v1/providers/')
+        resp = self._request_and_raise('GET', 'api/v1/backends/')
         return resp.json()
 
-    def create_application(self, app_id, provider=None):
+    def create_application(self, app_id, backend=None):
         """Create a new application with the specified ID.
 
         @type app_id: str
-        @type provider: str
+        @type backend: str
 
         @raises ApiClientResponseError
         """
         body = {
             'id': app_id
         }
-        if provider is not None:
-            body['provider'] = provider
+        if backend is not None:
+            body['backend'] = backend
         self._request_and_raise('POST', 'api/v1/apps/', json=body)
 
     def delete_application(self, app_id):
@@ -117,8 +117,8 @@ class ApiClient(object):
         @rtype: dict
         format:
         {
-            'provider1': ['app1', ...],
-            'provider2': ['app1', ...],
+            'backend1': ['app1', ...],
+            'backend2': ['app1', ...],
             ...
         }
         """
@@ -287,11 +287,11 @@ class ApiClient(object):
         @rtype: dict
         format:
         {
-            'provider1': [{
+            'backend1': [{
                             "key_name": "my_key_name",
                             "key": "ssh-rsa ..."
                             }, ...],
-            'provider2': [...],
+            'backend2': [...],
             ...
         }
 
@@ -301,24 +301,24 @@ class ApiClient(object):
             'GET', 'api/v1/keys/')
         return resp.json()
 
-    def add_key(self, key_name, key, provider):
+    def add_key(self, key_name, key, backend):
         """Add a public key to this user.
 
         @type key_name: str
             An ID to be associated with this key
 
         @type key: str
-        @type provider: str
+        @type backend: str
 
         @raises e: ApiClientResponseError
         """
         self._request_and_raise('POST', 'api/v1/keys/', json={
             'key_name': key_name,
             'key': key,
-            'provider': provider,
+            'backend': backend,
         })
 
-    def remove_key(self, key_name, provider):
+    def remove_key(self, key_name, backend):
         """Remove the specified key from this user.
 
         @type key_name: str
@@ -327,4 +327,4 @@ class ApiClient(object):
         @raises e: ApiClientResponseError
         """
         self._request_and_raise(
-            'DELETE', 'api/v1/keys/{}/{}/'.format(provider, key_name))
+            'DELETE', 'api/v1/keys/{}/{}/'.format(backend, key_name))

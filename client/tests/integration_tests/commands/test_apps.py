@@ -22,11 +22,11 @@ def test_app(runner, logged_in_user, app_id):
     assert app_id not in result.output
 
 
-def test_app_with_provider(runner, logged_in_user, app_id, provider):
+def test_app_with_backend(runner, logged_in_user, app_id, backend):
     """
     @type runner: click.testing.CliRunner
     """
-    result = runner.invoke(entry, ['create', app_id, '--provider', provider])
+    result = runner.invoke(entry, ['create', app_id, '--backend', backend])
     assert result.exit_code == 0
     assert app_id in result.output
 

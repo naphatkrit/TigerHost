@@ -45,20 +45,20 @@ def test_test_api_key_success(api_client, fake_api_server_url):
 
 
 @responses.activate
-def test_get_providers_success(api_client, fake_api_server_url):
+def test_get_backends_success(api_client, fake_api_server_url):
     """
     @type api_client: ApiClient
     @type fake_api_server_url: str
     """
-    providers = ['provider1', 'provider2']
+    backends = ['backend1', 'backend2']
     responses.add(responses.GET, urlparse.urljoin(
-        fake_api_server_url, 'api/v1/providers/'), status=200, json={
-            'providers': providers,
-            'default': providers[0],
+        fake_api_server_url, 'api/v1/backends/'), status=200, json={
+            'backends': backends,
+            'default': backends[0],
     })
-    ret = api_client.get_providers()
-    assert ret['providers'] == providers
-    assert ret['default'] == 'provider1'
+    ret = api_client.get_backends()
+    assert ret['backends'] == backends
+    assert ret['default'] == 'backend1'
 
 
 @responses.activate
@@ -68,7 +68,7 @@ def test_get_all_applications_success(api_client, fake_api_server_url):
     @type fake_api_server_url: str
     """
     ret = {
-        'provider1': ['testid1', 'testid2']
+        'backend1': ['testid1', 'testid2']
     }
     responses.add(responses.GET, urlparse.urljoin(
         fake_api_server_url, 'api/v1/apps/'), status=200, json=ret)
@@ -87,14 +87,14 @@ def test_create_application_success(api_client, fake_api_server_url):
 
 
 @responses.activate
-def test_create_application_with_provider_success(api_client, fake_api_server_url):
+def test_create_application_with_backend_success(api_client, fake_api_server_url):
     """
     @type api_client: DeisAuthenticatedClient
     @type fake_api_server_url: str
     """
     responses.add(responses.POST, urlparse.urljoin(
         fake_api_server_url, 'api/v1/apps/'), status=201)
-    api_client.create_application('testid', 'provider')
+    api_client.create_application('testid', 'backend')
 
 
 @responses.activate
@@ -216,21 +216,21 @@ def test_get_application_keys(api_client, fake_api_server_url):
     },
     ]
     responses.add(responses.GET, urlparse.urljoin(
-        fake_api_server_url, 'api/v1/keys/'), status=200, json={'provider1': keys})
+        fake_api_server_url, 'api/v1/keys/'), status=200, json={'backend1': keys})
     ret = api_client.get_keys()
-    assert ret['provider1'] == keys
+    assert ret['backend1'] == keys
 
 
 @responses.activate
 def test_add_application_key(api_client, fake_api_server_url):
     responses.add(responses.POST, urlparse.urljoin(
         fake_api_server_url, 'api/v1/keys/'), status=201)
-    api_client.add_key('key_name', 'key', 'provider1')
+    api_client.add_key('key_name', 'key', 'backend1')
 
 
 @responses.activate
 def test_remove_application_key(api_client, fake_api_server_url):
     key_name = 'key_name'
     responses.add(responses.DELETE, urlparse.urljoin(
-        fake_api_server_url, 'api/v1/keys/provider1/{}/'.format(key_name)), status=204)
-    api_client.remove_key(key_name, 'provider1')
+        fake_api_server_url, 'api/v1/keys/backend1/{}/'.format(key_name)), status=204)
+    api_client.remove_key(key_name, 'backend1')

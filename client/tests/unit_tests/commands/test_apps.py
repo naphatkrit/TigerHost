@@ -9,11 +9,11 @@ def test_list_apps_success(runner, saved_user, fake_api_client):
     @type fake_api_client: mock.Mock
     """
     fake_api_client.get_all_applications.return_value = {
-        'provider1': ['app1', 'app2']
+        'backend1': ['app1', 'app2']
     }
     result = runner.invoke(entry, ['apps'])
     assert result.exit_code == 0
-    assert 'provider1' in result.output
+    assert 'backend1' in result.output
     assert 'app1' in result.output
     assert 'app2' in result.output
     fake_api_client.get_all_applications.assert_called_once_with()
@@ -27,12 +27,12 @@ def test_create_app(runner, saved_user, fake_api_client):
     fake_api_client.create_application.assert_called_once_with(app, None)
 
 
-def test_create_app_with_provider(runner, saved_user, fake_api_client):
+def test_create_app_with_backend(runner, saved_user, fake_api_client):
     app = 'app1'
-    result = runner.invoke(entry, ['create', app, '--provider', 'provider'])
+    result = runner.invoke(entry, ['create', app, '--backend', 'backend'])
     assert result.exit_code == 0
     assert app in result.output
-    fake_api_client.create_application.assert_called_once_with(app, 'provider')
+    fake_api_client.create_application.assert_called_once_with(app, 'backend')
 
 
 def test_create_app_in_repo(runner, make_git_repo, saved_user, fake_api_client):

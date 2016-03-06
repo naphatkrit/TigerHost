@@ -20,5 +20,5 @@ def make_app(runner, make_git_repo, logged_in_user, app_id):
 
 
 @pytest.fixture(scope='function')
-def provider(api_client):
-    return api_client.get_providers()['default']
+def backend(api_client):
+    return api_client.get_backends()['default']

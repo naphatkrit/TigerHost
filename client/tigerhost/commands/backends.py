@@ -10,14 +10,14 @@ from tigerhost.utils import decorators
 @decorators.store_user
 @decorators.store_api_client
 @click.pass_context
-def list_providers(ctx):
+def list_backends(ctx):
     """Show the list of keys for this user.
     """
     api_client = ctx.obj['api_client']
     user = ctx.obj['user']
-    providers_info = api_client.get_providers()
-    click.echo('{} has access to the following providers:'.format(user.username))
-    for p in providers_info['providers']:
+    backends_info = api_client.get_backends()
+    click.echo('{} has access to the following backends:'.format(user.username))
+    for p in backends_info['backends']:
         click.echo(p)
     click.echo()
-    click.echo('{} is the default provider.'.format(providers_info['default']))
+    click.echo('{} is the default backend.'.format(backends_info['default']))

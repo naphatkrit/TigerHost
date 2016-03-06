@@ -17,30 +17,30 @@ def list_apps(ctx):
     """
     api_client = ctx.obj['api_client']
     first = True
-    for provider, apps in api_client.get_all_applications().iteritems():
+    for backend, apps in api_client.get_all_applications().iteritems():
         if first:
             first = False
         else:
             click.echo()
-        click.echo('Provider: {}'.format(provider))
+        click.echo('backend: {}'.format(backend))
         for app in apps:
             click.echo(app)
 
 
 @click.command()
 @click.argument('name')
-@click.option('--provider', '-p', help='Pick a different provider from the default.')
+@click.option('--backend', '-b', help='Pick a different backend from the default.')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_vcs
 @click.pass_context
-def create_app(ctx, name, provider):
+def create_app(ctx, name, backend):
     """Create a new app with the specified NAME.
     """
     vcs = ctx.obj['vcs']
     api_client = ctx.obj['api_client']
-    api_client.create_application(name, provider)
+    api_client.create_application(name, backend)
     click.echo('App {} created.'.format(name))
     click.echo()
     if vcs is not None:

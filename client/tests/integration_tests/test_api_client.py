@@ -32,7 +32,7 @@ def test_application_creation(api_client, app_id):
         api_client.create_application(app_id)
 
     found = False
-    for provider, ids in api_client.get_all_applications().iteritems():
+    for backend, ids in api_client.get_all_applications().iteritems():
         if app_id in ids:
             found = True
             break
@@ -42,7 +42,7 @@ def test_application_creation(api_client, app_id):
     api_client.delete_application(app_id)
 
     found = False
-    for provider, ids in api_client.get_all_applications().iteritems():
+    for backend, ids in api_client.get_all_applications().iteritems():
         if app_id in ids:
             found = True
             break
@@ -52,25 +52,25 @@ def test_application_creation(api_client, app_id):
         api_client.delete_application(app_id)
 
 
-def test_application_creation_with_provider(api_client, app_id):
+def test_application_creation_with_backend(api_client, app_id):
     """
     @type api_client: tigerhost.api_client.ApiClient
     """
-    # pick a provider
-    provider = api_client.get_providers()['providers'][0]
+    # pick a backend
+    backend = api_client.get_backends()['backends'][0]
 
     # create application
-    api_client.create_application(app_id, provider)
+    api_client.create_application(app_id, backend)
 
     with pytest.raises(ApiClientResponseError):
         api_client.create_application(app_id)
 
-    assert api_client.get_all_applications()[provider] == [app_id]
+    assert api_client.get_all_applications()[backend] == [app_id]
 
     # delete application
     api_client.delete_application(app_id)
 
-    assert api_client.get_all_applications()[provider] == []
+    assert api_client.get_all_applications()[backend] == []
 
     with pytest.raises(ApiClientResponseError):
         api_client.delete_application(app_id)
@@ -197,21 +197,21 @@ def test_keys(api_client, public_key):
     """
     @type api_client: tigerhost.api_client.ApiClient
     """
-    # pick a provider
-    provider = api_client.get_providers()['default']
+    # pick a backend
+    backend = api_client.get_backends()['default']
 
     key_name = 'key_name'
     old_keys = api_client.get_keys()
 
-    api_client.add_key(key_name, public_key, provider)
+    api_client.add_key(key_name, public_key, backend)
     new_keys = api_client.get_keys()
-    assert new_keys[provider] == old_keys[provider] + [{'key_name': key_name, 'key': public_key}]
+    assert new_keys[backend] == old_keys[backend] + [{'key_name': key_name, 'key': public_key}]
 
     with pytest.raises(ApiClientResponseError):
-        api_client.add_key(key_name, public_key, provider)
+        api_client.add_key(key_name, public_key, backend)
 
-    api_client.remove_key(key_name, provider)
+    api_client.remove_key(key_name, backend)
     assert api_client.get_keys() == old_keys
 
     with pytest.raises(ApiClientResponseError):
-        api_client.remove_key(key_name, provider)
+        api_client.remove_key(key_name, backend)
