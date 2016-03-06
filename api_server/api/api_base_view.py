@@ -7,7 +7,7 @@ from django.views.generic import View
 
 from api_server.clients.exceptions import ClientResponseError, ClientError, ClientTimeoutError
 from api_server.models import App
-from api_server.providers import get_provider_authenticated_client, ProvidersError, ProvidersUserError
+from api_server.paas_backends import get_backend_authenticated_client, BackendsError, BackendsUserError
 
 
 def _handle_deis_client_response_error(f):
@@ -57,8 +57,8 @@ def _handle_error_response(f):
 @method_decorator(_handle_error(Exception, status=500), 'dispatch')
 @method_decorator(_handle_error(ClientError, status=500), 'dispatch')
 @method_decorator(_handle_error(ClientTimeoutError, status=500, message='PaaS server timeout'), 'dispatch')
-@method_decorator(_handle_error(ProvidersError, status=500), 'dispatch')
-@method_decorator(_handle_error(ProvidersUserError, status=400), 'dispatch')
+@method_decorator(_handle_error(BackendsError, status=500), 'dispatch')
+@method_decorator(_handle_error(BackendsUserError, status=400), 'dispatch')
 @method_decorator(_handle_deis_client_response_error, 'dispatch')
 @method_decorator(_handle_error_response, 'dispatch')
 class ApiBaseView(View):
@@ -90,22 +90,22 @@ class ApiBaseView(View):
             status = 200 if status is None else status
             return JsonResponse(item, status=status)
 
-    def ensure_user_exists(self, username, provider):
+    def ensure_user_exists(self, username, backend):
         """Ensure the user with ``username`` exists, both locally
         and on Deis. If the user does not exist locally, returns
         False. If the user does not exist on Deis,
         create it, but return True.
 
         @type username: str
-        @type provider: str
+        @type backend: str
 
         @raises e: ClientError
-        @raises e: ProvidersError
+        @raises e: BackendsError
         """
-        get_provider_authenticated_client(username, provider)
+        get_backend_authenticated_client(username, backend)
 
-    def get_provider_for_app(self, app_id):
-        """Returns the provider for this app, throwing
+    def get_backend_for_app(self, app_id):
+        """Returns the backend for this app, throwing
         an exception with an appropriate error message
         if the app does not exist.
 
@@ -116,7 +116,7 @@ class ApiBaseView(View):
         @raises e: ErrorResponse
         """
         try:
-            return App.objects.get(app_id=app_id).provider_name
+            return App.objects.get(app_id=app_id).backend
         except App.DoesNotExist:
             raise ErrorResponse(
                 message='App {} does not exist.'.format(app_id), status=400)

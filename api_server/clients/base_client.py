@@ -11,16 +11,16 @@ class BaseClient(object):
 
         @type url: str
         """
-        self.provider_url = url
+        self.backend_url = url
 
     def _request_and_raise(self, method, path, **kwargs):
-        """Sends a request to the provider.
+        """Sends a request to the backend.
 
         @type method: str
             HTTP method, such as "POST", "GET", "PUT"
 
         @type path: str
-            The extra http path to be appended to the provider URL
+            The extra http path to be appended to the backend URL
 
         @rtype: requests.Response
 
@@ -33,7 +33,7 @@ class BaseClient(object):
             kwargs['timeout'] = 10
         try:
             resp = requests.request(method, urlparse.urljoin(
-                self.provider_url, path), **kwargs)
+                self.backend_url, path), **kwargs)
         except requests.exceptions.Timeout:
             raise ClientTimeoutError
         except requests.exceptions.RequestException:
@@ -43,7 +43,7 @@ class BaseClient(object):
         return resp
 
     def register(self, username, password, email):
-        """Register a new user with the provider.
+        """Register a new user with the backend.
 
         @type username: str
         @type password: str
@@ -54,7 +54,7 @@ class BaseClient(object):
         raise NotImplementedError
 
     def login(self, username, password):
-        """Login to the provider and return an authenticated client.
+        """Login to the backend and return an authenticated client.
 
         @type username: str
         @type password: str
@@ -75,7 +75,7 @@ class BaseClient(object):
 
         @rtype: tuple
             (api_server.client.base_authenticated_client.AuthenticatedClient, bool) - the bool is true if a new user
-            was registered with the provider
+            was registered with the backend
 
         @raise e: ClientResponseError
         """

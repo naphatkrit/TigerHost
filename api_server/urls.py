@@ -10,7 +10,7 @@ from api_server.api.app_domain_details_api_view import AppDomainDetailsApiView
 from api_server.api.app_env_variables_api_view import AppEnvVariablesApiView
 from api_server.api.keys_api_view import KeysApiView
 from api_server.api.key_details_api_view import KeyDetailsApiView
-from api_server.api.providers_api_view import ProvidersApiView
+from api_server.api.paas_backends_api_view import PaasBackendApiView
 from api_server.api.run_command_api_view import RunCommandApiView
 
 
@@ -35,5 +35,5 @@ urlpatterns = [
     url(r'^v1/keys/$', KeysApiView.as_view(), name='keys'),
     url(r'^v1/keys/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$',
         KeyDetailsApiView.as_view(), name='key_details'),
-    url(r'^v1/providers/$', ProvidersApiView.as_view(), name='providers')
+    url(r'^v1/backends/$', PaasBackendApiView.as_view(), name='backends')
 ]

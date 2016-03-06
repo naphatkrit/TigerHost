@@ -3,7 +3,7 @@ import json
 from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
-from api_server.providers import get_provider_authenticated_client
+from api_server.paas_backends import get_backend_authenticated_client
 from wsse.decorators import check_wsse_token
 
 
@@ -15,11 +15,11 @@ class KeysApiView(ApiBaseView):
 
         Return format (JSON):
         {
-            'provider1': [{
+            'backend1': [{
                             "key_name": "my_key_name",
                             "key": "ssh-rsa ..."
                             }, ...],
-            'provider2': [...],
+            'backend2': [...],
             ...
         }
 
@@ -28,10 +28,10 @@ class KeysApiView(ApiBaseView):
         @rtype: django.http.HttpResponse
         """
         result = {}
-        for provider in request.user.profile.get_providers():
-            auth_client = get_provider_authenticated_client(
-                request.user.username, provider)
-            result[provider] = auth_client.get_keys()
+        for backend in request.user.profile.get_paas_backends():
+            auth_client = get_backend_authenticated_client(
+                request.user.username, backend)
+            result[backend] = auth_client.get_keys()
         return self.respond(result)
 
     def post(self, request):
@@ -41,7 +41,7 @@ class KeysApiView(ApiBaseView):
         {
             "key_name": "macbookpro",
             "key": "ssh-rsa ...",
-            "provider": "provider"
+            "backend": "backend"
         }
 
         @type request: django.http.HttpRequest
@@ -50,9 +50,9 @@ class KeysApiView(ApiBaseView):
         """
         key_info = json.loads(request.body)
 
-        provider = key_info['provider']
-        auth_client = get_provider_authenticated_client(
-            request.user.username, provider)
+        backend = key_info['backend']
+        auth_client = get_backend_authenticated_client(
+            request.user.username, backend)
 
         auth_client.add_key(key_info['key_name'], key_info['key'])
         return self.respond()

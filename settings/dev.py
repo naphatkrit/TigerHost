@@ -78,14 +78,14 @@ WSGI_APPLICATION = 'api_server.wsgi.application'
 
 # START PAAS CONFIGURATION
 
-PAAS_PROVIDERS = {
+PAAS_BACKENDS = {
     'deis_prod': {
         'API_URL': os.environ.get('DEIS_URL', 'http://deis.local3.deisapp.com'),
         'CLIENT': 'api_server.clients.deis_client.DeisClient',
     },
 }
 
-DEFAULT_PAAS_PROVIDER = 'deis_prod'
+DEFAULT_PAAS_BACKEND = 'deis_prod'
 
 # END PAAS CONFIGURATION
 

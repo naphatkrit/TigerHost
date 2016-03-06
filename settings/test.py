@@ -7,9 +7,9 @@ DATABASES['default'] = {
     'NAME': os.path.join(BASE_DIR, 'testdb.sqlite3'),
 }
 
-PAAS_PROVIDERS['test_provider'] = {
+PAAS_BACKENDS['test_backend'] = {
     'API_URL': 'http://fake.example.com',
     'CLIENT': 'api_server.clients.base_client.BaseClient',
 }
 
-DEFAULT_PAAS_PROVIDER = 'test_provider'
+DEFAULT_PAAS_BACKEND = 'test_backend'

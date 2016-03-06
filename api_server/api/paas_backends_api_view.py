@@ -6,15 +6,15 @@ from wsse.decorators import check_wsse_token
 
 
 @method_decorator(check_wsse_token, 'dispatch')
-class ProvidersApiView(ApiBaseView):
+class PaasBackendApiView(ApiBaseView):
 
     def get(self, request):
-        """Get the list of providers that this user has access to.
+        """Get the list of backends that this user has access to.
 
         Return format (JSON):
         {
-            'providers': ['provider1', 'provider2', ...]
-            'default': 'provider1'
+            'backends': ['backend1', 'backend2', ...]
+            'default': 'backend1'
         }
 
         @type request: django.http.HttpRequest
@@ -23,6 +23,6 @@ class ProvidersApiView(ApiBaseView):
         """
 
         return self.respond({
-            'providers': request.user.profile.get_providers(),
-            'default': settings.DEFAULT_PAAS_PROVIDER,
+            'backends': request.user.profile.get_paas_backends(),
+            'default': settings.DEFAULT_PAAS_BACKEND,
         })

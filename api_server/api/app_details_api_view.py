@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
 from api_server.models import App
-from api_server.providers import get_provider_authenticated_client, get_provider_api_url
+from api_server.paas_backends import get_backend_authenticated_client, get_backend_api_url
 from api_server.utils import git_remote
 from wsse.decorators import check_wsse_token
 
@@ -26,13 +26,13 @@ class AppDetailsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        provider = self.get_provider_for_app(app_id)
-        auth_client = get_provider_authenticated_client(request.user.username, provider)
+        backend = self.get_backend_for_app(app_id)
+        auth_client = get_backend_authenticated_client(request.user.username, backend)
 
         owner = auth_client.get_application_owner(app_id)
         return self.respond({
             'owner': owner,
-            'remote': git_remote(get_provider_api_url(provider), app_id)
+            'remote': git_remote(get_backend_api_url(backend), app_id)
         })
 
     def post(self, request, app_id):
@@ -49,11 +49,11 @@ class AppDetailsApiView(ApiBaseView):
         @rtype: django.http.HttpResponse
         """
         data = json.loads(request.body)
-        provider = self.get_provider_for_app(app_id)
-        auth_client = get_provider_authenticated_client(request.user.username, provider)
+        backend = self.get_backend_for_app(app_id)
+        auth_client = get_backend_authenticated_client(request.user.username, backend)
 
         if 'owner' in data:
-            self.ensure_user_exists(data['owner'], provider)
+            self.ensure_user_exists(data['owner'], backend)
             auth_client.set_application_owner(app_id, data['owner'])
         return self.respond()
 
@@ -65,8 +65,8 @@ class AppDetailsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        provider = self.get_provider_for_app(app_id)
-        auth_client = get_provider_authenticated_client(request.user.username, provider)
+        backend = self.get_backend_for_app(app_id)
+        auth_client = get_backend_authenticated_client(request.user.username, backend)
         auth_client.delete_application(app_id)
         app = App.objects.get(app_id=app_id)
         app.delete()

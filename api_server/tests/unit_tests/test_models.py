@@ -7,28 +7,28 @@ from api_server.models import App, PaasCredential, Profile
 
 
 @pytest.mark.django_db
-def test_profile_get_providers(user, settings):
+def test_profile_get_paas_backends(user, settings):
     profile = user.profile
-    assert profile.get_providers() == [settings.DEFAULT_PAAS_PROVIDER]
+    assert profile.get_paas_backends() == [settings.DEFAULT_PAAS_BACKEND]
 
-    PaasCredential.objects.create(profile=profile, provider_name='provider1')
-    assert set(profile.get_providers()) == {
-        settings.DEFAULT_PAAS_PROVIDER, 'provider1'}
+    PaasCredential.objects.create(profile=profile, backend='backend1')
+    assert set(profile.get_paas_backends()) == {
+        settings.DEFAULT_PAAS_BACKEND, 'backend1'}
 
-    c = PaasCredential.objects.get(profile=profile, provider_name=settings.DEFAULT_PAAS_PROVIDER)
+    c = PaasCredential.objects.get(profile=profile, backend=settings.DEFAULT_PAAS_BACKEND)
     c.delete()
     assert profile.paas_credential_set.count() == 1
-    assert set(profile.get_providers()) == {
-        settings.DEFAULT_PAAS_PROVIDER, 'provider1'}
+    assert set(profile.get_paas_backends()) == {
+        settings.DEFAULT_PAAS_BACKEND, 'backend1'}
     assert profile.paas_credential_set.count() == 2
 
 
 @pytest.mark.django_db
 def test_profile_get_credential(user, settings):
     profile = user.profile
-    PaasCredential.objects.create(profile=profile, provider_name='provider1')
-    c = profile.get_credential(settings.DEFAULT_PAAS_PROVIDER)
-    assert c.provider_name == settings.DEFAULT_PAAS_PROVIDER
+    PaasCredential.objects.create(profile=profile, backend='backend1')
+    c = profile.get_credential(settings.DEFAULT_PAAS_BACKEND)
+    assert c.backend == settings.DEFAULT_PAAS_BACKEND
 
     with pytest.raises(Profile.NoCredentials):
         profile.get_credential('doesnotexist')
@@ -38,7 +38,7 @@ def test_profile_get_credential(user, settings):
 def test_credentials_get_password(user):
     profile = user.profile
     c = PaasCredential.objects.create(
-        profile=profile, provider_name='provider1')
+        profile=profile, backend='backend1')
     pass1 = c.get_password()
     pass2 = c.get_password()
     assert pass1 == pass2
@@ -47,11 +47,11 @@ def test_credentials_get_password(user):
 @pytest.mark.django_db
 def test_credentials_profile_unique(user):
     profile = user.profile
-    PaasCredential.objects.create(profile=profile, provider_name='provider1')
-    PaasCredential.objects.create(profile=profile, provider_name='provider2')
+    PaasCredential.objects.create(profile=profile, backend='backend1')
+    PaasCredential.objects.create(profile=profile, backend='backend2')
     with pytest.raises(IntegrityError):
         PaasCredential.objects.create(
-            profile=profile, provider_name='provider1')
+            profile=profile, backend='backend1')
 
 
 @pytest.mark.django_db
@@ -64,13 +64,13 @@ def test_credentials_profile_unique(user):
 ])
 def test_app_id_validation(name):
     with pytest.raises(ValidationError):
-        App.objects.create(app_id=name, provider_name='testing')
+        App.objects.create(app_id=name, backend='testing')
 
 
 @pytest.mark.django_db
-def test_app_get_provider_name():
+def test_app_get_backend():
     with pytest.raises(App.DoesNotExist):
-        App.get_provider_name('doesnotexit')
+        App.get_backend('doesnotexit')
 
-    App.objects.create(app_id='dummy1', provider_name='provider1')
-    assert App.get_provider_name('dummy1') == 'provider1'
+    App.objects.create(app_id='dummy1', backend='backend1')
+    assert App.get_backend('dummy1') == 'backend1'

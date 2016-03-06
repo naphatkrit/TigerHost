@@ -3,7 +3,7 @@ import json
 from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
-from api_server.providers import get_provider_authenticated_client
+from api_server.paas_backends import get_backend_authenticated_client
 from wsse.decorators import check_wsse_token
 
 
@@ -19,9 +19,9 @@ class AppCollaboratorsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        provider = self.get_provider_for_app(app_id)
-        auth_client = get_provider_authenticated_client(
-            request.user.username, provider)
+        backend = self.get_backend_for_app(app_id)
+        auth_client = get_backend_authenticated_client(
+            request.user.username, backend)
 
         users = auth_client.get_application_collaborators(app_id)
         return self.respond_multiple(users)
@@ -41,11 +41,11 @@ class AppCollaboratorsApiView(ApiBaseView):
         """
         username = json.loads(request.body)['username']
 
-        provider = self.get_provider_for_app(app_id)
-        auth_client = get_provider_authenticated_client(
-            request.user.username, provider)
+        backend = self.get_backend_for_app(app_id)
+        auth_client = get_backend_authenticated_client(
+            request.user.username, backend)
 
-        self.ensure_user_exists(username, provider)
+        self.ensure_user_exists(username, backend)
 
         auth_client.add_application_collaborator(app_id, username)
         return self.respond()

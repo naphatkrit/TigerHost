@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView, ErrorResponse
 from api_server.models import App
-from api_server.providers import get_provider_authenticated_client
+from api_server.paas_backends import get_backend_authenticated_client
 from wsse.decorators import check_wsse_token
 
 
@@ -18,8 +18,8 @@ class AppsApiView(ApiBaseView):
 
         Return format (JSON):
         {
-            'provider1': ['app1', ...],
-            'provider2': ['app1', ...],
+            'backend1': ['app1', ...],
+            'backend2': ['app1', ...],
             ...
         }
 
@@ -28,10 +28,10 @@ class AppsApiView(ApiBaseView):
         @rtype: django.http.HttpResponse
         """
         result = {}
-        for provider in request.user.profile.get_providers():
-            auth_client = get_provider_authenticated_client(
-                request.user.username, provider)
-            result[provider] = auth_client.get_all_applications()
+        for backend in request.user.profile.get_paas_backends():
+            auth_client = get_backend_authenticated_client(
+                request.user.username, backend)
+            result[backend] = auth_client.get_all_applications()
         return self.respond(result)
 
     def post(self, request):
@@ -40,9 +40,9 @@ class AppsApiView(ApiBaseView):
         The body of the request should be a JSON with the following format:
         {
             'id': 'app_id_here',
-            'provider': 'provider_name',
+            'backend': 'backend',
         }
-        If the 'provider' field is not provided, then the default is used.
+        If the 'backend' field is not provided, then the default is used.
 
         @type request: django.http.HttpRequest
 
@@ -50,15 +50,15 @@ class AppsApiView(ApiBaseView):
         """
         data = json.loads(request.body)
         app_id = data['id']
-        provider = data.get('provider', settings.DEFAULT_PAAS_PROVIDER)
+        backend = data.get('backend', settings.DEFAULT_PAAS_BACKEND)
 
-        # is the user authorized to use this provider?
-        auth_client = get_provider_authenticated_client(
-            request.user.username, provider)
+        # is the user authorized to use this backend?
+        auth_client = get_backend_authenticated_client(
+            request.user.username, backend)
 
         # is there already an app with this ID?
         try:
-            app = App.objects.create(app_id=app_id, provider_name=provider)
+            app = App.objects.create(app_id=app_id, backend=backend)
         except IntegrityError:
             raise ErrorResponse('App {} already exists. Please pick a new name.'.format(app_id), status=400)
 

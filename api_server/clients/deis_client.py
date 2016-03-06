@@ -37,7 +37,7 @@ class DeisClient(BaseClient):
             "password": password
         })
         token = resp.json()['token']
-        return DeisAuthenticatedClient(self.provider_url, token)
+        return DeisAuthenticatedClient(self.backend_url, token)
 
     def login_or_register(self, username, password, email):
         """Try to log the user in. If the user has not been created yet, then

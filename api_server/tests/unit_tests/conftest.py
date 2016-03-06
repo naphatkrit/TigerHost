@@ -76,13 +76,13 @@ def http_headers(wsse_header):
 
 
 @pytest.fixture
-def mock_provider_authenticated_client():
+def mock_backend_authenticated_client():
     mocked = mock.Mock(spec=BaseAuthenticatedClient)
     return mocked
 
 
 @pytest.fixture
-def mock_provider_client():
+def mock_backend_client():
     return mock.Mock(spec=BaseClient)
 
 
@@ -93,4 +93,4 @@ def app_id():
 
 @pytest.fixture(scope='function')
 def make_app(app_id, settings):
-    App.objects.create(app_id=app_id, provider_name=settings.DEFAULT_PAAS_PROVIDER)
+    App.objects.create(app_id=app_id, backend=settings.DEFAULT_PAAS_BACKEND)

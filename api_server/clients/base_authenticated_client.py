@@ -2,7 +2,7 @@ from api_server.clients.base_client import BaseClient
 
 
 class BaseAuthenticatedClient(BaseClient):
-    """The provider client for API that requires authentication
+    """The backend client for API that requires authentication
     """
 
     def get_all_applications(self):

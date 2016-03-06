@@ -16,7 +16,7 @@ def make_secret():
 class PaasCredential(models.Model):
     profile = models.ForeignKey(
         'Profile', on_delete=models.CASCADE, related_name='paas_credential_set')
-    provider_name = models.CharField(max_length=50)
+    backend = models.CharField(max_length=50)
     password_seed = models.CharField(default=make_secret, max_length=50)
 
     def get_password(self):
@@ -24,7 +24,7 @@ class PaasCredential(models.Model):
         return signer.sign(self.password_seed)
 
     class Meta:
-        unique_together = ('profile', 'provider_name')
+        unique_together = ('profile', 'backend')
 
 
 class Profile(models.Model):
@@ -34,31 +34,31 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    def get_providers(self):
-        """Return the list of names of providers that this user has
+    def get_paas_backends(self):
+        """Return the list of names of backends that this user has
         a credential for.
 
         @rtype: list
-            provider names (str)
+            backend names (str)
         """
-        providers = [x.provider_name for x in self.paas_credential_set.all()]
-        if settings.DEFAULT_PAAS_PROVIDER not in providers:
+        backends = [x.backend for x in self.paas_credential_set.all()]
+        if settings.DEFAULT_PAAS_BACKEND not in backends:
             PaasCredential.objects.create(
-                profile=self, provider_name=settings.DEFAULT_PAAS_PROVIDER)
-            providers.append(settings.DEFAULT_PAAS_PROVIDER)
-        return providers
+                profile=self, backend=settings.DEFAULT_PAAS_BACKEND)
+            backends.append(settings.DEFAULT_PAAS_BACKEND)
+        return backends
 
-    def get_credential(self, provider_name):
-        """Get the credential for this provider.
+    def get_credential(self, backend):
+        """Get the credential for this backend.
 
-        @type provider_name: str
+        @type backend: str
 
         @rtype: PaasCredential
 
         @raises e: Profile.NoCredentials
         """
         for x in self.paas_credential_set.all():
-            if x.provider_name == provider_name:
+            if x.backend == backend:
                 return x
         raise Profile.NoCredentials
 
@@ -70,16 +70,16 @@ class App(models.Model):
     # NOTE: unique implies index
     app_id = models.CharField(max_length=128, unique=True, validators=[
                               RegexValidator(regex=r'^[a-z0-9-]+$')])
-    provider_name = models.CharField(max_length=50)
+    backend = models.CharField(max_length=50)
 
     @classmethod
-    def get_provider_name(cls, app_id):
-        """Given an app ID, return the provider name.
+    def get_backend(cls, app_id):
+        """Given an app ID, return the backend name.
 
         @rtype: str
         @raises e: App.DoesNotExist
         """
-        return cls.objects.get(app_id=app_id).provider_name
+        return cls.objects.get(app_id=app_id).backend
 
     def save(self, *args, **kwargs):
         # call the validation methods
@@ -114,7 +114,7 @@ def make_default_credential(sender, instance, created, **kwargs):
     try:
         if created:
             credential, created = PaasCredential.objects.get_or_create(
-                profile=instance, provider_name=settings.DEFAULT_PAAS_PROVIDER)
+                profile=instance, backend=settings.DEFAULT_PAAS_BACKEND)
             if created:
                 try:
                     credential.save()
