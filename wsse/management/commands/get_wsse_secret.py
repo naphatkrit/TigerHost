@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from wsse.utils import get_secret
 
+
 class Command(BaseCommand):
     help = 'Get the WSSE token for the specified users.'
 
@@ -9,4 +10,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for username in options['usernames']:
-            self.stdout.write('{username}: {token}\n'.format(username=username, token=get_secret(username)))
+            self.stdout.write('{username}: {token}\n'.format(
+                username=username, token=get_secret(username)))
