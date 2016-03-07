@@ -93,4 +93,4 @@ def app_id():
 
 @pytest.fixture(scope='function')
 def make_app(app_id, settings):
-    App.objects.create(app_id=app_id, backend=settings.DEFAULT_PAAS_BACKEND)
+    return App.objects.create(app_id=app_id, backend=settings.DEFAULT_PAAS_BACKEND)

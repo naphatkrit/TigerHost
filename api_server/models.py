@@ -8,6 +8,9 @@ from django.db.models.signals import post_save
 from django.db import models
 from django.utils import crypto
 
+from api_server.addons.state import AddonState
+from api_server.fields import EnumField
+
 
 def make_secret():
     return crypto.get_random_string(length=50)
@@ -126,3 +129,10 @@ def make_default_credential(sender, instance, created, **kwargs):
             raise
 
 post_save.connect(make_default_credential, sender=Profile)
+
+
+class Addon(models.Model):
+    provider_name = models.CharField(max_length=50)
+    provider_uuid = models.UUIDField(null=True)
+    app = models.ForeignKey(App, on_delete=models.CASCADE)
+    state = EnumField(AddonState)
