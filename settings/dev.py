@@ -76,6 +76,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api_server.wsgi.application'
 
+# START CELERY CONFIGURATION
+
+BROKER_URL = os.environ.get('BROKER_URL', 'amqp://guest:guest@localhost:5672//')
+
+# END CELERY CONFIGURATION
+
 # START PAAS CONFIGURATION
 
 PAAS_BACKENDS = {

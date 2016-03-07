@@ -13,3 +13,9 @@ PAAS_BACKENDS['test_backend'] = {
 }
 
 DEFAULT_PAAS_BACKEND = 'test_backend'
+
+# NOTE: this only allows Celery to store messages. No workers will
+# actually work on them in unit tests
+BROKER_URL = 'django://'
+
+INSTALLED_APPS += ['kombu.transport.django']

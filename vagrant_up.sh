@@ -30,6 +30,7 @@ sudo aptitude -y install python-psycopg2
 ## should be in requirements
 ##sudo pip install django
 export DATABASE_URL=postgres://vagrant@10.0.2.2:5432/vagrant
+export BROKER_URL=amqp://guest:guest@10.0.2.2:5672//
 sudo pip install -r /vagrant/requirements.txt
 python /vagrant/manage.py migrate
 python /vagrant/manage.py loaddata /vagrant/api_server/fixtures/test_user.json
@@ -41,5 +42,6 @@ export DJANGO_DEBUG_NETID=$1
 
 # start the server
 screen -dmS djangoproc bash -c 'python /vagrant/manage.py runserver 0.0.0.0:8000'
+screen -dmS celeryproc bash -c '(cd /vagrant && celery -A api_server worker -l info)'
 # quit with
 # screen -S djangoproc -X quit
