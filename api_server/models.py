@@ -7,6 +7,7 @@ from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
 from django.db import models
 from django.utils import crypto
+from jsonfield import JSONField
 
 from api_server.addons.state import AddonState
 from api_server.fields import EnumField
@@ -136,3 +137,4 @@ class Addon(models.Model):
     provider_uuid = models.UUIDField()
     app = models.ForeignKey(App, on_delete=models.CASCADE)
     state = EnumField(AddonState)
+    config = JSONField(null=True)

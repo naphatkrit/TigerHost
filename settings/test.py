@@ -18,8 +18,6 @@ ADDON_PROVIDERS['test_provider'] = {
 
 DEFAULT_PAAS_BACKEND = 'test_backend'
 
-# NOTE: this only allows Celery to store messages. No workers will
-# actually work on them in unit tests
-BROKER_URL = 'django://'
-
-INSTALLED_APPS += ['kombu.transport.django']
+# turn all async tasks into blocking tasks
+CELERY_ALWAYS_EAGER = True
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
