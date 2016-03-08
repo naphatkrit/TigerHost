@@ -133,6 +133,6 @@ post_save.connect(make_default_credential, sender=Profile)
 
 class Addon(models.Model):
     provider_name = models.CharField(max_length=50)
-    provider_uuid = models.UUIDField(null=True)
+    provider_uuid = models.UUIDField()
     app = models.ForeignKey(App, on_delete=models.CASCADE)
     state = EnumField(AddonState)

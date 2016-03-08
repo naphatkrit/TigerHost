@@ -1,4 +1,5 @@
 import pytest
+import uuid
 
 from enum import Enum
 
@@ -23,7 +24,7 @@ def test_enum_field_deconstruct():
 @pytest.mark.django_db
 def test_sample_model_simple(make_app):
     obj = Addon.objects.create(
-        provider_name='test', app=make_app, state=AddonState.waiting_for_provision)
+        provider_name='test', provider_uuid=uuid.uuid4(), app=make_app, state=AddonState.waiting_for_provision)
     assert obj.state == AddonState.waiting_for_provision
     obj.state = AddonState.deprovisioned
     obj.save()
@@ -32,7 +33,7 @@ def test_sample_model_simple(make_app):
 @pytest.mark.django_db
 def test_sample_model_type(make_app):
     obj = Addon.objects.create(
-        provider_name='test', app=make_app, state=AddonState.waiting_for_provision)
+        provider_name='test', provider_uuid=uuid.uuid4(), app=make_app, state=AddonState.waiting_for_provision)
     obj.state = SampleEnum.value1
     with pytest.raises(ValueError):
         obj.save()
@@ -41,11 +42,11 @@ def test_sample_model_type(make_app):
 @pytest.mark.django_db
 def test_sample_model_query(make_app):
     Addon.objects.create(
-        provider_name='test', app=make_app, state=AddonState.waiting_for_provision)
+        provider_name='test', provider_uuid=uuid.uuid4(), app=make_app, state=AddonState.waiting_for_provision)
     Addon.objects.create(
-        provider_name='test', app=make_app, state=AddonState.waiting_for_provision)
-    Addon.objects.create(provider_name='test', app=make_app,
-                         state=AddonState.provisioned)
+        provider_name='test', provider_uuid=uuid.uuid4(), app=make_app, state=AddonState.waiting_for_provision)
+    Addon.objects.create(provider_name='test', provider_uuid=uuid.uuid4(
+    ), app=make_app, state=AddonState.provisioned)
     assert Addon.objects.filter(
         state=AddonState.waiting_for_provision).count() == 2
     assert Addon.objects.filter(state=AddonState.provisioned).count() == 1
