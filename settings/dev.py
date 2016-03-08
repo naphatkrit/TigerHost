@@ -105,7 +105,7 @@ DEFAULT_PAAS_BACKEND = 'deis_prod'
 ADDON_PROVIDERS = {
     'secret': {
         # TODO make an actual provider
-        'CLASS': 'api_server.addons.providers.base_provider.BaseAddonProvider',
+        'CLASS': 'api_server.addons.providers.secret_provider.SecretAddonProvider',
         'ARGS': [],
         'KWARGS': {},
     }
