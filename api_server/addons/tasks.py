@@ -4,7 +4,9 @@ from api_server.addons.providers.utils import get_provider_from_provider_name
 from api_server.addons.state import AddonState
 from api_server.addons.state_machine_manager import StateMachineManager
 from api_server.celery import app
+from api_server.clients.exceptions import ClientError
 from api_server.models import Addon
+from api_server.paas_backends import get_backend_authenticated_client, BackendsError
 
 
 def _valid_config(config):
@@ -84,5 +86,52 @@ def wait_for_deprovision(addon_id):
             pass
         return
     with manager.transition(addon_id, AddonEvent.deprovision_success):
+        pass
+    # TODO should start a new task if needed
+
+
+@app.task
+def set_config(addon_id):
+    """The addon has been provisioned. Now set the config"""
+    try:
+        addon = Addon.objects.get(pk=addon_id)
+    except Addon.DoesNotExist:
+        # TODO log?
+        raise
+
+    manager = StateMachineManager()
+
+    if addon.state is not AddonState.provisioned:
+        # TODO log?
+        return
+
+    if not addon.app or not addon.user or addon.config is None:
+        # TODO log?
+        # TODO this is different from provision failure. We do want to clean up
+        with manager.transition(addon_id, AddonEvent.config_variables_set_failure):
+            pass
+        return
+
+    try:
+        backend_client = get_backend_authenticated_client(
+            addon.user.username, addon.app.backend)
+    except BackendsError:
+        # TODO log?
+        # TODO this is different from provision failure. We do want to clean up
+        with manager.transition(addon_id, AddonEvent.config_variables_set_failure):
+            pass
+        return
+
+    try:
+        backend_client.set_application_env_variables(addon.app.app_id, addon.config)
+    except ClientError:
+        # TODO retriable
+        # TODO log?
+        # TODO this is different from provision failure. We do want to clean up
+        with manager.transition(addon_id, AddonEvent.config_variables_set_failure):
+            pass
+        return
+
+    with manager.transition(addon_id, AddonEvent.config_variables_set_success):
         pass
     # TODO should start a new task if needed

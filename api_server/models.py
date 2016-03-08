@@ -135,6 +135,8 @@ post_save.connect(make_default_credential, sender=Profile)
 class Addon(models.Model):
     provider_name = models.CharField(max_length=50)
     provider_uuid = models.UUIDField()
-    app = models.ForeignKey(App, on_delete=models.CASCADE)
+    # TODO on app deletion, should deprovision all resources
+    app = models.ForeignKey(App, on_delete=models.SET_NULL, null=True)
     state = EnumField(AddonState)
     config = JSONField(null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

@@ -4,7 +4,9 @@ import pytest
 from api_server.addons.providers.base_provider import BaseAddonProvider
 from api_server.addons.providers.exceptions import AddonProviderError
 from api_server.addons.state import AddonState
-from api_server.addons.tasks import wait_for_provision, wait_for_deprovision
+from api_server.addons.tasks import wait_for_provision, wait_for_deprovision, set_config
+from api_server.clients.exceptions import ClientError
+from api_server.paas_backends import BackendsError
 
 
 @pytest.fixture(scope='function')
@@ -122,3 +124,124 @@ def test_wait_for_deprovision_wait_failure(addon, fake_provider):
     addon.refresh_from_db()
     assert addon.state is AddonState.error
     fake_provider.wait_for_deprovision.assert_called_once_with(addon.provider_uuid)
+
+
+@pytest.mark.django_db
+def test_set_config_simple(addon, mock_backend_authenticated_client):
+    """
+    @type addon: api_server.models.Addon
+    @type mock_backend_authenticated_client: mock.Mock
+    """
+    addon.state = AddonState.provisioned
+    addon.config = {
+        'DATABASE_URL': 'fake://fake',
+        'ENV_VAR1': 'var1',
+    }
+    addon.save()
+    with mock.patch('api_server.addons.tasks.get_backend_authenticated_client') as mocked:
+        mocked.return_value = mock_backend_authenticated_client
+        set_config.delay(addon.id)
+        mocked.assert_called_once_with(addon.user.username, addon.app.backend)
+    addon.refresh_from_db()
+    assert addon.state is AddonState.ready
+    mock_backend_authenticated_client.set_application_env_variables.assert_called_once_with(addon.app.app_id, addon.config)
+
+
+@pytest.mark.django_db
+def test_set_config_no_app(addon, mock_backend_authenticated_client):
+    """
+    @type addon: api_server.models.Addon
+    @type mock_backend_authenticated_client: mock.Mock
+    """
+    addon.state = AddonState.provisioned
+    addon.config = {
+        'DATABASE_URL': 'fake://fake',
+        'ENV_VAR1': 'var1',
+    }
+    addon.app = None
+    addon.save()
+    with mock.patch('api_server.addons.tasks.get_backend_authenticated_client') as mocked:
+        mocked.return_value = mock_backend_authenticated_client
+        set_config.delay(addon.id)
+    addon.refresh_from_db()
+    assert addon.state is AddonState.error
+
+
+@pytest.mark.django_db
+def test_set_config_no_user(addon, mock_backend_authenticated_client):
+    """
+    @type addon: api_server.models.Addon
+    @type mock_backend_authenticated_client: mock.Mock
+    """
+    addon.state = AddonState.provisioned
+    addon.config = {
+        'DATABASE_URL': 'fake://fake',
+        'ENV_VAR1': 'var1',
+    }
+    addon.user = None
+    addon.save()
+    with mock.patch('api_server.addons.tasks.get_backend_authenticated_client') as mocked:
+        mocked.return_value = mock_backend_authenticated_client
+        set_config.delay(addon.id)
+    addon.refresh_from_db()
+    assert addon.state is AddonState.error
+
+
+@pytest.mark.django_db
+def test_set_config_no_config(addon, mock_backend_authenticated_client):
+    """
+    @type addon: api_server.models.Addon
+    @type mock_backend_authenticated_client: mock.Mock
+    """
+    addon.state = AddonState.provisioned
+    addon.config = None
+    addon.save()
+    with mock.patch('api_server.addons.tasks.get_backend_authenticated_client') as mocked:
+        mocked.return_value = mock_backend_authenticated_client
+        set_config.delay(addon.id)
+    addon.refresh_from_db()
+    assert addon.state is AddonState.error
+
+
+@pytest.mark.django_db
+def test_set_config_no_backend(addon, mock_backend_authenticated_client):
+    """
+    @type addon: api_server.models.Addon
+    @type mock_backend_authenticated_client: mock.Mock
+    """
+    addon.state = AddonState.provisioned
+    addon.config = {
+        'DATABASE_URL': 'fake://fake',
+        'ENV_VAR1': 'var1',
+    }
+    addon.save()
+    with mock.patch('api_server.addons.tasks.get_backend_authenticated_client') as mocked:
+        mocked.side_effect = BackendsError
+        set_config.delay(addon.id)
+        mocked.assert_called_once_with(addon.user.username, addon.app.backend)
+    addon.refresh_from_db()
+    assert addon.state is AddonState.error
+
+
+@pytest.mark.django_db
+def test_set_config_failure(addon, mock_backend_authenticated_client):
+    """
+    @type addon: api_server.models.Addon
+    @type mock_backend_authenticated_client: mock.Mock
+    """
+    addon.state = AddonState.provisioned
+    addon.config = {
+        'DATABASE_URL': 'fake://fake',
+        'ENV_VAR1': 'var1',
+    }
+    addon.save()
+
+    mock_backend_authenticated_client.set_application_env_variables.side_effect = ClientError
+
+    with mock.patch('api_server.addons.tasks.get_backend_authenticated_client') as mocked:
+        mocked.return_value = mock_backend_authenticated_client
+        set_config.delay(addon.id)
+        mocked.assert_called_once_with(addon.user.username, addon.app.backend)
+    addon.refresh_from_db()
+    assert addon.state is AddonState.error
+    mock_backend_authenticated_client.set_application_env_variables.assert_called_once_with(addon.app.app_id, addon.config)
