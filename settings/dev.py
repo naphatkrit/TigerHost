@@ -22,7 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'b@4p$!j6-xy_&c401&krw#)0)jrv#1m2qt&7)%^9%5!+yv9*mj')
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY', 'b@4p$!j6-xy_&c401&krw#)0)jrv#1m2qt&7)%^9%5!+yv9*mj')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,7 +79,8 @@ WSGI_APPLICATION = 'api_server.wsgi.application'
 
 # START CELERY CONFIGURATION
 
-BROKER_URL = os.environ.get('BROKER_URL', 'amqp://guest:guest@localhost:5672//')
+BROKER_URL = os.environ.get(
+    'BROKER_URL', 'amqp://guest:guest@localhost:5672//')
 
 # END CELERY CONFIGURATION
 
@@ -94,6 +96,19 @@ PAAS_BACKENDS = {
 DEFAULT_PAAS_BACKEND = 'deis_prod'
 
 # END PAAS CONFIGURATION
+
+# START ADDON PROVIDER CONFIGURATION
+
+ADDON_PROVIDERS = {
+    'secret': {
+        # TODO make an actual provider
+        'CLASS': 'api_server.addons.providers.base_provider.BaseAddonProvider',
+        'ARGS': [],
+        'KWARGS': {},
+    }
+}
+
+# END ADDON PROVIDER CONFIGURATION
 
 # START AUTHENTICATION CONFIGURATION
 

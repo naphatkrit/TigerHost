@@ -12,6 +12,10 @@ PAAS_BACKENDS['test_backend'] = {
     'CLIENT': 'api_server.clients.base_client.BaseClient',
 }
 
+ADDON_PROVIDERS['test_provider'] = {
+    'CLASS': 'api_server.addons.providers.base_provider.BaseAddonProvider',
+}
+
 DEFAULT_PAAS_BACKEND = 'test_backend'
 
 # NOTE: this only allows Celery to store messages. No workers will
