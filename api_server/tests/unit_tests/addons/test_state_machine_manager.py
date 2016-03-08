@@ -11,6 +11,38 @@ def manager():
 
 
 @pytest.mark.django_db
+def test_transition_helper_success(addon, manager):
+    """
+    @type addon: api_server.models.Addon
+    @type manager: StateMachineManager
+    """
+    manager.transition_table = {
+        AddonState.waiting_for_provision: {
+            AddonEvent.provision_success: AddonState.provisioned
+        }
+    }
+    manager._transition_helper(addon, AddonEvent.provision_success)
+    assert addon.state == AddonState.provisioned
+
+
+@pytest.mark.django_db
+def test_transition_helper_failure(addon, manager):
+    """
+    @type addon: api_server.models.Addon
+    @type manager: StateMachineManager
+    """
+    manager.transition_table = {
+        AddonState.waiting_for_provision: {
+            AddonEvent.provision_success: AddonState.provisioned
+        }
+    }
+    old_state = addon.state
+    with pytest.raises(StateMachineTransitionError):
+        manager._transition_helper(addon, AddonEvent.deprovision_success)
+    assert addon.state == old_state
+
+
+@pytest.mark.django_db
 def test_transition_success(addon, manager):
     """
     @type addon: api_server.models.Addon
@@ -21,8 +53,11 @@ def test_transition_success(addon, manager):
             AddonEvent.provision_success: AddonState.provisioned
         }
     }
-    manager.transition(addon, AddonEvent.provision_success)
+    with manager.transition(addon.id, AddonEvent.provision_success) as addon_inner:
+        addon_inner.provider_name = 'test_provider2'
+    addon.refresh_from_db()
     assert addon.state == AddonState.provisioned
+    assert addon.provider_name == 'test_provider2'
 
 
 @pytest.mark.django_db
@@ -36,7 +71,9 @@ def test_transition_failure(addon, manager):
             AddonEvent.provision_success: AddonState.provisioned
         }
     }
-    old_state = addon.state
     with pytest.raises(StateMachineTransitionError):
-        manager.transition(addon, AddonEvent.deprovision_success)
-    assert addon.state == old_state
+        with manager.transition(addon.id, AddonEvent.deprovision_success) as addon_inner:
+            addon_inner.provider_name = 'test_provider2'
+    addon.refresh_from_db()
+    assert addon.state == AddonState.waiting_for_provision
+    assert addon.provider_name == 'test_provider'

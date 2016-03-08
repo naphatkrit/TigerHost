@@ -1,5 +1,9 @@
+from contextlib import contextmanager
+from django.db import transaction
+
 from api_server.addons.event import AddonEvent
 from api_server.addons.state import AddonState
+from api_server.models import Addon
 
 
 class StateMachineError(Exception):
@@ -30,7 +34,7 @@ class StateMachineManager(object):
         },
     }
 
-    def transition(self, addon, event):
+    def _transition_helper(self, addon, event):
         """Transition to a different state. Doesn't actually save.
 
         @type addon: api_server.models.Addon
@@ -38,11 +42,36 @@ class StateMachineManager(object):
 
         @raises: StateMachineTransitionError
         """
-        # can't handle atomicity here, because we may want to save some things
-        # in addition to the new state
         try:
             final_state = self.transition_table[addon.state][event]
         except KeyError:
             raise StateMachineTransitionError(
                 'Invalid transition for state {} with event {}.'.format(addon.state.name, event.name))
         addon.state = final_state
+
+    @contextmanager
+    def transition(self, addon_id, event):
+        """A context manager for transitioning to a different state.
+
+        The Addon is locked with select_for_update() and
+        yielded. Upon returning, the transition is performed,
+        and the Addon is saved. If an exception was raised,
+        everything is rolled back.
+
+        If the transition is  invalid, the yield still
+        happens, but the result will be rolled back.
+
+        @type addon_id: int
+        @type event: AddonEvent
+
+        @raises: StateMachineTransitionError
+        @raises: Addon.DoesNotExist
+        @raises: Exception
+            Whatever was raised in the with block does not
+            get caught.
+        """
+        with transaction.atomic():
+            addon = Addon.objects.select_for_update().get(pk=addon_id)
+            yield addon
+            self._transition_helper(addon, event)
+            addon.save()
