@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+
+import celery
+import mock
 import pytest
 
 from api_server.addons.event import AddonEvent
@@ -8,6 +12,11 @@ from api_server.addons.state_machine_manager import StateMachineManager, StateMa
 @pytest.fixture(scope='function')
 def manager():
     return StateMachineManager()
+
+
+@pytest.fixture(scope='function')
+def mock_task():
+    return mock.Mock(spec=celery.app.task.Task)
 
 
 @pytest.mark.django_db
@@ -77,3 +86,16 @@ def test_transition_failure(addon, manager):
     addon.refresh_from_db()
     assert addon.state == AddonState.waiting_for_provision
     assert addon.provider_name == 'test_provider'
+
+
+@pytest.mark.django_db
+def test_start_task(addon, manager, mock_task):
+    """
+    @type addon: api_server.models.Addon
+    @type manager: StateMachineManager
+    """
+    manager.tasks_table = {
+        AddonState.waiting_for_provision: mock_task
+    }
+    manager.start_task(addon)
+    mock_task.delay.assert_called_once_with(addon.id)
