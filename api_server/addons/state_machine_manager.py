@@ -3,6 +3,7 @@ from django.db import transaction
 
 from api_server.addons.event import AddonEvent
 from api_server.addons.state import AddonState
+from api_server.celery import app
 from api_server.models import Addon
 
 
@@ -12,6 +13,11 @@ class StateMachineError(Exception):
 
 class StateMachineTransitionError(Exception):
     pass
+
+
+@app.task
+def _continue_state_machine(addon_id, state_machine_manager):
+    state_machine_manager.start_task(addon_id)
 
 
 class StateMachineManager(object):
@@ -84,12 +90,13 @@ class StateMachineManager(object):
             self._transition_helper(addon, event)
             addon.save()
 
-    def start_task(self, addon):
+    def start_task(self, addon_id):
         """Kick off a task for this addon, if necessary.
 
         Uses the tasks table.
 
         @type: addon: api_server.models.Addon
         """
+        addon = Addon.objects.get(pk=addon_id)
         if addon.state in self.tasks_table:
-            self.tasks_table[addon.state].delay(addon.id)
+            self.tasks_table[addon.state].apply_async((addon.id,), link=_continue_state_machine.s(self))
