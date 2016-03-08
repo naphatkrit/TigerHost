@@ -25,6 +25,7 @@ def _valid_config(config):
 @app.task
 def wait_for_provision(addon_id):
     """A task that waits for provision to complete."""
+    # TODO switch to a model that doesn't block but simply retries
     try:
         addon = Addon.objects.get(pk=addon_id)
     except Addon.DoesNotExist:
