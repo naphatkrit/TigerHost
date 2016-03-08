@@ -7,6 +7,7 @@ from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
 from django.db import models
 from django.utils import crypto
+from haikunator import haikunate
 from jsonfield import JSONField
 
 from api_server.addons.state import AddonState
@@ -132,6 +133,10 @@ def make_default_credential(sender, instance, created, **kwargs):
 post_save.connect(make_default_credential, sender=Profile)
 
 
+def _make_display_name():
+    return haikunate(tokenhex=True, tokenlength=6)
+
+
 class Addon(models.Model):
     provider_name = models.CharField(max_length=50)
     provider_uuid = models.UUIDField()
@@ -140,3 +145,5 @@ class Addon(models.Model):
     state = EnumField(AddonState)
     config = JSONField(null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    display_name = models.CharField(
+        max_length=100, unique=True, default=_make_display_name)
