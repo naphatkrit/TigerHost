@@ -1,10 +1,13 @@
 import mock
 import pytest
 
+from celery.exceptions import Retry
+
 from api_server.addons.providers.base_provider import BaseAddonProvider
 from api_server.addons.providers.exceptions import AddonProviderError
 from api_server.addons.state import AddonState
-from api_server.addons.tasks import wait_for_provision, set_config, deprovision
+from api_server.addons.tasks import check_provision, set_config, deprovision
+from api_server.celery import app
 from api_server.clients.exceptions import ClientError
 from api_server.paas_backends import BackendsError
 
@@ -15,7 +18,7 @@ def fake_provider():
 
 
 @pytest.mark.django_db
-def test_wait_for_provision_simple(addon, fake_provider):
+def test_check_provision_simple(addon, fake_provider):
     """
     @type addon: api_server.models.Addon
     @type fake_provider: mock.Mock
@@ -25,36 +28,78 @@ def test_wait_for_provision_simple(addon, fake_provider):
         'ENV_VAR1': 1,
         'ENV_VAR2': 2.5,
     }
-    fake_provider.wait_for_provision.return_value = {
+    fake_provider.provision_complete.return_value = (True, 0)
+    fake_provider.get_config.return_value = {
         'config': config
     }
     with mock.patch('api_server.addons.tasks.get_provider_from_provider_name') as mocked:
         mocked.return_value = fake_provider
-        result = wait_for_provision.delay(addon.id)
+        result = check_provision.delay(addon.id)
     assert result.get() == addon.id
     addon.refresh_from_db()
     assert addon.state is AddonState.provisioned
     assert addon.config == config
-    fake_provider.wait_for_provision.assert_called_once_with(
+    fake_provider.provision_complete.assert_called_once_with(
+        addon.provider_uuid)
+    fake_provider.get_config.assert_called_once_with(
         addon.provider_uuid)
 
 
 @pytest.mark.django_db
-def test_wait_for_provision_wrong_state(addon, fake_provider):
+def test_check_provision_retry(addon, fake_provider):
+    """
+    @type addon: api_server.models.Addon
+    @type fake_provider: mock.Mock
+    """
+    config = {
+        'DATABASE_URL': 'fake://fake',
+        'ENV_VAR1': 1,
+        'ENV_VAR2': 2.5,
+    }
+    fake_provider.provision_complete.side_effect = [
+        (False, 180), (False, 180), (False, 180), (True, 0)]
+    fake_provider.get_config.return_value = {
+        'config': config
+    }
+
+    @app.task
+    def test_task(addon_id):
+        assert addon_id == addon.id
+
+    @app.task
+    def test_no_error(task_id):
+        assert False
+
+    with mock.patch('api_server.addons.tasks.get_provider_from_provider_name') as mocked:
+        mocked.return_value = fake_provider
+        with pytest.raises(Retry):
+            # for some reason we can't get result this way with retry
+            check_provision.apply_async(
+                (addon.id,), link=test_task.s(), link_error=test_no_error.s())
+    addon.refresh_from_db()
+    assert addon.state is AddonState.provisioned
+    assert addon.config == config
+    assert fake_provider.provision_complete.call_count == 4
+    fake_provider.get_config.assert_called_once_with(
+        addon.provider_uuid)
+
+
+@pytest.mark.django_db
+def test_check_provision_wrong_state(addon, fake_provider):
     """
     @type addon: api_server.models.Addon
     @type fake_provider: mock.Mock
     """
     addon.state = AddonState.deprovisioned
     addon.save()
-    result = wait_for_provision.delay(addon.id)
+    result = check_provision.delay(addon.id)
     assert result.get() == addon.id
     addon.refresh_from_db()
     assert addon.state is AddonState.deprovisioned
 
 
 @pytest.mark.django_db
-def test_wait_for_provision_invalid_config(addon, fake_provider):
+def test_check_provision_invalid_config(addon, fake_provider):
     """
     @type addon: api_server.models.Addon
     @type fake_provider: mock.Mock
@@ -64,17 +109,20 @@ def test_wait_for_provision_invalid_config(addon, fake_provider):
         'ENV_VAR1': 1,
         'ENV_VAR2': {},
     }
-    fake_provider.wait_for_provision.return_value = {
+    fake_provider.provision_complete.return_value = (True, 0)
+    fake_provider.get_config.return_value = {
         'config': config
     }
     with mock.patch('api_server.addons.tasks.get_provider_from_provider_name') as mocked:
         mocked.return_value = fake_provider
-        result = wait_for_provision.delay(addon.id)
+        result = check_provision.delay(addon.id)
     assert result.get() == addon.id
     addon.refresh_from_db()
     assert addon.state is AddonState.error
     assert addon.config is None
-    fake_provider.wait_for_provision.assert_called_once_with(
+    fake_provider.provision_complete.assert_called_once_with(
+        addon.provider_uuid)
+    fake_provider.get_config.assert_called_once_with(
         addon.provider_uuid)
 
 
@@ -114,39 +162,41 @@ def test_deprovision_failure(addon, fake_provider):
 
 
 @pytest.mark.django_db
-def test_wait_for_provision_missing_config(addon, fake_provider):
+def test_check_provision_missing_config(addon, fake_provider):
     """
     @type addon: api_server.models.Addon
     @type fake_provider: mock.Mock
     """
-    fake_provider.wait_for_provision.return_value = {
-    }
+    fake_provider.provision_complete.return_value = (True, 0)
+    fake_provider.get_config.return_value = {}
     with mock.patch('api_server.addons.tasks.get_provider_from_provider_name') as mocked:
         mocked.return_value = fake_provider
-        result = wait_for_provision.delay(addon.id)
+        result = check_provision.delay(addon.id)
     assert result.get() == addon.id
     addon.refresh_from_db()
     assert addon.state is AddonState.error
     assert addon.config is None
-    fake_provider.wait_for_provision.assert_called_once_with(
+    fake_provider.provision_complete.assert_called_once_with(
+        addon.provider_uuid)
+    fake_provider.get_config.assert_called_once_with(
         addon.provider_uuid)
 
 
 @pytest.mark.django_db
-def test_wait_for_provision_wait_failure(addon, fake_provider):
+def test_check_provision_wait_failure(addon, fake_provider):
     """
     @type addon: api_server.models.Addon
     @type fake_provider: mock.Mock
     """
-    fake_provider.wait_for_provision.side_effect = AddonProviderError
+    fake_provider.provision_complete.side_effect = AddonProviderError
     with mock.patch('api_server.addons.tasks.get_provider_from_provider_name') as mocked:
         mocked.return_value = fake_provider
-        result = wait_for_provision.delay(addon.id)
+        result = check_provision.delay(addon.id)
     assert result.get() == addon.id
     addon.refresh_from_db()
     assert addon.state is AddonState.error
     assert addon.config is None
-    fake_provider.wait_for_provision.assert_called_once_with(
+    fake_provider.provision_complete.assert_called_once_with(
         addon.provider_uuid)
 
 

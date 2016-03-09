@@ -27,10 +27,8 @@ def _valid_config(config):
 # NOTE: all tasks MUST return the same ID back out, so they can be chained
 
 
-@app.task
-def wait_for_provision(addon_id):
-    """A task that waits for provision to complete."""
-    # TODO switch to a model that doesn't block but simply retries
+@app.task(bind=True, max_retries=None)
+def check_provision(self, addon_id):
     try:
         addon = Addon.objects.get(pk=addon_id)
     except Addon.DoesNotExist:
@@ -49,8 +47,19 @@ def wait_for_provision(addon_id):
             pass
         raise
 
+    # check if provision is done
     try:
-        result = provider.wait_for_provision(addon.provider_uuid)
+        ready, delay = provider.provision_complete(addon.provider_uuid)
+    except AddonProviderError:
+        with manager.transition(addon_id, AddonEvent.provision_failure):
+            pass
+        return addon_id
+    if not ready:
+        raise self.retry(countdown=delay)
+
+    # provision is done, store result
+    try:
+        result = provider.get_config(addon.provider_uuid)
     except AddonProviderError:
         with manager.transition(addon_id, AddonEvent.provision_failure):
             pass

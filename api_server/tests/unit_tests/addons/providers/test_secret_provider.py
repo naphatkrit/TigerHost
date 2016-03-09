@@ -1,10 +1,16 @@
 from api_server.addons.providers.secret_provider import SecretAddonProvider
 
 
-def test_wait_for_provision():
+def test_get_config():
     provider = SecretAddonProvider()
-    result = provider.wait_for_provision(None)
+    result = provider.get_config(None)
     assert len(result['config']['SECRET_KEY']) == 100
+
+
+def test_provision_complete():
+    provider = SecretAddonProvider()
+    ready, _ = provider.provision_complete(None)
+    assert ready is True
 
 
 def test_begin_provision():

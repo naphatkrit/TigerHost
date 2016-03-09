@@ -19,14 +19,27 @@ class BaseAddonProvider(object):
         """
         raise NotImplementedError
 
-    def wait_for_provision(self, uuid):
-        """This method should only return after the provision process
-        has ended. In the event that the provision process has already
-        completed, just return immediately. That is, this method should
-        not assume that it will only be called when provision is taking
-        place. As long as the resource is still available, this method
-        should work properly. If the resource is no longer available,
-        raise AddonProviderInvalidOperationError
+    def provision_complete(self, uuid):
+        """Check on the status of provision. This must return
+        immediately.
+
+        @type uuid: uuid.UUID
+
+        @rtype: (bool, int)
+            The first value should be True if provision is
+            complete. The second value is an optional value to
+            tell the server how long (in seconds) to wait before
+            checking in again. Note that this is only looked at
+            if the first value is False
+
+        @raises: AddonProviderError
+            If provision failed
+        """
+        raise NotImplementedError
+
+    def get_config(self, uuid):
+        """Get the config necesary to allow the app to use this
+        addon's resources.
 
         @type uuid: uuid.UUID
             The UUID of the addon, returned from `begin_provision`.
@@ -38,10 +51,9 @@ class BaseAddonProvider(object):
                     ...
                 }
             }
-
-        @raises: AddonProviderInvalidOperationError
-            If the resource is no longer available, or if the provision
-            fails.
+        @raises: AddonProviderError
+            If the config cannot be generated for some reason
+            (say, provision never started/failed).
         """
         raise NotImplementedError
 

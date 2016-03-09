@@ -23,7 +23,7 @@ def _continue_state_machine(addon_id, state_machine_manager):
 class StateMachineManager(object):
 
     def __init__(self):
-        from api_server.addons.tasks import wait_for_provision, set_config, deprovision
+        from api_server.addons.tasks import check_provision, set_config, deprovision
         self.transition_table = {
             AddonState.waiting_for_provision: {
                 AddonEvent.provision_success: AddonState.provisioned,
@@ -46,7 +46,7 @@ class StateMachineManager(object):
         }
 
         self.tasks_table = {
-            AddonState.waiting_for_provision: wait_for_provision,
+            AddonState.waiting_for_provision: check_provision,
             AddonState.provisioned: set_config,
             AddonState.error_should_deprovision: deprovision,
         }
