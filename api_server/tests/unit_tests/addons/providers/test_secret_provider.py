@@ -13,6 +13,7 @@ def test_begin_provision():
     assert 'uuid' in result
     assert 'message' in result
 
+
 def test_deprovision():
     provider = SecretAddonProvider()
     result = provider.deprovision(None)

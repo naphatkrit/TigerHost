@@ -4,7 +4,7 @@ import pytest
 from api_server.addons.providers.base_provider import BaseAddonProvider
 from api_server.addons.providers.exceptions import AddonProviderError
 from api_server.addons.state import AddonState
-from api_server.addons.tasks import wait_for_provision, set_config
+from api_server.addons.tasks import wait_for_provision, set_config, deprovision
 from api_server.clients.exceptions import ClientError
 from api_server.paas_backends import BackendsError
 
@@ -35,7 +35,8 @@ def test_wait_for_provision_simple(addon, fake_provider):
     addon.refresh_from_db()
     assert addon.state is AddonState.provisioned
     assert addon.config == config
-    fake_provider.wait_for_provision.assert_called_once_with(addon.provider_uuid)
+    fake_provider.wait_for_provision.assert_called_once_with(
+        addon.provider_uuid)
 
 
 @pytest.mark.django_db
@@ -73,7 +74,43 @@ def test_wait_for_provision_invalid_config(addon, fake_provider):
     addon.refresh_from_db()
     assert addon.state is AddonState.error
     assert addon.config is None
-    fake_provider.wait_for_provision.assert_called_once_with(addon.provider_uuid)
+    fake_provider.wait_for_provision.assert_called_once_with(
+        addon.provider_uuid)
+
+
+@pytest.mark.django_db
+def test_deprovision_simple(addon, fake_provider):
+    """
+    @type addon: api_server.models.Addon
+    @type fake_provider: mock.Mock
+    """
+    addon.state = AddonState.error_should_deprovision
+    addon.save()
+    with mock.patch('api_server.addons.tasks.get_provider_from_provider_name') as mocked:
+        mocked.return_value = fake_provider
+        result = deprovision.delay(addon.id)
+    assert result.get() == addon.id
+    addon.refresh_from_db()
+    assert addon.state is AddonState.error
+    fake_provider.deprovision.assert_called_once_with(addon.provider_uuid)
+
+
+@pytest.mark.django_db
+def test_deprovision_failure(addon, fake_provider):
+    """
+    @type addon: api_server.models.Addon
+    @type fake_provider: mock.Mock
+    """
+    addon.state = AddonState.error_should_deprovision
+    addon.save()
+    fake_provider.deprovision.side_effect = AddonProviderError
+    with mock.patch('api_server.addons.tasks.get_provider_from_provider_name') as mocked:
+        mocked.return_value = fake_provider
+        result = deprovision.delay(addon.id)
+    assert result.get() == addon.id
+    addon.refresh_from_db()
+    assert addon.state is AddonState.error
+    fake_provider.deprovision.assert_called_once_with(addon.provider_uuid)
 
 
 @pytest.mark.django_db
@@ -91,7 +128,8 @@ def test_wait_for_provision_missing_config(addon, fake_provider):
     addon.refresh_from_db()
     assert addon.state is AddonState.error
     assert addon.config is None
-    fake_provider.wait_for_provision.assert_called_once_with(addon.provider_uuid)
+    fake_provider.wait_for_provision.assert_called_once_with(
+        addon.provider_uuid)
 
 
 @pytest.mark.django_db
@@ -108,7 +146,8 @@ def test_wait_for_provision_wait_failure(addon, fake_provider):
     addon.refresh_from_db()
     assert addon.state is AddonState.error
     assert addon.config is None
-    fake_provider.wait_for_provision.assert_called_once_with(addon.provider_uuid)
+    fake_provider.wait_for_provision.assert_called_once_with(
+        addon.provider_uuid)
 
 
 @pytest.mark.django_db
@@ -130,7 +169,8 @@ def test_set_config_simple(addon, mock_backend_authenticated_client):
     assert result.get() == addon.id
     addon.refresh_from_db()
     assert addon.state is AddonState.ready
-    mock_backend_authenticated_client.set_application_env_variables.assert_called_once_with(addon.app.app_id, addon.config)
+    mock_backend_authenticated_client.set_application_env_variables.assert_called_once_with(
+        addon.app.app_id, addon.config)
 
 
 @pytest.mark.django_db
@@ -165,7 +205,7 @@ def test_set_config_no_app(addon, mock_backend_authenticated_client):
         result = set_config.delay(addon.id)
     assert result.get() == addon.id
     addon.refresh_from_db()
-    assert addon.state is AddonState.error
+    assert addon.state is AddonState.error_should_deprovision
 
 
 @pytest.mark.django_db
@@ -186,7 +226,7 @@ def test_set_config_no_user(addon, mock_backend_authenticated_client):
         result = set_config.delay(addon.id)
     assert result.get() == addon.id
     addon.refresh_from_db()
-    assert addon.state is AddonState.error
+    assert addon.state is AddonState.error_should_deprovision
 
 
 @pytest.mark.django_db
@@ -203,7 +243,7 @@ def test_set_config_no_config(addon, mock_backend_authenticated_client):
         result = set_config.delay(addon.id)
     assert result.get() == addon.id
     addon.refresh_from_db()
-    assert addon.state is AddonState.error
+    assert addon.state is AddonState.error_should_deprovision
 
 
 @pytest.mark.django_db
@@ -224,7 +264,7 @@ def test_set_config_no_backend(addon, mock_backend_authenticated_client):
         mocked.assert_called_once_with(addon.user.username, addon.app.backend)
     assert result.get() == addon.id
     addon.refresh_from_db()
-    assert addon.state is AddonState.error
+    assert addon.state is AddonState.error_should_deprovision
 
 
 @pytest.mark.django_db
@@ -248,5 +288,6 @@ def test_set_config_failure(addon, mock_backend_authenticated_client):
         mocked.assert_called_once_with(addon.user.username, addon.app.backend)
     assert result.get() == addon.id
     addon.refresh_from_db()
-    assert addon.state is AddonState.error
-    mock_backend_authenticated_client.set_application_env_variables.assert_called_once_with(addon.app.app_id, addon.config)
+    assert addon.state is AddonState.error_should_deprovision
+    mock_backend_authenticated_client.set_application_env_variables.assert_called_once_with(
+        addon.app.app_id, addon.config)

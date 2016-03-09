@@ -7,3 +7,4 @@ class AddonState(Enum):
     ready = 3
     deprovisioned = 5
     error = 6
+    error_should_deprovision = 7

@@ -64,6 +64,34 @@ def wait_for_provision(addon_id):
 
 
 @app.task
+def deprovision(addon_id):
+    try:
+        addon = Addon.objects.get(pk=addon_id)
+    except Addon.DoesNotExist:
+        # TODO log?
+        raise
+
+    try:
+        provider = get_provider_from_provider_name(addon.provider_name)
+    except AddonProviderError:
+        # TODO log?
+        # TODO transition? this looks like a recoverable error
+        raise
+
+    manager = StateMachineManager()
+    try:
+        provider.deprovision(addon.provider_uuid)
+    except AddonProviderError:
+        # TODO retry?
+        with manager.transition(addon_id, AddonEvent.deprovision_failure):
+            pass
+        return addon_id
+    with manager.transition(addon_id, AddonEvent.deprovision_success):
+        pass
+    return addon_id
+
+
+@app.task
 def set_config(addon_id):
     """The addon has been provisioned. Now set the config"""
     try:
