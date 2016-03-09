@@ -39,14 +39,16 @@ def wait_for_provision(addon_id):
     if addon.state is not AddonState.waiting_for_provision:
         # TODO log?
         return addon_id
+    manager = StateMachineManager()
     try:
         provider = get_provider_from_provider_name(addon.provider_name)
     except AddonProviderError:
         # TODO log?
-        # TODO transition? this looks like a recoverable error
+        # transition so this task doesn't get restarted needlessly
+        with manager.transition(addon_id, AddonEvent.provision_failure):
+            pass
         raise
 
-    manager = StateMachineManager()
     try:
         result = provider.wait_for_provision(addon.provider_uuid)
     except AddonProviderError:
@@ -71,14 +73,16 @@ def deprovision(addon_id):
         # TODO log?
         raise
 
+    manager = StateMachineManager()
     try:
         provider = get_provider_from_provider_name(addon.provider_name)
     except AddonProviderError:
         # TODO log?
-        # TODO transition? this looks like a recoverable error
+        # transition so this task doesn't get restarted needlessly
+        with manager.transition(addon_id, AddonEvent.deprovision_failure):
+            pass
         raise
 
-    manager = StateMachineManager()
     try:
         provider.deprovision(addon.provider_uuid)
     except AddonProviderError:
@@ -108,7 +112,6 @@ def set_config(addon_id):
 
     if not addon.app or not addon.user or addon.config is None:
         # TODO log?
-        # TODO this is different from provision failure. We do want to clean up
         with manager.transition(addon_id, AddonEvent.config_variables_set_failure):
             pass
         return addon_id
@@ -118,7 +121,6 @@ def set_config(addon_id):
             addon.user.username, addon.app.backend)
     except BackendsError:
         # TODO log?
-        # TODO this is different from provision failure. We do want to clean up
         with manager.transition(addon_id, AddonEvent.config_variables_set_failure):
             pass
         return addon_id
@@ -129,12 +131,10 @@ def set_config(addon_id):
     except ClientError:
         # TODO retriable
         # TODO log?
-        # TODO this is different from provision failure. We do want to clean up
         with manager.transition(addon_id, AddonEvent.config_variables_set_failure):
             pass
         return addon_id
 
     with manager.transition(addon_id, AddonEvent.config_variables_set_success):
         pass
-    # TODO should start a new task if needed
     return addon_id
