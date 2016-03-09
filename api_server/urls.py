@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
 from api_server import views
+from api_server.api.addons_api_view import AddonsApiView
 from api_server.api.apps_api_view import AppsApiView
 from api_server.api.app_collaborators_api_view import AppCollaboratorsApiView
 from api_server.api.app_collaborator_details_api_view import AppCollaboratorDetailsApiView
@@ -20,6 +21,8 @@ urlpatterns = [
     url(r'^v1/apps/$', AppsApiView.as_view(), name='apps'),
     url(r'^v1/apps/([a-z0-9-]+)/$',
         AppDetailsApiView.as_view(), name='app_details'),
+    url(r'^v1/apps/([a-z0-9-]+)/addons/$',
+        AddonsApiView.as_view(), name='addons'),
     url(r'^v1/apps/([a-z0-9-]+)/collaborators/$',
         AppCollaboratorsApiView.as_view(), name='app_collaborators'),
     url(r'^v1/apps/([a-z0-9-]+)/collaborators/([a-z0-9]+)/$',

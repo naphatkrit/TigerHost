@@ -5,6 +5,8 @@ from django.utils.decorators import available_attrs, method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
+from api_server.addons.providers.exceptions import AddonProviderError
+from api_server.addons.state_machine_manager import StateMachineError
 from api_server.clients.exceptions import ClientResponseError, ClientError, ClientTimeoutError
 from api_server.models import App
 from api_server.paas_backends import get_backend_authenticated_client, BackendsError, BackendsUserError
@@ -59,6 +61,8 @@ def _handle_error_response(f):
 @method_decorator(_handle_error(ClientTimeoutError, status=500, message='PaaS server timeout'), 'dispatch')
 @method_decorator(_handle_error(BackendsError, status=500), 'dispatch')
 @method_decorator(_handle_error(BackendsUserError, status=400), 'dispatch')
+@method_decorator(_handle_error(StateMachineError, status=500), 'dispatch')
+@method_decorator(_handle_error(AddonProviderError, status=500), 'dispatch')
 @method_decorator(_handle_deis_client_response_error, 'dispatch')
 @method_decorator(_handle_error_response, 'dispatch')
 class ApiBaseView(View):

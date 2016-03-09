@@ -6,6 +6,8 @@ import pytest
 from django.contrib.auth.models import User
 from django.utils import crypto
 
+from api_server.addons.providers.base_provider import BaseAddonProvider
+from api_server.addons.state_machine_manager import StateMachineManager
 from api_server.clients.base_client import BaseClient
 from api_server.clients.base_authenticated_client import BaseAuthenticatedClient
 from api_server.models import App
@@ -94,3 +96,13 @@ def app_id():
 @pytest.fixture(scope='function')
 def make_app(app_id, settings):
     return App.objects.create(app_id=app_id, backend=settings.DEFAULT_PAAS_BACKEND)
+
+
+@pytest.fixture(scope='function')
+def mock_manager():
+    return mock.Mock(spec=StateMachineManager)
+
+
+@pytest.fixture(scope='function')
+def mock_addon_provider():
+    return mock.Mock(spec=BaseAddonProvider)
