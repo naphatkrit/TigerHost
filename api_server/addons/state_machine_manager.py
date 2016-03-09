@@ -28,10 +28,12 @@ class StateMachineManager(object):
             AddonState.waiting_for_provision: {
                 AddonEvent.provision_success: AddonState.provisioned,
                 AddonEvent.provision_failure: AddonState.error,
+                AddonEvent.deprovision_success: AddonState.deprovisioned,
             },
             AddonState.provisioned: {
                 AddonEvent.config_variables_set_success: AddonState.ready,
                 AddonEvent.config_variables_set_failure: AddonState.error,
+                AddonEvent.deprovision_success: AddonState.deprovisioned,
             },
             AddonState.ready: {
                 AddonEvent.deprovision_success: AddonState.deprovisioned,
