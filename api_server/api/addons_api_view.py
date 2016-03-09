@@ -21,6 +21,7 @@ class AddonsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
+        # TODO must filter based on status as well
         addons = Addon.objects.filter(app__app_id=app_id)
         items = [{
             'name': x.display_name,

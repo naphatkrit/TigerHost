@@ -2,15 +2,17 @@ import base64
 import datetime
 import mock
 import pytest
+import uuid
 
 from django.contrib.auth.models import User
 from django.utils import crypto
 
 from api_server.addons.providers.base_provider import BaseAddonProvider
+from api_server.addons.state import AddonState
 from api_server.addons.state_machine_manager import StateMachineManager
 from api_server.clients.base_client import BaseClient
 from api_server.clients.base_authenticated_client import BaseAuthenticatedClient
-from api_server.models import App
+from api_server.models import App, Addon
 from wsse.utils import get_secret, wsse_digest
 
 
@@ -106,3 +108,9 @@ def mock_manager():
 @pytest.fixture(scope='function')
 def mock_addon_provider():
     return mock.Mock(spec=BaseAddonProvider)
+
+
+@pytest.fixture(scope='function')
+def addon(make_app, user):
+    return Addon.objects.create(
+        provider_name='test_provider', provider_uuid=uuid.uuid4(), app=make_app, state=AddonState.waiting_for_provision, user=user)
