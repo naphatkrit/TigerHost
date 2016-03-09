@@ -206,6 +206,44 @@ def test_remove_application_collaborator(api_client, fake_api_server_url):
 
 
 @responses.activate
+def test_get_application_addons(api_client, fake_api_server_url):
+    addons = [{
+        'addon': 'postgres',
+        'name': 'fun-monkey-12d',
+    }, {
+        'addon': 'secret',
+        'name': 'sad-bunny-1234',
+    }]
+    responses.add(responses.GET,
+                  urlparse.urljoin(fake_api_server_url,
+                                   'api/v1/apps/{}/addons/'.format('testid')),
+                  json={'results': addons}, status=200)
+    result = api_client.get_application_addons('testid')
+    assert result == addons
+
+
+@responses.activate
+def test_create_application_addon(api_client, fake_api_server_url):
+    responses.add(responses.POST,
+                  urlparse.urljoin(fake_api_server_url,
+                                   'api/v1/apps/{}/addons/'.format('testid')),
+                  json={'message': 'test message', 'name': 'fun-monkey-12d'}, status=200)
+    result = api_client.create_application_addon('testid', 'postgres')
+    assert result['message'] == 'test message'
+    assert result['name'] == 'fun-monkey-12d'
+
+
+@responses.activate
+def test_delete_application_addon(api_client, fake_api_server_url):
+    responses.add(responses.DELETE,
+                  urlparse.urljoin(fake_api_server_url,
+                                   'api/v1/apps/{}/addons/{}/'.format('testid', 'fun-monkey-12d')),
+                  json={'message': 'test message'}, status=200)
+    result = api_client.delete_application_addon('testid', 'fun-monkey-12d')
+    assert result['message'] == 'test message'
+
+
+@responses.activate
 def test_get_application_keys(api_client, fake_api_server_url):
     keys = [{
         'key_name': 'key1',

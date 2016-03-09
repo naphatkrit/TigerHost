@@ -193,6 +193,25 @@ def test_application_collaborators(api_client, app_id, create_application, api_c
         api_client2.get_application_owner(app_id)
 
 
+def test_application_addons(api_client, app_id, create_application):
+    """
+    @type api_client: tigerhost.api_client.ApiClient
+    """
+    result = api_client.create_application_addon(app_id, 'secret')
+    assert 'message' in result
+
+    name = result['name']
+    addons = api_client.get_application_addons(app_id)
+    assert len(addons) == 1
+    assert addons[0]['name'] == name
+    assert addons[0]['addon'] == 'secret'
+
+    result = api_client.delete_application_addon(app_id, name)
+
+    addons = api_client.get_application_addons(app_id)
+    assert len(addons) == 0
+
+
 def test_keys(api_client, public_key):
     """
     @type api_client: tigerhost.api_client.ApiClient
@@ -205,7 +224,8 @@ def test_keys(api_client, public_key):
 
     api_client.add_key(key_name, public_key, backend)
     new_keys = api_client.get_keys()
-    assert new_keys[backend] == old_keys[backend] + [{'key_name': key_name, 'key': public_key}]
+    assert new_keys[backend] == old_keys[backend] + \
+        [{'key_name': key_name, 'key': public_key}]
 
     with pytest.raises(ApiClientResponseError):
         api_client.add_key(key_name, public_key, backend)

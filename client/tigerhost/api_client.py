@@ -281,6 +281,49 @@ class ApiClient(object):
         self._request_and_raise(
             'DELETE', 'api/v1/apps/{}/collaborators/{}/'.format(app_id, username))
 
+    def get_application_addons(self, app_id):
+        """Returns all addons installed for this app.
+
+        @type app_id: str
+
+        @rtype: list
+            list of dictionary with keys 'name' and 'addon'
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise('GET', 'api/v1/apps/{}/addons/'.format(app_id))
+        return resp.json()['results']
+
+    def create_application_addon(self, app_id, addon):
+        """Create a new addon for this app.
+
+        @type app_id: str
+        @type addon: str
+
+        @rtype: dict
+            dict with keys 'message' and 'name'
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise('POST', 'api/v1/apps/{}/addons/'.format(app_id), json={
+            'addon': addon
+        })
+        return resp.json()
+
+    def delete_application_addon(self, app_id, addon_name):
+        """Delete the addon from this app.
+
+        @type app_id: str
+        @type addon: str
+
+        @rtype: dict
+            dict with keys 'message'
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise('DELETE', 'api/v1/apps/{}/addons/{}/'.format(app_id, addon_name))
+        return resp.json()
+
     def get_keys(self):
         """Get all public keys associated with this user.
 
