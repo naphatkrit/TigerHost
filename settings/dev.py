@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djcelery',
     'cas',
     'wsse',
     'api_server',
@@ -83,7 +82,8 @@ WSGI_APPLICATION = 'api_server.wsgi.application'
 BROKER_URL = os.environ.get(
     'BROKER_URL', 'amqp://guest:guest@localhost:5672//')
 
-CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERY_RESULT_BACKEND = os.environ.get(
+    'CELERY_RESULT_BACKEND', 'redis://localhost:6379/')
 
 # END CELERY CONFIGURATION
 

@@ -21,6 +21,11 @@ Vagrant.configure(2) do |config|
         rabbitmq.vm.network :forwarded_port, guest: 5672, host: 5672
     end
 
+    config.vm.define "redis" do |rabbitmq|
+        rabbitmq.vm.box = "naphatkrit/redis"
+        rabbitmq.vm.network :forwarded_port, guest: 6379, host: 6379
+    end
+
     config.vm.define "web", primary: true do |web|
         # Every Vagrant development environment requires a box. You can search for
         # boxes at https://atlas.hashicorp.com/search.
