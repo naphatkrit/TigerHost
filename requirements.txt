@@ -3,6 +3,7 @@ enum34==1.1.2
 dj-database-url==0.4.0
 Django==1.9.2
 gunicorn==19.4.5
+haikunator==1.0.1
 jsonfield==1.0.3
 requests==2.9.1
 psycopg2==2.6.1
