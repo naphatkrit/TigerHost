@@ -58,9 +58,8 @@ class SecretAddonProvider(object):
             }
         }
 
-    def begin_deprovision(self, uuid):
-        """Kicks off the deprovision process. If that cannot be completed,
-        raise any subclass of AddonProviderError
+    def deprovision(self, uuid):
+        """Kicks off the deprovision process. This should return right away.
 
         @type: uuid: uuid.UUID
             The UUID of the addon
@@ -76,10 +75,3 @@ class SecretAddonProvider(object):
         return {
             'message': 'Please remove {} from your config manually.'.format(self.config_name)
         }
-
-    def wait_for_deprovision(self, uuid):
-        """Only return when deprovision is complete.
-
-        @type: uuid: uuid.UUID
-        """
-        pass

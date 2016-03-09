@@ -45,9 +45,8 @@ class BaseAddonProvider(object):
         """
         raise NotImplementedError
 
-    def begin_deprovision(self, uuid):
-        """Kicks off the deprovision process. If that cannot be completed,
-        raise any subclass of AddonProviderError
+    def deprovision(self, uuid):
+        """Kicks off the deprovision process. This should return right away.
 
         @type: uuid: uuid.UUID
             The UUID of the addon
@@ -59,12 +58,5 @@ class BaseAddonProvider(object):
 
         @raises: AddonProviderError
             If deprovision cannot start, or if it has already started.
-        """
-        raise NotImplementedError
-
-    def wait_for_deprovision(self, uuid):
-        """Only return when deprovision is complete.
-
-        @type: uuid: uuid.UUID
         """
         raise NotImplementedError

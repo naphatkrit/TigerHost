@@ -64,36 +64,6 @@ def wait_for_provision(addon_id):
 
 
 @app.task
-def wait_for_deprovision(addon_id):
-    """A task that waits for deprovision to complete."""
-    try:
-        addon = Addon.objects.get(pk=addon_id)
-    except Addon.DoesNotExist:
-        # TODO log?
-        raise
-    if addon.state is not AddonState.waiting_for_deprovision:
-        # TODO log?
-        return addon_id
-    try:
-        provider = get_provider_from_provider_name(addon.provider_name)
-    except AddonProviderError:
-        # TODO log?
-        # TODO transition? this looks like a recoverable error
-        raise
-
-    manager = StateMachineManager()
-    try:
-        provider.wait_for_deprovision(addon.provider_uuid)
-    except AddonProviderError:
-        with manager.transition(addon_id, AddonEvent.deprovision_failure):
-            pass
-        return addon_id
-    with manager.transition(addon_id, AddonEvent.deprovision_success):
-        pass
-    return addon_id
-
-
-@app.task
 def set_config(addon_id):
     """The addon has been provisioned. Now set the config"""
     try:

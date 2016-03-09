@@ -11,13 +11,13 @@ def mock_context_manager(*args, **kwargs):
 
 
 @pytest.mark.django_db
-def test_POST(client, http_headers, app_id, make_app, mock_manager, mock_addon_provider, addon):
+def test_DELETE(client, http_headers, app_id, make_app, mock_manager, mock_addon_provider, addon):
     """
     @type client: django.test.Client
     @type http_headers: dict
     """
     mock_manager.transition = mock_context_manager
-    mock_addon_provider.begin_deprovision.return_value = {
+    mock_addon_provider.deprovision.return_value = {
         'message': 'test message',
     }
     with mock.patch('api_server.api.addon_details_api_view.StateMachineManager') as mocked:
@@ -30,6 +30,6 @@ def test_POST(client, http_headers, app_id, make_app, mock_manager, mock_addon_p
     result = resp.json()
     assert result['message'] == 'test message'
 
-    mock_addon_provider.begin_deprovision.assert_called_once_with(
+    mock_addon_provider.deprovision.assert_called_once_with(
         addon.provider_uuid)
     assert mock_manager.start_task.call_count == 1

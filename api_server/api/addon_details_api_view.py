@@ -19,12 +19,11 @@ class AddonDetailsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        # TODO what if addon is still provisioning?
         addon = Addon.objects.get(app__app_id=app_id, display_name=addon_name)
         provider = get_provider_from_provider_name(addon.provider_name)
-        result = provider.begin_deprovision(addon.provider_uuid)
+        result = provider.deprovision(addon.provider_uuid)
         manager = StateMachineManager()
-        with manager.transition(addon.id, AddonEvent.deprovision_start_success):
+        with manager.transition(addon.id, AddonEvent.deprovision_success):
             pass
         manager.start_task(addon.id)
         return self.respond({'message': result['message']})
