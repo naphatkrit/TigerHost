@@ -110,11 +110,17 @@ DEFAULT_PAAS_BACKEND = 'deis_prod'
 
 ADDON_PROVIDERS = {
     'secret': {
-        # TODO make an actual provider
         'CLASS': 'api_server.addons.providers.secret_provider.SecretAddonProvider',
         'ARGS': [],
         'KWARGS': {},
-    }
+    },
+    'postgres': {
+        'CLASS': 'aws_db_addons.providers.rds_provider.RdsAddonProvider',
+        'ARGS': [],
+        'KWARGS': {
+            'engine': 'postgres',
+        },
+    },
 }
 
 # END ADDON PROVIDER CONFIGURATION
