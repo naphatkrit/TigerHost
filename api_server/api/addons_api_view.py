@@ -3,7 +3,7 @@ import json
 from django.utils.decorators import method_decorator
 
 from api_server.addons.providers.utils import get_provider_from_provider_name
-from api_server.addons.state import AddonState
+from api_server.addons.state import AddonState, visible_states
 from api_server.addons.state_machine_manager import StateMachineManager
 from api_server.api.api_base_view import ApiBaseView
 from api_server.models import Addon, App
@@ -21,8 +21,7 @@ class AddonsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        # TODO must filter based on status as well
-        addons = Addon.objects.filter(app__app_id=app_id)
+        addons = Addon.objects.filter(app__app_id=app_id, state__in=visible_states)
         items = [{
             'name': x.display_name,
             'addon': x.provider_name,

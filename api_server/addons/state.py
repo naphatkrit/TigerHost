@@ -8,3 +8,7 @@ class AddonState(Enum):
     deprovisioned = 5
     error = 6
     error_should_deprovision = 7
+
+
+visible_states = [AddonState.waiting_for_provision,
+                  AddonState.provisioned, AddonState.ready]

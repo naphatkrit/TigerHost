@@ -15,6 +15,13 @@ def test_GET(client, http_headers, app_id, make_app, user):
     """
     addons = [Addon.objects.create(provider_name='test_provider', provider_uuid=uuid.uuid4(
     ), app=make_app, state=AddonState.waiting_for_provision, user=user) for _ in range(5)]
+
+    # create some addons that should not be visible
+    Addon.objects.create(provider_name='test_provider', provider_uuid=uuid.uuid4(
+    ), app=make_app, state=AddonState.deprovisioned, user=user)
+    Addon.objects.create(provider_name='test_provider', provider_uuid=uuid.uuid4(
+    ), app=make_app, state=AddonState.error, user=user)
+
     resp = client.get('/api/v1/apps/{}/addons/'.format(app_id), **http_headers)
     assert resp.status_code == 200
     assert resp.json()['results'] == [
