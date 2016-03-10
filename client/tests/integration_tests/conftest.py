@@ -67,3 +67,10 @@ def settings(api_server_url):
 @pytest.fixture(scope='function')
 def app_id():
     return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(12))
+
+
+@pytest.fixture(autouse=True)
+def delete_all_applications(api_client):
+    for _, apps in api_client.get_all_applications().iteritems():
+        for a in apps:
+            api_client.delete_application(a)
