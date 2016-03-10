@@ -85,6 +85,11 @@ BROKER_URL = os.environ.get(
 CELERY_RESULT_BACKEND = os.environ.get(
     'CELERY_RESULT_BACKEND', 'redis://localhost:6379/')
 
+CELERY_IMPORTS = (
+    'api_server.addons.tasks',
+    'api_server.addons.state_machine_manager',
+)
+
 # END CELERY CONFIGURATION
 
 # START PAAS CONFIGURATION
