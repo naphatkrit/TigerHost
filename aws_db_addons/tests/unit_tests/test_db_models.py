@@ -10,4 +10,4 @@ def test_db_instance():
         assert len(instance.master_username) == 16
         assert len(instance.master_password) == 30
         assert len(instance.aws_instance_identifier) == 63
-        assert len(instance.db_name) == 64
+        assert len(instance.db_name) == 63

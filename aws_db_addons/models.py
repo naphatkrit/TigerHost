@@ -13,8 +13,8 @@ def make_instance_identifier():
 
 
 def make_db_name():
-    # alphanumeric, max length 64
-    return crypto.get_random_string(length=64, allowed_chars=string.ascii_lowercase + string.digits)
+    # alphanumeric, start with a letter, max length 63
+    return crypto.get_random_string(length=1, allowed_chars=string.ascii_lowercase) + crypto.get_random_string(length=62, allowed_chars=string.ascii_lowercase + string.digits)
 
 
 def make_username():
@@ -24,7 +24,8 @@ def make_username():
 
 def make_password():
     # printable, max length 30, cannot contain /, ", @
-    allowed_chars = string.printable.replace(
+    allowed_chars = string.ascii_letters + string.digits + string.punctuation
+    allowed_chars = allowed_chars.replace(
         '/', '').replace('"', '').replace('@', '')
     return crypto.get_random_string(length=30, allowed_chars=allowed_chars)
 
