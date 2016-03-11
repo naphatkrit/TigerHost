@@ -1,7 +1,12 @@
 import click
+import datetime
+import time
 
 from tigerhost.api_client import ApiClientResponseError
 from tigerhost.utils import decorators
+
+
+_wait_interval = 30
 
 
 @click.command()
@@ -20,7 +25,7 @@ def list_addons(ctx):
         click.echo('{name} - {addon} - {status}'.format(
             name=x['display_name'],
             addon=x['provider_name'],
-            status=x['status']))
+            status=x['state']))
 
 
 @click.command()
@@ -36,7 +41,7 @@ def create_addon(ctx, addon):
     app = ctx.obj['app']
     api_client = ctx.obj['api_client']
     result = api_client.create_application_addon(app, addon)
-    click.echo('Name: {}'.format(result['name']))
+    click.echo('Name: {}'.format(result['addon']['display_name']))
     click.echo(result['message'])
 
 

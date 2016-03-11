@@ -31,7 +31,7 @@ def test_create_addons(runner, saved_user, fake_api_client):
     @type fake_api_client: mock.Mock
     """
     fake_api_client.create_application_addon.return_value = {
-        'message': 'test message', 'name': 'fun-monkey-12d'}
+        'message': 'test message', 'addon': {'display_name': 'fun-monkey-12d'}}
     result = runner.invoke(
         entry, ['addons:create', '--app', 'app', 'postgres'])
     assert result.exit_code == 0

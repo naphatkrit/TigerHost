@@ -317,7 +317,8 @@ class ApiClient(object):
         @type addon: str
 
         @rtype: dict
-            dict with keys 'message' and 'name'
+            dict with keys 'message' and 'addon'.
+            'addon' contains a dictionary representation of the created addon.
 
         @raises e: ApiClientResponseError
         """
