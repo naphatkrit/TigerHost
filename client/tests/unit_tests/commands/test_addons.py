@@ -7,18 +7,21 @@ def test_list_addons(runner, saved_user, fake_api_client):
     @type fake_api_client: mock.Mock
     """
     addons = [{
-        'addon': 'postgres',
-        'name': 'fun-monkey-12d',
+        'provider_name': 'postgres',
+        'display_name': 'fun-monkey-12d',
+        'status': 'ready',
     }, {
-        'addon': 'secret',
-        'name': 'sad-bunny-1234',
+        'provider_name': 'secret',
+        'display_name': 'sad-bunny-1234',
+        'status': 'waiting_for_provision',
     }]
     fake_api_client.get_application_addons.return_value = addons
     result = runner.invoke(entry, ['addons', '--app', 'app'])
     assert result.exit_code == 0
     for x in addons:
-        assert x['name'] in result.output
-        assert x['addon'] in result.output
+        assert x['display_name'] in result.output
+        assert x['provider_name'] in result.output
+        assert x['status'] in result.output
     fake_api_client.get_application_addons.assert_called_once_with('app')
 
 

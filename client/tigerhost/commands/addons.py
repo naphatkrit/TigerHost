@@ -17,7 +17,10 @@ def list_addons(ctx):
     api_client = ctx.obj['api_client']
     addons = api_client.get_application_addons(app)
     for x in addons:
-        click.echo('{name} - {addon}'.format(name=x['name'], addon=x['addon']))
+        click.echo('{name} - {addon} - {status}'.format(
+            name=x['display_name'],
+            addon=x['provider_name'],
+            status=x['status']))
 
 
 @click.command()

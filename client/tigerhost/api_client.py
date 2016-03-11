@@ -287,7 +287,7 @@ class ApiClient(object):
         @type app_id: str
 
         @rtype: list
-            list of dictionary with keys 'name' and 'addon'
+            list of dictionary with keys 'provider_name', 'display_name', and 'status'
 
         @raises e: ApiClientResponseError
         """
@@ -306,7 +306,7 @@ class ApiClient(object):
         @raises e: ApiClientResponseError
         """
         resp = self._request_and_raise('POST', 'api/v1/apps/{}/addons/'.format(app_id), json={
-            'addon': addon
+            'provider_name': addon
         })
         return resp.json()
 
