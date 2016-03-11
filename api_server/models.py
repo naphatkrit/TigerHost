@@ -147,3 +147,10 @@ class Addon(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     display_name = models.CharField(
         max_length=100, unique=True, default=_make_display_name)
+
+    def to_dict(self):
+        return {
+            'display_name': self.display_name,
+            'provider_name': self.provider_name,
+            'state': self.state.name,
+        }

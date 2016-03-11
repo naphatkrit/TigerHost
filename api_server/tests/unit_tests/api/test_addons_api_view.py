@@ -24,8 +24,7 @@ def test_GET(client, http_headers, app_id, make_app, user):
 
     resp = client.get('/api/v1/apps/{}/addons/'.format(app_id), **http_headers)
     assert resp.status_code == 200
-    assert resp.json()['results'] == [
-        {'name': x.display_name, 'addon': x.provider_name} for x in addons]
+    assert resp.json()['results'] == [x.to_dict() for x in addons]
 
 
 @pytest.mark.django_db
@@ -43,7 +42,7 @@ def test_POST(client, http_headers, app_id, make_app, mock_manager, mock_addon_p
         with mock.patch('api_server.api.addons_api_view.get_provider_from_provider_name') as mock_get_provider:
             mock_get_provider.return_value = mock_addon_provider
             resp = client.post('/api/v1/apps/{}/addons/'.format(app_id), data=json.dumps(
-                {'addon': 'test_provider'}), content_type='application/json', **http_headers)
+                {'provider_name': 'test_provider'}), content_type='application/json', **http_headers)
     assert resp.status_code == 200
     result = resp.json()
     assert result['message'] == 'test message'

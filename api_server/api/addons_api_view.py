@@ -22,10 +22,7 @@ class AddonsApiView(ApiBaseView):
         @rtype: django.http.HttpResponse
         """
         addons = Addon.objects.filter(app__app_id=app_id, state__in=visible_states)
-        items = [{
-            'name': x.display_name,
-            'addon': x.provider_name,
-        } for x in addons.all()]
+        items = [x.to_dict() for x in addons.all()]
         return self.respond_multiple(items)
 
     def post(self, request, app_id):
@@ -33,7 +30,7 @@ class AddonsApiView(ApiBaseView):
 
         The body of the request should be a JSON with the following format:
         {
-            'addon': 'addon',
+            'provider_name': 'provider_name',
         }
 
         Returns a JSON with the following format:
@@ -48,7 +45,7 @@ class AddonsApiView(ApiBaseView):
         """
         app = App.objects.get(app_id=app_id)  # make sure app exists first
         data = json.loads(request.body)
-        provider_name = data['addon']
+        provider_name = data['provider_name']
         provider = get_provider_from_provider_name(provider_name)
 
         result = provider.begin_provision(app_id)

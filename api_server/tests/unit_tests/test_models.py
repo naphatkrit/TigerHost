@@ -15,7 +15,8 @@ def test_profile_get_paas_backends(user, settings):
     assert set(profile.get_paas_backends()) == {
         settings.DEFAULT_PAAS_BACKEND, 'backend1'}
 
-    c = PaasCredential.objects.get(profile=profile, backend=settings.DEFAULT_PAAS_BACKEND)
+    c = PaasCredential.objects.get(
+        profile=profile, backend=settings.DEFAULT_PAAS_BACKEND)
     c.delete()
     assert profile.paas_credential_set.count() == 1
     assert set(profile.get_paas_backends()) == {
@@ -74,3 +75,11 @@ def test_app_get_backend():
 
     App.objects.create(app_id='dummy1', backend='backend1')
     assert App.get_backend('dummy1') == 'backend1'
+
+
+@pytest.mark.django_db
+def test_addon_to_dict(addon):
+    obj = addon.to_dict()
+    assert obj['display_name'] == addon.display_name
+    assert obj['provider_name'] == addon.provider_name
+    assert obj['state'] == addon.state.name
