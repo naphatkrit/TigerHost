@@ -46,7 +46,7 @@ def test_POST(client, http_headers, app_id, make_app, mock_manager, mock_addon_p
     assert resp.status_code == 200
     result = resp.json()
     assert result['message'] == 'test message'
-    assert 'name' in result
+    assert 'addon' in result
 
     mock_addon_provider.begin_provision.assert_called_once_with(app_id)
     assert mock_manager.start_task.call_count == 1

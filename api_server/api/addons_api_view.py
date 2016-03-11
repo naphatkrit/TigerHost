@@ -21,7 +21,8 @@ class AddonsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        addons = Addon.objects.filter(app__app_id=app_id, state__in=visible_states)
+        addons = Addon.objects.filter(
+            app__app_id=app_id, state__in=visible_states)
         items = [x.to_dict() for x in addons.all()]
         return self.respond_multiple(items)
 
@@ -36,7 +37,9 @@ class AddonsApiView(ApiBaseView):
         Returns a JSON with the following format:
         {
             'message': 'message to be displayed to user',
-            'name': 'the-name-of-the-addon-created'
+            'addon': {
+                (the addon object)
+            }
         }
 
         @type request: django.http.HttpRequest
@@ -58,4 +61,4 @@ class AddonsApiView(ApiBaseView):
         )
         manager = StateMachineManager()
         manager.start_task(addon.id)
-        return self.respond({'message': result['message'], 'name': addon.display_name})
+        return self.respond({'message': result['message'], 'addon': addon.to_dict()})

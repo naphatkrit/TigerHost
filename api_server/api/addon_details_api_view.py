@@ -2,6 +2,7 @@ from django.utils.decorators import method_decorator
 
 from api_server.addons.event import AddonEvent
 from api_server.addons.providers.utils import get_provider_from_provider_name
+from api_server.addons.state import visible_states
 from api_server.addons.state_machine_manager import StateMachineManager
 from api_server.api.api_base_view import ApiBaseView
 from api_server.models import Addon
@@ -19,7 +20,7 @@ class AddonDetailsApiView(ApiBaseView):
 
         @rtype: django.http.HttpResponse
         """
-        addon = Addon.objects.get(app__app_id=app_id, display_name=addon_name)
+        addon = Addon.objects.get(app__app_id=app_id, display_name=addon_name, state__in=visible_states)
         return self.respond(addon.to_dict())
 
     def delete(self, request, app_id, addon_name):
