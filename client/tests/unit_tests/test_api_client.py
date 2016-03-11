@@ -208,11 +208,13 @@ def test_remove_application_collaborator(api_client, fake_api_server_url):
 @responses.activate
 def test_get_application_addons(api_client, fake_api_server_url):
     addons = [{
-        'addon': 'postgres',
-        'name': 'fun-monkey-12d',
+        'provider_name': 'postgres',
+        'display_name': 'fun-monkey-12d',
+        'status': 'available',
     }, {
-        'addon': 'secret',
-        'name': 'sad-bunny-1234',
+        'provider_name': 'secret',
+        'display_name': 'sad-bunny-1234',
+        'status': 'available',
     }]
     responses.add(responses.GET,
                   urlparse.urljoin(fake_api_server_url,
@@ -220,6 +222,21 @@ def test_get_application_addons(api_client, fake_api_server_url):
                   json={'results': addons}, status=200)
     result = api_client.get_application_addons('testid')
     assert result == addons
+
+
+@responses.activate
+def test_get_application_addon(api_client, fake_api_server_url):
+    addon = {
+        'provider_name': 'postgres',
+        'display_name': 'fun-monkey-12d',
+        'status': 'available',
+    }
+    responses.add(responses.GET,
+                  urlparse.urljoin(fake_api_server_url,
+                                   'api/v1/apps/{}/addons/{}/'.format('testid', 'fun-monkey-12d')),
+                  json=addon, status=200)
+    result = api_client.get_application_addon('testid', 'fun-monkey-12d')
+    assert result == addon
 
 
 @responses.activate

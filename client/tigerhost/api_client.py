@@ -291,8 +291,24 @@ class ApiClient(object):
 
         @raises e: ApiClientResponseError
         """
-        resp = self._request_and_raise('GET', 'api/v1/apps/{}/addons/'.format(app_id))
+        resp = self._request_and_raise(
+            'GET', 'api/v1/apps/{}/addons/'.format(app_id))
         return resp.json()['results']
+
+    def get_application_addon(self, app_id, addon_name):
+        """Return a specific addon installed for this app.
+
+        @type app_id: str
+        @type addon_name: str
+
+        @rtype: dict
+            same as the return type for ``get_application_addons``
+
+        @raises e: ApiClientResponseError
+        """
+        resp = self._request_and_raise(
+            'GET', 'api/v1/apps/{}/addons/{}/'.format(app_id, addon_name))
+        return resp.json()
 
     def create_application_addon(self, app_id, addon):
         """Create a new addon for this app.
@@ -321,7 +337,8 @@ class ApiClient(object):
 
         @raises e: ApiClientResponseError
         """
-        resp = self._request_and_raise('DELETE', 'api/v1/apps/{}/addons/{}/'.format(app_id, addon_name))
+        resp = self._request_and_raise(
+            'DELETE', 'api/v1/apps/{}/addons/{}/'.format(app_id, addon_name))
         return resp.json()
 
     def get_keys(self):

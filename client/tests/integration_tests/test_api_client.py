@@ -200,11 +200,14 @@ def test_application_addons(api_client, app_id, create_application):
     result = api_client.create_application_addon(app_id, 'secret')
     assert 'message' in result
 
-    name = result['name']
+    name = result['display_name']
     addons = api_client.get_application_addons(app_id)
     assert len(addons) == 1
-    assert addons[0]['name'] == name
-    assert addons[0]['addon'] == 'secret'
+    assert addons[0]['display_name'] == name
+    assert addons[0]['provider_name'] == 'secret'
+
+    addon = api_client.get_application_addon(app_id, name)
+    assert addons[0] == addon
 
     result = api_client.delete_application_addon(app_id, name)
 
