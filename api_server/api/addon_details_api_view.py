@@ -11,6 +11,17 @@ from wsse.decorators import check_wsse_token
 @method_decorator(check_wsse_token, 'dispatch')
 class AddonDetailsApiView(ApiBaseView):
 
+    def get(self, request, app_id, addon_name):
+        """Return all the addons installed for this application.
+
+        @type request: django.http.HttpRequest
+        @type app_id: str
+
+        @rtype: django.http.HttpResponse
+        """
+        addon = Addon.objects.get(app__app_id=app_id, display_name=addon_name)
+        return self.respond(addon.to_dict())
+
     def delete(self, request, app_id, addon_name):
         """Return all the addons installed for this application.
 
