@@ -15,6 +15,13 @@ def test_addons(runner, make_app, app_id):
     assert name in result.output
     assert 'secret' in result.output
 
+    result = runner.invoke(entry, ['addons:wait', name, '--interval', '0'])
+    assert result.exit_code == 0
+
+    result = runner.invoke(entry, ['addons'])
+    assert result.exit_code == 0
+    assert 'ready' in result.output
+
     result = runner.invoke(entry, ['addons:destroy', name])
     assert result.exit_code == 0
 

@@ -30,6 +30,7 @@ entry.add_command(access.remove_access, name='access:remove')
 
 entry.add_command(addons.list_addons, name='addons')
 entry.add_command(addons.create_addon, name='addons:create')
+entry.add_command(addons.wait_addon, name='addons:wait')
 entry.add_command(addons.delete_addon, name='addons:destroy')
 
 entry.add_command(config.list_config, name='config')

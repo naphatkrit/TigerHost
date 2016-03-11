@@ -6,9 +6,6 @@ from tigerhost.api_client import ApiClientResponseError
 from tigerhost.utils import decorators
 
 
-_wait_interval = 30
-
-
 @click.command()
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
@@ -43,6 +40,32 @@ def create_addon(ctx, addon):
     result = api_client.create_application_addon(app, addon)
     click.echo('Name: {}'.format(result['addon']['display_name']))
     click.echo(result['message'])
+
+
+@click.command()
+@click.argument('addon', required=True)
+@click.option('--interval', '-i', type=int, default=30, help='The polling interval in seconds.')
+@decorators.print_markers
+@decorators.catch_exception(ApiClientResponseError)
+@decorators.store_api_client
+@decorators.store_app
+@click.pass_context
+def wait_addon(ctx, addon, interval):
+    """Waits until an addon becomes ready to use.
+    """
+    app = ctx.obj['app']
+    api_client = ctx.obj['api_client']
+    ready = False
+    while not ready:
+        addon_obj = api_client.get_application_addon(app, addon)
+        if addon_obj['state'] == 'ready':
+            ready = True
+        else:
+            timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            click.echo(
+                '{} - Current status: {}'.format(timestamp, addon_obj['state']))
+            time.sleep(interval)
+    click.echo('{} is ready for use!'.format(addon))
 
 
 @click.command()
