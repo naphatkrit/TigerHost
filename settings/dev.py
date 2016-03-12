@@ -91,6 +91,10 @@ CELERY_IMPORTS = (
     'api_server.addons.state_machine_manager',
 )
 
+CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_ACCEPT_CONTENT = ['json']
+
 # END CELERY CONFIGURATION
 
 # START PAAS CONFIGURATION
