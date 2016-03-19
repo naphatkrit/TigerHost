@@ -7,7 +7,7 @@ redis:
     image: redis
 nginx:
     restart: always
-    build: ./nginx/
+    image: naphatkrit/tigerhost-nginx
     ports:
         - "80:80"
     volumes:
@@ -18,7 +18,7 @@ nginx:
         - web:web
 web:
     restart: always
-    build: ./web
+    image: naphatkrit/tigerhost-main
     command: gunicorn api_server.wsgi:application -w 2 -b :8000 --reload
     environment:
         DATABASE_URL: postgres://postgres@db:5432/postgres
@@ -31,7 +31,7 @@ web:
         - redis:redis
         - rabbitmq:rabbitmq
 worker:
-    build: ./web
+    image: naphatkrit/tigerhost-main
     command: bin/worker.sh
     environment:
         DATABASE_URL: postgres://postgres@db:5432/postgres
