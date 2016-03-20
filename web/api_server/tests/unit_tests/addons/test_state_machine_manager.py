@@ -7,7 +7,6 @@ import pytest
 from api_server.addons.event import AddonEvent
 from api_server.addons.state import AddonState
 from api_server.addons.state_machine_manager import StateMachineManager, StateMachineTransitionError, _continue_state_machine
-from api_server.celery import app
 
 
 @pytest.fixture(scope='function')
@@ -100,30 +99,4 @@ def test_start_task(addon, manager, mock_task):
     }
     manager.start_task(addon.id)
     mock_task.apply_async.assert_called_once_with(
-        (addon.id,), link=_continue_state_machine.s(manager))
-
-
-@pytest.mark.django_db
-def test_start_task_chaining(addon, manager, mock_task):
-    """
-    @type addon: api_server.models.Addon
-    @type manager: StateMachineManager
-    """
-    @app.task
-    def _dummy_task(addon_id):
-        manager = StateMachineManager()
-        with manager.transition(addon_id, AddonEvent.provision_success):
-            pass
-        return addon_id
-    manager.transition_table = {
-        AddonState.waiting_for_provision: {
-            AddonEvent.provision_success: AddonState.provisioned,
-        },
-    }
-    manager.tasks_table = {
-        AddonState.waiting_for_provision: _dummy_task,
-        AddonState.provisioned: mock_task,
-    }
-    manager.start_task(addon.id)
-    mock_task.apply_async.assert_called_once_with(
-        (addon.id,), link=_continue_state_machine.s(manager))
+        (addon.id,), link=_continue_state_machine.s())

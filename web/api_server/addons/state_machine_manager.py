@@ -16,7 +16,8 @@ class StateMachineTransitionError(Exception):
 
 
 @app.task
-def _continue_state_machine(addon_id, state_machine_manager):
+def _continue_state_machine(addon_id):
+    state_machine_manager = StateMachineManager()
     state_machine_manager.start_task(addon_id)
 
 
@@ -102,4 +103,4 @@ class StateMachineManager(object):
         """
         addon = Addon.objects.get(pk=addon_id)
         if addon.state in self.tasks_table:
-            self.tasks_table[addon.state].apply_async((addon.id,), link=_continue_state_machine.s(self))
+            self.tasks_table[addon.state].apply_async((addon.id,), link=_continue_state_machine.s())
