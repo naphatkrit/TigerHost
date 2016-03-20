@@ -1,6 +1,4 @@
 # NOTE: aws ecs cli tool only supports version 1 docker-compose file format
-db:
-    image: postgres
 rabbitmq:
     image: rabbitmq
 redis:
@@ -17,23 +15,21 @@ web:
     image: naphatkrit/tigerhost-main
     command: bin/web.sh
     environment:
-        DATABASE_URL: postgres://postgres@db:5432/postgres
+        DEIS_URL: http://deis.tigerhostapp.com
         BROKER_URL: amqp://guest:guest@rabbitmq:5672//
         CELERY_RESULT_BACKEND: redis://redis:6379/
     expose:
         - "8000"
     links:
-        - db:db
         - redis:redis
         - rabbitmq:rabbitmq
 worker:
     image: naphatkrit/tigerhost-main
     command: bin/worker.sh
     environment:
-        DATABASE_URL: postgres://postgres@db:5432/postgres
+        DEIS_URL: http://deis.tigerhostapp.com
         BROKER_URL: amqp://guest:guest@rabbitmq:5672//
         CELERY_RESULT_BACKEND: redis://redis:6379/
     links:
-        - db:db
         - redis:redis
         - rabbitmq:rabbitmq
