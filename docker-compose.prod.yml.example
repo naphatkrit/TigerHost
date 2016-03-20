@@ -18,6 +18,13 @@ web:
         DEIS_URL: http://deis.tigerhostapp.com
         BROKER_URL: amqp://guest:guest@rabbitmq:5672//
         CELERY_RESULT_BACKEND: redis://redis:6379/
+        AWS_DEFAULT_REGION: us-east-1
+
+        # TODO: fill out the actual values for these variables
+        DATABASE_URL: postgres://user:pass@hostname:5432/db_name
+        SECRET: abcdefghijklmnopqrstuvwxyz12345678910
+        AWS_ACCESS_KEY_ID: AFDLJADSFaesFAKSRWae
+        AWS_SECRET_ACCESS_KEY: zlksdfjaSFDAKLESFaSDf
     expose:
         - "8000"
     links:
@@ -30,6 +37,13 @@ worker:
         DEIS_URL: http://deis.tigerhostapp.com
         BROKER_URL: amqp://guest:guest@rabbitmq:5672//
         CELERY_RESULT_BACKEND: redis://redis:6379/
+        AWS_DEFAULT_REGION: us-east-1
+
+        # TODO: fill out the actual values for these variables
+        DATABASE_URL: postgres://user:pass@hostname:5432/db_name
+        SECRET: abcdefghijklmnopqrstuvwxyz12345678910
+        AWS_ACCESS_KEY_ID: AFDLJADSFaesFAKSRWae
+        AWS_SECRET_ACCESS_KEY: zlksdfjaSFDAKLESFaSDf
     links:
         - redis:redis
         - rabbitmq:rabbitmq
