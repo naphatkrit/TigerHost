@@ -10,16 +10,12 @@ nginx:
     image: naphatkrit/tigerhost-nginx
     ports:
         - "80:80"
-    volumes:
-        - /www/static
-    volumes_from:
-        - web
     links:
         - web:web
 web:
     restart: always
     image: naphatkrit/tigerhost-main
-    command: gunicorn api_server.wsgi:application -w 2 -b :8000 --reload
+    command: bin/web.sh
     environment:
         DATABASE_URL: postgres://postgres@db:5432/postgres
         BROKER_URL: amqp://guest:guest@rabbitmq:5672//
