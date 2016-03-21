@@ -24,9 +24,8 @@ def make_username():
 
 def make_password():
     # printable, max length 30, cannot contain /, ", @
-    allowed_chars = string.ascii_letters + string.digits + string.punctuation
-    allowed_chars = allowed_chars.replace(
-        '/', '').replace('"', '').replace('@', '')
+    # let's not use punctuations. causes problems with urlparse library on the client apps
+    allowed_chars = string.ascii_letters + string.digits
     return crypto.get_random_string(length=30, allowed_chars=allowed_chars)
 
 
