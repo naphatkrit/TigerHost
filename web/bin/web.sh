@@ -3,4 +3,4 @@
 set -e
 
 python manage.py migrate
-gunicorn api_server.wsgi:application -w 2 -b :8000 --reload
+gunicorn api_server.wsgi:application -w 2 -b :8000 --reload --timeout 3600
