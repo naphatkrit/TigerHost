@@ -2,8 +2,9 @@ Getting Started With TigerHost
 =================================
 
 .. toctree::
-    :maxdepth: 1
+    :titlesonly:
 
     install_client
     login
     manage_SSH_keys
+    prepare_project
