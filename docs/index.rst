@@ -9,7 +9,6 @@ Welcome to TigerHost's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
    :titlesonly:
 
    getting_started/index
