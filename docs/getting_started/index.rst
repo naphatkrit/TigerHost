@@ -6,3 +6,4 @@ Getting Started With TigerHost
 
     install_client
     login
+    manage_SSH_keys
