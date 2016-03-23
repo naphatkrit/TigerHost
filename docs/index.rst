@@ -11,7 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   using_tigerhost/index
+   getting_started/index
 
 
 

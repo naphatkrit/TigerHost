@@ -60,21 +60,3 @@ Now, install:
 
     $ cd TigerHost-Client
     $ pip install .
-
-Login
-=====
-
-To login, run the command:
-
-.. code-block:: console
-
-    $ tigerhost login
-
-This will ask you for your netID, and instructs you to go to a web page
-and get your API key. Keep this key safe - anyone who has this key can
-login as you. Your key will be stored in ``.tigerhost/user.json`` and
-can be retrieved with:
-
-.. code-block:: console
-
-    $ tigerhost user:info
