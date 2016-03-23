@@ -9,3 +9,4 @@ Getting Started With TigerHost
     manage_SSH_keys
     prepare_project
     deploy_app
+    run_commands
