@@ -69,6 +69,9 @@ singlehtml:
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."
 
+server: dirhtml
+	@cd $(BUILDDIR)/dirhtml; python -m SimpleHTTPServer 8000
+
 .PHONY: pickle
 pickle:
 	$(SPHINXBUILD) -b pickle $(ALLSPHINXOPTS) $(BUILDDIR)/pickle
