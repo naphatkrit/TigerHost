@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+URL=${URL:-'http://localhost:8000'}
+USERNAME='testuser'
+API_KEY='YWxla2ZqZGFvaXczbHJqazIxQURTRkFTRkFXRXJ3ZXIyMzRyd2Vmc0RGUmVrdGc6TmhXRXE5VG1RZnJyV0RDSmpjVGN0WlB5NUhJ'
+USERNAME2='testuser2'
+API_KEY2='YWZqbGFkc2Zsa2phZGtsZmZBREFEQUxLQURGRGZhZmxrYWRqMjM0NXJlZDMyOnZmZUlIaTdsNGd2SU83bnRWY25KMHRYSEFfbw=='
+
+py.test tests/integration_tests --api-server-url="$URL" --test-username="$USERNAME" --test-api-key="$API_KEY" --test-username2="$USERNAME2" --test-api-key2="$API_KEY2" --pdb
