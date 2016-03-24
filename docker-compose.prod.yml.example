@@ -10,6 +10,10 @@ nginx:
         - "80:80"
     links:
         - web:web
+    volumes_from:
+        - docs
+docs:
+    build: ./docs
 web:
     restart: always
     image: naphatkrit/tigerhost-main
