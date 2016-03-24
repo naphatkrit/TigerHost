@@ -10,3 +10,4 @@ Getting Started With TigerHost
     prepare_project
     deploy_app
     run_commands
+    config_vars
