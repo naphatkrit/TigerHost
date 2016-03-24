@@ -11,3 +11,4 @@ Getting Started With TigerHost
     deploy_app
     run_commands
     config_vars
+    addons
