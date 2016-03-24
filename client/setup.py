@@ -28,8 +28,8 @@ setup(
     install_requires=install_requires,
     extras_require={'tests': tests_require},
     tests_require=tests_require,
-    url='https://github.com/naphatkrit/TigerHost-Client',
-    download_url='https://github.com/naphatkrit/TigerHost-Client/tarball/' + tigerhost.__version__,
+    url='https://github.com/naphatkrit/TigerHost',
+    download_url='https://github.com/naphatkrit/TigerHost/tarball/' + tigerhost.__version__,
     entry_points='''
         [console_scripts]
         {app_name}=tigerhost.entry:entry
