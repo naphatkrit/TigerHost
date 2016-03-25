@@ -1,9 +1,11 @@
+from __future__ import absolute_import
+
 import struct
 
 from twisted.internet.protocol import Factory
 from twisted.internet import reactor
 
-from protocols.tcp_proxy import TcpProxyProtocol
+from proxy.protocols.tcp_proxy import TcpProxyProtocol
 
 
 class PostgresProtocol(TcpProxyProtocol):
