@@ -1,18 +1,21 @@
 import struct
 
-from twisted.internet.protocol import Factory, Protocol
+from twisted.internet.protocol import Factory
 from twisted.internet import reactor
 
+from protocols.tcp_proxy import TcpProxyProtocol
 
-class PostgresProtocol(Protocol):
+
+class PostgresProtocol(TcpProxyProtocol):
 
     def __init__(self):
+        super(self.__class__, self).__init__()
         self.hostname = None
 
     def dataReceived(self, data):
         if self.hostname is not None:
             # TODO actually connect to host
-            self.transport.loseConnection()
+            super(self.__class__, self).dataReceived(data)
             return
         if len(data) < 8:
             # too short
@@ -46,7 +49,9 @@ class PostgresProtocol(Protocol):
                 self.transport.loseConnection()
                 return
 
-            # TODO open connection
+            # TODO change this
+            self.connectServer('192.168.99.100', 5432)
+            super(self.__class__, self).dataReceived(data)
             return
         # unsupported protocol
         self.transport.loseConnection()
