@@ -1,0 +1,15 @@
+version: '2'
+services:
+    db1:
+        environment:
+            POSTGRES_DB: "db1"
+        image: postgres
+    db2:
+        environment:
+            POSTGRES_DB: "db2"
+        image: postgres
+    proxy:
+        build: .
+        command: proxy
+        ports:
+            - "5432:5432"
