@@ -5,6 +5,7 @@ import proxy
 
 tests_require = [
     'pytest-twisted>=1.5',
+    'mock>=1.0.0',
 ]
 
 install_requires = [
