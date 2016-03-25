@@ -4,6 +4,7 @@ import proxy
 
 
 tests_require = [
+    'pytest-twisted>=1.5',
 ]
 
 install_requires = [
