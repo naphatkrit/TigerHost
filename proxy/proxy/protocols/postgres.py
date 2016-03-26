@@ -12,6 +12,16 @@ class PostgresProtocol(TcpProxyProtocol):
         self.hostname = None
 
     def dataReceived(self, data):
+        """Implement a postgres proxy.
+
+        If the client asks for SSL, respond with 'N' for no.
+
+        Maps the url postgres://username:password@host:port/database to
+        postgres://username:password@username:5432/database
+
+        That is, the username is used as the host name, and the port is
+        fixed to 5432
+        """
         if self.hostname is not None:
             super(self.__class__, self).dataReceived(data)
             return
