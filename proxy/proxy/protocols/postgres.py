@@ -31,16 +31,11 @@ class PostgresProtocol(TcpProxyProtocol):
             # protocol 3.0
             values = data[8:length].strip(chr(0)).split(chr(0))
             user = None
-            db_name = None
             for i in range(0, len(values), 2):
                 key = values[i]
                 if key == 'user':
                     user = values[i + 1]
-                elif key == 'database':
-                    db_name = values[i + 1]
-            if db_name is not None:
-                self.hostname = db_name
-            elif user is not None:
+            if user is not None:
                 self.hostname = user
             else:
                 # invalid, must at least specify user

@@ -63,19 +63,6 @@ def test_data_received_no_db(postgres_protocol, fake_transport):
     return postgres_protocol.client_queue.get().addCallback(_check)
 
 
-def test_data_received_with_db(postgres_protocol, fake_transport):
-    data = struct.pack('!ihh4sb9sb8sb2sbb', 8 + 4 + 1 + 9 + 1 + 8 + 1 +
-                       2 + 1 + 1, 3, 0, 'user', 0, 'test_user', 0, 'database', 0, 'db', 0, 0)
-    with mock.patch.object(PostgresProtocol, 'connectServer') as mocked:
-        postgres_protocol.dataReceived(data)
-    assert postgres_protocol.hostname == 'db'
-    mocked.assert_called_once_with('db', 5432)
-
-    def _check(test_data):
-        assert test_data == data
-    return postgres_protocol.client_queue.get().addCallback(_check)
-
-
 def test_data_received_no_hostname(postgres_protocol, fake_transport):
     data = struct.pack('!ihh4sb9sb8sb2sbb', 8 + 4 + 1 + 9 + 1 + 8 + 1 +
                        2 + 1 + 1, 3, 0, 'usef', 0, 'test_user', 0, 'databasf', 0, 'db', 0, 0)
