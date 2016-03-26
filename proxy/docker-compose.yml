@@ -1,12 +1,12 @@
 version: '2'
 services:
-    db1:
+    addon1:
         environment:
-            POSTGRES_DB: "db1"
+            POSTGRES_USER: "addon1"
         image: postgres
-    db2:
+    addon2:
         environment:
-            POSTGRES_DB: "db2"
+            POSTGRES_USER: "addon2"
         image: postgres
     proxy:
         build: .
