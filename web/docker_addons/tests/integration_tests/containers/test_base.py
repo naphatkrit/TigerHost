@@ -1,17 +1,24 @@
-import docker
 import pytest
 
 from docker_addons.containers.base import BaseContainer
+from docker_addons.docker_client import create_client
+
+from django.utils import crypto
 
 
 @pytest.fixture
 def docker_client():
-    return docker.from_env(assert_hostname=False)
+    return create_client()
 
 
-@pytest.fixture(scope='function')
-def network_name():
-    return 'default'
+@pytest.yield_fixture(scope='function')
+def network_name(docker_client):
+    name = crypto.get_random_string(length=20)
+    obj = docker_client.create_network(name=name, driver='bridge')
+    try:
+        yield name
+    finally:
+        docker_client.remove_network(obj['Id'])
 
 
 @pytest.fixture(scope='function')
