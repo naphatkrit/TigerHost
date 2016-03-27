@@ -15,5 +15,11 @@ def make_container_name():
 class ContainerInfo(models.Model):
     uuid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
+
+    # the name that identify this container on the docker host
     name = models.CharField(max_length=50, unique=True,
-                            default=make_container_name)
+                            default=make_container_name, editable=False)
+
+    # the ID assigned by docker host, will be set after the container is
+    # actually created on docker host
+    container_id = models.CharField(max_length=100, unique=True, null=True)
