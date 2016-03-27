@@ -2,6 +2,9 @@ from settings.dev import *  # NOQA
 
 ROOT_URLCONF = 'test_urls'
 
+if 'aws_db_addons' not in INSTALLED_APPS:
+    INSTALLED_APPS.append('aws_db_addons')
+
 DATABASES['default'] = {
     'ENGINE': 'django.db.backends.sqlite3',
     'NAME': os.path.join(BASE_DIR, 'testdb.sqlite3'),

@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'aws_db_addons',
+    'docker_addons',
     'cas',
     'wsse',
     'api_server',
@@ -117,13 +117,6 @@ ADDON_PROVIDERS = {
         'CLASS': 'api_server.addons.providers.secret_provider.SecretAddonProvider',
         'ARGS': [],
         'KWARGS': {},
-    },
-    'postgres': {
-        'CLASS': 'aws_db_addons.providers.rds_provider.RdsAddonProvider',
-        'ARGS': [],
-        'KWARGS': {
-            'engine': 'postgres',
-        },
     },
 }
 
