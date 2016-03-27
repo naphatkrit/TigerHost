@@ -113,18 +113,30 @@ DEFAULT_PAAS_BACKEND = 'deis_prod'
 # START DOCKER ADDON CONFIGURATION
 
 DOCKER_HOST = os.environ.get('DOCKER_HOST', 'tcp://192.168.99.100:2376')
-DOCKER_CERT_PATH = os.environ.get('DOCKER_CERT_PATH', '~/.docker/machine/machines/default')
+DOCKER_CERT_PATH = os.environ.get(
+    'DOCKER_CERT_PATH', '~/.docker/machine/machines/default')
 DOCKER_NETWORK = os.environ.get('DOCKER_NETWORK', 'addons_network')
 
 # END DOCKER ADDON CONFIGURATION
 
 # START ADDON PROVIDER CONFIGURATION
 
+from docker_addons.containers.types import AddonTypes
+
+
 ADDON_PROVIDERS = {
     'secret': {
         'CLASS': 'api_server.addons.providers.secret_provider.SecretAddonProvider',
         'ARGS': [],
         'KWARGS': {},
+    },
+    'postgres': {
+        'CLASS': 'docker_addons.provider.DockerAddonProvider',
+        'ARGS': [],
+        'KWARGS': {
+            'container_type': AddonTypes.postgres,
+            'config_name': 'DATABASE_URL',
+        },
     },
 }
 
