@@ -22,6 +22,8 @@ class PostgresProtocol(TcpProxyProtocol):
         That is, the username is used as the host name, and the port is
         fixed to 5432
         """
+        # protocol: http://www.postgresql.org/docs/9.5/static/protocol.html
+        # message format: http://www.postgresql.org/docs/9.5/static/protocol-message-formats.html
         if self.hostname is not None:
             super(self.__class__, self).dataReceived(data)
             return
