@@ -1,3 +1,6 @@
+import urlparse
+
+
 class BaseContainer(object):
 
     def __init__(self, container_info, docker_client, network_name):
@@ -35,6 +38,15 @@ class BaseContainer(object):
         @rtype: str
         """
         raise NotImplementedError
+
+    def get_docker_hostname(self):
+        """Return the docker hostname associated with
+        the docker client.
+
+        @rtype: str
+        """
+        url = urlparse.urlparse(self.docker_client.base_url)
+        return url.hostname
 
     def run_container(self):
         """Connect to the docker host, create a new container, and start it. Save the container ID into container_info.

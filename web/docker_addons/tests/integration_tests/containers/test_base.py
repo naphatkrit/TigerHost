@@ -2,7 +2,6 @@ import docker
 import pytest
 
 from docker_addons.containers.base import BaseContainer
-from docker_addons.models import ContainerInfo
 
 
 @pytest.fixture
@@ -13,11 +12,6 @@ def docker_client():
 @pytest.fixture(scope='function')
 def network_name():
     return 'default'
-
-
-@pytest.fixture(scope='function')
-def container_info():
-    return ContainerInfo.objects.create()
 
 
 @pytest.fixture(scope='function')
