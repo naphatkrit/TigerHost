@@ -52,13 +52,13 @@ def test_begin_provision_errors(provider, fake_container_info, fake_container):
 
 
 def test_get_config_success(provider, fake_container_info, fake_container):
-    hostname = 'hostname'
-    fake_container.get_docker_hostname.return_value = hostname
+    url = 'url'
+    fake_container.get_url.return_value = url
     with mock.patch('docker_addons.provider.ContainerInfo.objects.get') as mocked:
         mocked.return_value = fake_container_info
         result = provider.get_config(None)
-    assert result['config']['DATABASE_URL'] == hostname
-    fake_container.get_docker_hostname.assert_called_once_with()
+    assert result['config']['DATABASE_URL'] == url
+    fake_container.get_url.assert_called_once_with()
 
 
 def test_get_config_error(provider, fake_container_info, fake_container):

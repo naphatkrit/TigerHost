@@ -101,7 +101,7 @@ class DockerAddonProvider(BaseAddonProvider):
         )
         return {
             'config': {
-                self.config_name: container.get_docker_hostname(),
+                self.config_name: container.get_url(),
             }
         }
 
