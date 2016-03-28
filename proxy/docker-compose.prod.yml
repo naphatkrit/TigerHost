@@ -1,0 +1,7 @@
+version: '2'
+services:
+    proxy:
+        build: .
+        command: proxy
+        ports:
+            - "5432:5432"
