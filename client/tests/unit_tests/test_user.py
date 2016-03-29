@@ -1,7 +1,7 @@
 import json
 import pytest
 
-from tigerhost.private_dir import ensure_private_dir_exists
+from tigerhost import private_dir, settings
 from tigerhost.user import User, UserFormatError, save_user, load_user, has_saved_user, delete_user
 
 
@@ -45,7 +45,7 @@ def test_symmetry():
 
 
 def test_save_user():
-    ensure_private_dir_exists()
+    private_dir.ensure_private_dir_exists(settings.APP_NAME)
     assert not has_saved_user()
     user = User(username='username', api_key='api_key')
     save_user(user)

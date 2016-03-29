@@ -1,11 +1,12 @@
 import json
 import os
 
-from tigerhost.private_dir import private_dir_path
+from tigerhost import settings
+from tigerhost import private_dir
 
 
 def _user_path():
-    return os.path.join(private_dir_path(), 'user.json')
+    return os.path.join(private_dir.private_dir_path(settings.APP_NAME), 'user.json')
 
 
 class UserFormatError(Exception):

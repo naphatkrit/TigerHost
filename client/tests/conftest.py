@@ -6,7 +6,7 @@ import string
 
 from click.testing import CliRunner
 
-from tigerhost.private_dir import ensure_private_dir_exists
+from tigerhost import private_dir, settings
 from tigerhost.utils.contextmanagers import temp_dir, temp_file
 
 
@@ -26,13 +26,14 @@ def make_git_repo(runner):
 def fake_private_dir():
     with temp_dir() as path:
         new_private_dir = os.path.join(path, '.tigerhost')
-        with mock.patch('tigerhost.private_dir._private_dir_path', new=new_private_dir):
+        with mock.patch('tigerhost.private_dir.private_dir_path') as mocked:
+            mocked.return_value = new_private_dir
             yield
 
 
 @pytest.fixture(scope='function')
 def ensure_private_dir(fake_private_dir):
-    ensure_private_dir_exists()
+    private_dir.ensure_private_dir_exists(settings.APP_NAME)
 
 
 @pytest.fixture(scope='function')
