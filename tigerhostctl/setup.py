@@ -13,7 +13,7 @@ tests_require = [
 
 install_requires = [
     'Click>=6.0',
-    'tigerhost==0.3.0',
+    'tigerhost==0.3.1',
     'subprocess32>=3.2.6',
 ]
 
