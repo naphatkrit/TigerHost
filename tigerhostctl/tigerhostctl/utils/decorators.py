@@ -1,3 +1,5 @@
+import boto3
+import botocore
 import click
 import os
 import shutil
@@ -25,7 +27,8 @@ def ensure_project_path(f):
             if choice == 0:
                 path = default_project_path()
                 if os.path.exists(path):
-                    click.confirm('Path {} already exists. Continuing will remove this path.'.format(path), default=True, abort=True)
+                    click.confirm('Path {} already exists. Continuing will remove this path.'.format(
+                        path), default=True, abort=True)
                     if os.path.isdir(path):
                         shutil.rmtree(path)
                     else:
@@ -46,3 +49,47 @@ def ensure_project_path(f):
                 save_project_path(value)
         return ctx.invoke(f, *args, **kwargs)
     return update_wrapper(new_func, f)
+
+
+def _ssh_path(name):
+    return os.path.join('~/.ssh', name)
+
+
+def ensure_key_pair(name):
+    """Ensures that a key pair with the name `name` exists,
+    both on AWS and in `~/.ssh/{name}`
+    """
+    def decorator(old_func):
+        @click.pass_context
+        def new_func(ctx, *args, **kwargs):
+            ec2 = boto3.resource('ec2')
+            key_path = os.path.expanduser(_ssh_path(name))
+            if not os.path.exists(key_path) or not os.path.exists(key_path + '.pub'):
+                click.echo(
+                    'Key pair does not exist at {}[.pub].'.format(key_path))
+                click.confirm('Create a new key on AWS and save it?',
+                              default=True, abort=True)
+                ec2.KeyPair(name).delete()
+                client = boto3.client('ec2')
+                key_info = client.create_key_pair(KeyName=name)
+                with open(key_path, 'w') as f:
+                    f.write(key_info['KeyMaterial'])
+            else:
+                # key exists, make sure key also exists on AWS
+                try:
+                    ec2.KeyPair(name).key_fingerprint
+                except botocore.exceptions.ClientError:
+                    click.echo('Key exists locally, but not on AWS.')
+                    click.confirm('Import key at {} to AWS?'.format(
+                        key_path), default=True, abort=True)
+                    with open(key_path + '.pub', 'r') as f:
+                        public_key = f.read()
+                    client = boto3.client('ec2')
+                    client.import_key_pair(
+                        KeyName=name,
+                        PublicKeyMaterial=public_key,
+                    )
+                # TODO should verify fingerprint with public key
+            return ctx.invoke(old_func, *args, **kwargs)
+        return update_wrapper(new_func, old_func)
+    return decorator
