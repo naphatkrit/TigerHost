@@ -3,6 +3,7 @@ import click
 import mock
 import os
 import pytest
+import stat
 
 from tigerhost import exit_codes
 from tigerhost.utils import contextmanagers
@@ -74,6 +75,18 @@ def test_ensure_key_pair_nonexist_local(runner, fake_ec2_resource, fake_ec2_clie
     fake_ec2_client.create_key_pair.assert_called_once_with(KeyName='test')
     with open(fake_ssh_path_function('test'), 'r') as f:
         assert f.read() == 'test key'
+    s = os.stat(fake_ssh_path_function('test')).st_mode
+
+    # owner
+    assert bool(s & stat.S_IRUSR)
+    assert bool(s & stat.S_IWUSR)
+    assert not bool(s & stat.S_IXUSR)
+
+    # group
+    assert not bool(s & stat.S_IRWXG)
+
+    # others
+    assert not bool(s & stat.S_IRWXO)
 
 
 def test_ensure_key_pair_nonexist_local_private(runner, fake_ec2_resource, fake_ec2_client, fake_ssh_path_function, fake_key_pair_info):
@@ -93,6 +106,18 @@ def test_ensure_key_pair_nonexist_local_private(runner, fake_ec2_resource, fake_
     with open(fake_ssh_path_function('test'), 'r') as f:
         assert f.read() == 'test key'
 
+    s = os.stat(fake_ssh_path_function('test')).st_mode
+    # owner
+    assert bool(s & stat.S_IRUSR)
+    assert bool(s & stat.S_IWUSR)
+    assert not bool(s & stat.S_IXUSR)
+
+    # group
+    assert not bool(s & stat.S_IRWXG)
+
+    # others
+    assert not bool(s & stat.S_IRWXO)
+
 
 def test_ensure_key_pair_nonexist_local_public(runner, fake_ec2_resource, fake_ec2_client, fake_ssh_path_function, fake_key_pair_info):
     fake_ec2_client.create_key_pair.return_value = {
@@ -109,6 +134,18 @@ def test_ensure_key_pair_nonexist_local_public(runner, fake_ec2_resource, fake_e
     fake_ec2_client.create_key_pair.assert_called_once_with(KeyName='test')
     with open(fake_ssh_path_function('test'), 'r') as f:
         assert f.read() == 'test key'
+
+    s = os.stat(fake_ssh_path_function('test')).st_mode
+    # owner
+    assert bool(s & stat.S_IRUSR)
+    assert bool(s & stat.S_IWUSR)
+    assert not bool(s & stat.S_IXUSR)
+
+    # group
+    assert not bool(s & stat.S_IRWXG)
+
+    # others
+    assert not bool(s & stat.S_IRWXO)
 
 
 def test_ensure_key_pair_exist_local(runner, fake_ec2_resource, fake_ec2_client, fake_ssh_path_function, fake_key_pair_info):
