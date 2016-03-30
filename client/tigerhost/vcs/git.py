@@ -2,6 +2,8 @@ import hashlib
 import os
 import stat
 
+from subprocess32 import Popen, PIPE
+
 from tigerhost import settings
 from tigerhost.vcs.base import CommandError, Vcs
 
@@ -14,6 +16,24 @@ class GitVcs(Vcs):
         private_dir = self.private_dir()
         if not os.path.exists(private_dir):
             os.makedirs(private_dir)
+
+    @classmethod
+    def clone(cls, remote_url, path):
+        """Clone the remote and return a GitVcs object pointed at the new repo.
+
+        Args:
+            remote_url (str)
+            path (str) - path to clone to
+
+        Returns:
+            GitVcs
+        """
+        args = ['git', 'clone', '--recursive', remote_url, path]
+        proc = Popen(args, stdout=PIPE, stderr=PIPE)
+        (stdout, stderr) = proc.communicate()
+        if proc.returncode != 0:
+            raise CommandError(args[0], proc.returncode, stdout, stderr)
+        return cls(path=path)
 
     def get_working_directory(self):
         """Get the working directory for this repo.

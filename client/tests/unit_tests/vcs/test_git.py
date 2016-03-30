@@ -31,6 +31,12 @@ def git(repo_path, request):
     return GitVcs(path=repo_path)
 
 
+def test_clone(git, repo_path):
+    with contextmanagers.temp_dir() as temp_dir:
+        git = GitVcs.clone(repo_path, temp_dir)
+        assert git.path == temp_dir
+
+
 def test_get_working_directory(git, repo_path):
     path = git.get_working_directory()
     assert os.path.realpath(path) == os.path.realpath(repo_path)
