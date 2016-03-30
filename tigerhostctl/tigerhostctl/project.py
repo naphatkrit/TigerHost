@@ -1,8 +1,19 @@
-from tigerhostctl import user_config
+import os
+
+from tigerhost import private_dir
+from tigerhost.vcs.git import GitVcs
+
+from tigerhostctl import settings, user_config
 from tigerhostctl.utils import utils
 
 
 _project_path_key = 'project_path'
+
+
+def default_project_path():
+    """The default project path
+    """
+    return os.path.join(private_dir.private_dir_path(settings.APP_NAME), 'project')
 
 
 def get_project_path():
@@ -18,3 +29,9 @@ def save_project_path(path):
     """Save the path in its canonical form.
     """
     user_config.set(_project_path_key, utils.canonical_path(path))
+
+
+def clone_project():
+    """Clone a copy of the repo to the default project path
+    """
+    GitVcs.clone(settings.PROJECT_REMOTE, default_project_path())
