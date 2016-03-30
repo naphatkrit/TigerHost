@@ -2,6 +2,7 @@ import mock
 import os
 import pytest
 
+from click.testing import CliRunner
 from tigerhost import private_dir
 from tigerhost.utils.contextmanagers import temp_dir
 
@@ -17,6 +18,13 @@ def fake_private_dir():
             yield
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='function', autouse=True)
 def ensure_private_dir(fake_private_dir):
     private_dir.ensure_private_dir_exists(settings.APP_NAME)
+
+
+@pytest.yield_fixture(scope='function')
+def runner():
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        yield runner
