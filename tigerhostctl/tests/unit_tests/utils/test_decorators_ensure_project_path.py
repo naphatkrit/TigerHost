@@ -2,7 +2,7 @@ import click
 
 from tigerhost import exit_codes
 
-from tigerhostctl.utils import decorators, utils
+from tigerhostctl.utils import decorators, path_utils
 from tigerhostctl.project import get_project_path, save_project_path
 
 
@@ -16,7 +16,7 @@ def test_without_project_path_normal(runner):
     assert get_project_path() is None
     result = runner.invoke(dummy, input='.\n\n')
     assert result.exit_code == exit_codes.SUCCESS
-    assert get_project_path() == utils.canonical_path('.')
+    assert get_project_path() == path_utils.canonical_path('.')
 
 
 def test_without_project_path_nonexist(runner):
@@ -38,4 +38,4 @@ def test_without_project_path_already_exists(runner):
     save_project_path('.')
     result = runner.invoke(dummy)
     assert result.exit_code == exit_codes.SUCCESS
-    assert get_project_path() == utils.canonical_path('.')
+    assert get_project_path() == path_utils.canonical_path('.')

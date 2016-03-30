@@ -5,7 +5,7 @@ from functools import update_wrapper
 from tigerhost import exit_codes
 
 from tigerhostctl.project import get_project_path, save_project_path
-from tigerhostctl.utils import utils
+from tigerhostctl.utils import path_utils
 
 
 def ensure_project_path(f):
@@ -18,7 +18,7 @@ def ensure_project_path(f):
             click.echo('Config project_path not set.')
             value = click.prompt(
                 'Please enter the path to your project', type=str)
-            value = utils.canonical_path(value)
+            value = path_utils.canonical_path(value)
             if not os.path.exists(value) or not os.path.isdir(value):
                 click.echo('This directory does not exist.')
                 ctx.exit(code=exit_codes.OTHER_FAILURE)

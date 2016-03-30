@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from tigerhostctl.utils.utils import canonical_path
+from tigerhostctl.utils.path_utils import canonical_path
 
 
 @pytest.mark.parametrize('short,full', [

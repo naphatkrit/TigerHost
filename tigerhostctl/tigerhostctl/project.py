@@ -4,7 +4,7 @@ from tigerhost import private_dir
 from tigerhost.vcs.git import GitVcs
 
 from tigerhostctl import settings, user_config
-from tigerhostctl.utils import utils
+from tigerhostctl.utils import path_utils
 
 
 _project_path_key = 'project_path'
@@ -28,7 +28,7 @@ def get_project_path():
 def save_project_path(path):
     """Save the path in its canonical form.
     """
-    user_config.set(_project_path_key, utils.canonical_path(path))
+    user_config.set(_project_path_key, path_utils.canonical_path(path))
 
 
 def clone_project():
