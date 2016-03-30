@@ -12,7 +12,10 @@ tests_require = [
 ]
 
 install_requires = [
+    'awscli>=1.10.17,<2.0.0',
+    'boto3>=1.3.0,<2.0.0',
     'Click>=6.0',
+    'pyyaml>=3.11,<4.0',
     'tigerhost==0.3.2',
     'subprocess32>=3.2.6',
 ]
