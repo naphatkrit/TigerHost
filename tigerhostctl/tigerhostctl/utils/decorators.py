@@ -3,6 +3,7 @@ import botocore
 import click
 import os
 import shutil
+import stat
 
 from functools import update_wrapper
 from tigerhost import exit_codes
@@ -64,21 +65,29 @@ def ensure_key_pair(name):
         def new_func(ctx, *args, **kwargs):
             ec2 = boto3.resource('ec2')
             key_path = os.path.expanduser(_ssh_path(name))
-            if not os.path.exists(key_path) or not os.path.exists(key_path + '.pub'):
-                click.echo(
-                    'Key pair does not exist at {}[.pub].'.format(key_path))
+            exists_on_aws = True
+            key_pair = ec2.KeyPair(name)
+            try:
+                key_pair.key_fingerprint
+            except botocore.exceptions.ClientError:
+                exists_on_aws = False
+            if not os.path.exists(key_path) or (not exists_on_aws and not os.path.exists(key_path + '.pub')):
+                if not os.path.exists(key_path):
+                    click.echo(
+                        'Key pair does not exist at {}.'.format(key_path))
+                else:
+                    click.echo('Key does not exist at {}.pub.'.format(key_path))
                 click.confirm('Create a new key on AWS and save it?',
                               default=True, abort=True)
-                ec2.KeyPair(name).delete()
+                key_pair.delete()
                 client = boto3.client('ec2')
                 key_info = client.create_key_pair(KeyName=name)
                 with open(key_path, 'w') as f:
                     f.write(key_info['KeyMaterial'])
+                os.chmod(key_path, stat.S_IRUSR | stat.S_IWUSR)
             else:
                 # key exists, make sure key also exists on AWS
-                try:
-                    ec2.KeyPair(name).key_fingerprint
-                except botocore.exceptions.ClientError:
+                if not exists_on_aws:
                     click.echo('Key exists locally, but not on AWS.')
                     click.confirm('Import key at {} to AWS?'.format(
                         key_path), default=True, abort=True)

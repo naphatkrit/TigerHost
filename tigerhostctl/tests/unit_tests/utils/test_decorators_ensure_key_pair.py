@@ -14,6 +14,7 @@ from tigerhostctl.utils.decorators import ensure_key_pair
 def fake_key_pair_info():
     mocked = mock.Mock()
     mocked.delete = mock.Mock()
+    type(mocked).key_fingerprint = mock.PropertyMock()
     return mocked
 
 
@@ -53,6 +54,12 @@ def fake_ssh_path_function(fake_ssh_folder):
     return fake
 
 
+class FakeClientError(botocore.exceptions.ClientError):
+
+    def __init__(self):
+        pass
+
+
 def test_ensure_key_pair_nonexist_local(runner, fake_ec2_resource, fake_ec2_client, fake_ssh_path_function, fake_key_pair_info):
     fake_ec2_client.create_key_pair.return_value = {
         'KeyMaterial': 'test key'
@@ -73,6 +80,7 @@ def test_ensure_key_pair_nonexist_local_private(runner, fake_ec2_resource, fake_
     fake_ec2_client.create_key_pair.return_value = {
         'KeyMaterial': 'test key'
     }
+    type(fake_key_pair_info).key_fingerprint = mock.PropertyMock(side_effect=FakeClientError)
     assert not os.system('touch {}'.format(fake_ssh_path_function('test')))
     with mock.patch('boto3.resource') as mocked_resource, mock.patch('boto3.client') as mocked_client, mock.patch('tigerhostctl.utils.decorators._ssh_path', new=fake_ssh_path_function):
         mocked_resource.return_value = fake_ec2_resource
@@ -103,12 +111,6 @@ def test_ensure_key_pair_nonexist_local_public(runner, fake_ec2_resource, fake_e
         assert f.read() == 'test key'
 
 
-class FakeClientError(botocore.exceptions.ClientError):
-
-    def __init__(self):
-        pass
-
-
 def test_ensure_key_pair_exist_local(runner, fake_ec2_resource, fake_ec2_client, fake_ssh_path_function, fake_key_pair_info):
     type(fake_key_pair_info).key_fingerprint = mock.PropertyMock(
         side_effect=FakeClientError)
@@ -126,10 +128,7 @@ def test_ensure_key_pair_exist_local(runner, fake_ec2_resource, fake_ec2_client,
 
 
 def test_ensure_key_pair_exist_normal(runner, fake_ec2_resource, fake_ssh_path_function, fake_key_pair_info):
-    type(fake_key_pair_info).key_fingerprint = mock.PropertyMock()
     assert not os.system('touch {}'.format(fake_ssh_path_function('test')))
-    with open(fake_ssh_path_function('test') + '.pub', 'w') as f:
-        f.write('test key')
     with mock.patch('boto3.resource') as mocked_resource, mock.patch('tigerhostctl.utils.decorators._ssh_path', new=fake_ssh_path_function):
         mocked_resource.return_value = fake_ec2_resource
         result = runner.invoke(dummy, input='\n')
