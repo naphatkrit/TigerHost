@@ -4,7 +4,7 @@ import pytest
 
 from click.testing import CliRunner
 from tigerhost import private_dir
-from tigerhost.utils.contextmanagers import temp_dir
+from tigerhost.utils.contextmanagers import temp_dir, chdir
 
 from tigerhostctl import settings
 
@@ -28,3 +28,12 @@ def runner():
     runner = CliRunner()
     with runner.isolated_filesystem():
         yield runner
+
+
+@pytest.yield_fixture(scope='function')
+def fake_git_remote():
+    with temp_dir() as temp:
+        with chdir(temp):
+            assert not os.system('git init')
+            assert not os.system('touch a && git add . && git commit -m a')
+        yield temp
