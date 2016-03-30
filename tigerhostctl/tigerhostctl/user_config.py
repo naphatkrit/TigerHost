@@ -27,7 +27,7 @@ def _get_config_dict():
 def _save_config_dict(config_dict):
     path = _config_path()
     with open(path, 'w') as f:
-        json.dump(config_dict, f)
+        json.dump(config_dict, f, sort_keys=True, indent=4, separators=(',', ': '))
 
 
 def get(key, default=None):
