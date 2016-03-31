@@ -1,5 +1,6 @@
 import click
 
+from tigerhostctl.commands.addons.copy_credentials import copy_credentials
 from tigerhostctl.commands.addons.create import create
 from tigerhostctl.commands.addons.destroy import destroy
 
@@ -12,5 +13,6 @@ def entry():
     pass
 
 
+entry.add_command(copy_credentials)
 entry.add_command(create)
 entry.add_command(destroy)
