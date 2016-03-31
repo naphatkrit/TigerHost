@@ -16,13 +16,13 @@ def print_markers(f):
     def new_func(ctx, *args, **kwargs):
         command = ctx.info_name
         assert command is not None
-        click_utils.echo_with_markers(' {app_name} {command} '.format(
+        click_utils.echo_with_markers('{app_name} {command}'.format(
             app_name=settings.APP_NAME, command=command))
         try:
             return ctx.invoke(f, *args, **kwargs)
         finally:
             click.echo()
-            click_utils.echo_with_markers(' end of {app_name} {command} '.format(
+            click_utils.echo_with_markers('end of {app_name} {command}'.format(
                 app_name=settings.APP_NAME, command=command))
     return update_wrapper(new_func, f)
 
