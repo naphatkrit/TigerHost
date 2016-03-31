@@ -27,6 +27,9 @@ class GitVcs(Vcs):
 
         Returns:
             GitVcs
+
+        Raises:
+            CommandError
         """
         args = ['git', 'clone', '--recursive', remote_url, path]
         proc = Popen(args, stdout=PIPE, stderr=PIPE)
