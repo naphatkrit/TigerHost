@@ -16,7 +16,7 @@ install_requires = [
     'boto3>=1.3.0,<2.0.0',
     'Click>=6.0',
     'pyyaml>=3.11,<4.0',
-    'tigerhost==0.3.3',
+    'tigerhost==0.3.4',
     'subprocess32>=3.2.6',
 ]
 
