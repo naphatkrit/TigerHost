@@ -9,7 +9,7 @@ def parse_shell_for_exports(text):
 
         export VAR1=value1
         ...
-        export VAR2=value2
+        export VAR2="value2"
 
         will return:
 
@@ -23,6 +23,6 @@ def parse_shell_for_exports(text):
     env = dict()
     for l in lines:
         key, value = l.split('=', 1)
-        value = value.split('#', 1)[0].strip()
+        value = value.split('#', 1)[0].strip().strip('"').strip("'")
         env[key] = value
     return env
