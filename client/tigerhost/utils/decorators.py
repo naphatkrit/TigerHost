@@ -6,6 +6,7 @@ from functools import update_wrapper
 from tigerhost import exit_codes, settings
 from tigerhost.api_client import ApiClient, ApiClientAuthenticationError
 from tigerhost.user import load_user, has_saved_user
+from tigerhost.utils import click_utils
 from tigerhost.vcs.base import CommandError
 from tigerhost.vcs.git import GitVcs
 
@@ -15,26 +16,15 @@ def print_markers(f):
     def new_func(ctx, *args, **kwargs):
         command = ctx.info_name
         assert command is not None
-        _print_marker(' {app_name} {command} '.format(
+        click_utils.echo_with_markers(' {app_name} {command} '.format(
             app_name=settings.APP_NAME, command=command))
         try:
             return ctx.invoke(f, *args, **kwargs)
         finally:
             click.echo()
-            _print_marker(' end of {app_name} {command} '.format(
+            click_utils.echo_with_markers(' end of {app_name} {command} '.format(
                 app_name=settings.APP_NAME, command=command))
     return update_wrapper(new_func, f)
-
-
-def _print_marker(text):
-    width, _ = click.get_terminal_size()
-    if len(text) >= width:
-        click.echo(text)  # this is probably never the case
-    else:
-        leftovers = width - len(text)
-        click.echo('=' * (leftovers / 2), nl=False)
-        click.echo(text, nl=False)
-        click.echo('=' * (leftovers / 2 + leftovers % 2))
 
 
 def ensure_obj(f):
