@@ -32,5 +32,5 @@ def passing_command_with_context(ctx):
 def test_simple(runner, command, exit_code):
     result = runner.invoke(command)
     assert result.exit_code == exit_code
-    assert '= tigerhost ' + command.name + ' =' in result.output
-    assert '= end of tigerhost ' + command.name + ' =' in result.output
+    assert '= ' + command.name + ' =' in result.output
+    assert '= end of ' + command.name + ' =' in result.output
