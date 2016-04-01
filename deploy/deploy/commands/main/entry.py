@@ -1,5 +1,6 @@
 import click
 
+from deploy.commands.main.configure_dns import configure_dns
 from deploy.commands.main.create import create
 from deploy.commands.main.destroy import destroy
 
@@ -12,5 +13,6 @@ def entry():
     pass
 
 
+entry.add_command(configure_dns)
 entry.add_command(create)
 entry.add_command(destroy)

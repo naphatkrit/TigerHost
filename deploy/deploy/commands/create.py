@@ -31,11 +31,12 @@ def _get_secret():
 
 @click.command()
 @click.option('--elastic-ip-id', '-e', default=None, help='Elastic IP allocation ID, used to associate the created machine with. Creates a new Elastic IP if not provided.')
+@click.option('--hosted-zone-id', '-h', required=True, help='Route 53 Hosted Zone ID for {}'.format(settings.DOMAIN_NAME))
 @click.option('--rds-database/--no-rds-database', default=False, help='Control whether TigerHost uses a dedicated RDS database, or use one on the addon.')
 @click.option('--secret', '-s', default=None, help='Django secret key.')
 @print_markers
 @ensure_project_path
-def create(elastic_ip_id, rds_database, secret):
+def create(elastic_ip_id, rds_database, secret, hosted_zone_id):
     if secret is None:
         secret = _get_secret()
     if elastic_ip_id is None:
@@ -78,3 +79,5 @@ def create(elastic_ip_id, rds_database, secret):
          '--elastic-ip-id', elastic_ip_id,
          '--secret', secret,
          ])
+
+    subprocess.check_call([settings.APP_NAME, 'main', 'configure-dns', '--elastic-ip-id', elastic_ip_id, '--hosted-zone-id', hosted_zone_id])
