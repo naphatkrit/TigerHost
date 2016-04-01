@@ -6,7 +6,9 @@ import deploy
 
 from deploy import settings
 from deploy.commands.addons.entry import entry as addons_entry
+from deploy.commands.create import create
 from deploy.commands.deis.entry import entry as deis_entry
+from deploy.commands.destroy import destroy
 from deploy.commands.main.entry import entry as main_entry
 
 
@@ -20,5 +22,7 @@ def entry():
 
 
 entry.add_command(addons_entry, 'addons')
+entry.add_command(create)
 entry.add_command(deis_entry, 'deis')
+entry.add_command(destroy)
 entry.add_command(main_entry, 'main')

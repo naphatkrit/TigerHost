@@ -1,3 +1,12 @@
+import random
+import string
+
+
+def random_string(length, allowed_chars=string.ascii_letters + string.digits):
+    rand = random.SystemRandom()
+    return ''.join(rand.choice(allowed_chars) for _ in range(length))
+
+
 def parse_shell_for_exports(text):
     """Parses a shell script and extracts all of its exports.
 

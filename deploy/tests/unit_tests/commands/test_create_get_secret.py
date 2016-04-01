@@ -2,7 +2,7 @@ import click
 
 from tigerhost import exit_codes
 
-from deploy.commands.main.create import _get_secret
+from deploy.commands.create import _get_secret
 
 
 @click.command()
