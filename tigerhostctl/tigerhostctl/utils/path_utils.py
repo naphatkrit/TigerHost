@@ -18,3 +18,7 @@ def ssh_path(name):
     @rtype: str
     """
     return canonical_path(os.path.join('~/.ssh', name))
+
+
+def docker_machine_path(machine_name):
+    return canonical_path(os.path.join('~/.docker/machine/machines', machine_name))
