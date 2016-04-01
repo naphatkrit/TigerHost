@@ -19,6 +19,9 @@ from tigerhostctl.utils.decorators import ensure_project_path, ensure_key_pair
 @ensure_key_pair('deis')
 def create(stack):
     # TODO make sure deisctl is installed
+    if settings.DEBUG:
+        click.echo('Not doing anything because DEBUG is True.')
+        return
     subprocess.check_call(['ssh-add', path_utils.ssh_path('deis')])
     with contextmanagers.chdir(os.path.join(get_project_path(), 'deis')):
         subprocess.check_call(['make', 'discovery-url'])

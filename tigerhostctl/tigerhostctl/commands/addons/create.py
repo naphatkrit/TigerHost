@@ -6,6 +6,7 @@ import yaml
 from tigerhost.utils.click_utils import echo_with_markers
 from tigerhost.utils.decorators import print_markers
 
+from tigerhostctl import settings
 from tigerhostctl.project import get_project_path
 from tigerhostctl.utils import utils
 from tigerhostctl.utils.decorators import ensure_project_path
@@ -36,8 +37,12 @@ def create(name, instance_type, database):
     # TODO verify that database is [a-zA-Z0-9_]
     echo_with_markers('Creating machine {name} with type {type}.'.format(
         name=name, type=instance_type), marker='-')
-    subprocess.check_call(
-        ['docker-machine', 'create', '--driver', 'amazonec2', '--amazonec2-instance-type', instance_type, name])
+    if settings.DEBUG:
+        subprocess.check_call(
+            ['docker-machine', 'create', '--driver', 'virtualbox', name])
+    else:
+        subprocess.check_call(
+            ['docker-machine', 'create', '--driver', 'amazonec2', '--amazonec2-instance-type', instance_type, name])
 
     project_path = get_project_path()
 

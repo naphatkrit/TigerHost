@@ -10,6 +10,7 @@ import yaml
 from tigerhost.utils.decorators import print_markers
 from tigerhost.utils.click_utils import echo_with_markers
 
+from tigerhostctl import settings
 from tigerhostctl.project import get_project_path
 from tigerhostctl.utils import click_utils, path_utils
 from tigerhostctl.utils.decorators import ensure_project_path
@@ -96,21 +97,25 @@ def create(name, instance_type, database, addon_docker_host, secret, elastic_ip_
 
     echo_with_markers('Creating machine {name} with type {type}.'.format(
         name=name, type=instance_type), marker='-')
-    subprocess.check_call(['docker-machine', 'create', '--driver',
-                           'amazonec2', '--amazonec2-instance-type', instance_type, name])
-
-    if elastic_ip_id is None:
-        echo_with_markers(
-            'Allocating a new Elastic IP.'.format(name), marker='-')
+    if settings.DEBUG:
+        subprocess.check_call(['docker-machine', 'create', '--driver',
+                               'virtualbox', name])
     else:
-        echo_with_markers('Using Elastic IP {}.'.format(
-            elastic_ip_id, name), marker='-')
-    click.echo('Done.')
-    new_ip = _associate_elastic_ip(name, elastic_ip_id)
+        subprocess.check_call(['docker-machine', 'create', '--driver',
+                               'amazonec2', '--amazonec2-instance-type', instance_type, name])
 
-    echo_with_markers(
-        'Saving IP {} to docker-machine.'.format(new_ip), marker='-')
-    _update_docker_machine_ip(name, new_ip)
+        if elastic_ip_id is None:
+            echo_with_markers(
+                'Allocating a new Elastic IP.'.format(name), marker='-')
+        else:
+            echo_with_markers('Using Elastic IP {}.'.format(
+                elastic_ip_id, name), marker='-')
+        click.echo('Done.')
+        new_ip = _associate_elastic_ip(name, elastic_ip_id)
+
+        echo_with_markers(
+            'Saving IP {} to docker-machine.'.format(new_ip), marker='-')
+        _update_docker_machine_ip(name, new_ip)
 
     echo_with_markers('Generating docker-compose file.', marker='-')
     _generate_compose_file(project_path, database, addon_docker_host, secret)
