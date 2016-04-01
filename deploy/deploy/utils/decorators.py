@@ -8,6 +8,7 @@ import stat
 from functools import update_wrapper
 from tigerhost import exit_codes
 
+from deploy import settings
 from deploy.project import get_project_path, save_project_path, default_project_path, clone_project
 from deploy.utils import click_utils, path_utils
 
@@ -102,3 +103,16 @@ def ensure_key_pair(name):
             return ctx.invoke(old_func, *args, **kwargs)
         return update_wrapper(new_func, old_func)
     return decorator
+
+
+def skip_if_debug(f):
+    @click.pass_context
+    def new_func(ctx, *args, **kwargs):
+        """
+        @type ctx: click.Context
+        """
+        if settings.DEBUG:
+            click.echo('Skipping because DEBUG is True.')
+            ctx.exit()
+        return ctx.invoke(f, *args, **kwargs)
+    return update_wrapper(new_func, f)

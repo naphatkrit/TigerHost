@@ -9,7 +9,7 @@ from tigerhost.utils.decorators import print_markers
 from deploy import settings
 from deploy.project import get_project_path
 from deploy.utils import path_utils
-from deploy.utils.decorators import ensure_project_path, ensure_key_pair
+from deploy.utils.decorators import ensure_project_path, ensure_key_pair, skip_if_debug
 
 
 @click.command()
@@ -17,11 +17,9 @@ from deploy.utils.decorators import ensure_project_path, ensure_key_pair
 @print_markers
 @ensure_project_path
 @ensure_key_pair('deis')
+@skip_if_debug
 def create(stack):
     # TODO make sure deisctl is installed
-    if settings.DEBUG:
-        click.echo('Not doing anything because DEBUG is True.')
-        return
     subprocess.check_call(['ssh-add', path_utils.ssh_path('deis')])
     with contextmanagers.chdir(os.path.join(get_project_path(), 'deis')):
         subprocess.check_call(['make', 'discovery-url'])

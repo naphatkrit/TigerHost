@@ -3,16 +3,14 @@ import click
 
 from tigerhost.utils.decorators import print_markers
 
-from deploy import settings
+from deploy.utils.decorators import skip_if_debug
 
 
 @click.command()
 @click.option('--stack', '-s', default='deis', help='The name of the cloud formation stack to create.')
 @print_markers
+@skip_if_debug
 def destroy(stack):
-    if settings.DEBUG:
-        click.echo('Not doing anything because DEBUG is True.')
-        return
     cloudformation = boto3.resource('cloudformation')
     s = cloudformation.Stack(stack)
     stack_id = s.stack_id
