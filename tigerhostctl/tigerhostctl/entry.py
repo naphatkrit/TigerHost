@@ -7,6 +7,7 @@ import tigerhostctl
 from tigerhostctl import settings
 from tigerhostctl.commands.addons.entry import entry as addons_entry
 from tigerhostctl.commands.deis.entry import entry as deis_entry
+from tigerhostctl.commands.main.entry import entry as main_entry
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -20,3 +21,4 @@ def entry():
 
 entry.add_command(addons_entry, 'addons')
 entry.add_command(deis_entry, 'deis')
+entry.add_command(main_entry, 'main')
