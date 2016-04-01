@@ -11,19 +11,3 @@ def echo_with_markers(text, marker='='):
         click.echo(marker * (leftovers / 2), nl=False)
         click.echo(text, nl=False)
         click.echo(marker * (leftovers / 2 + leftovers % 2))
-
-
-def full_command_name(ctx):
-    """Get the full executed command name. For example,
-
-    tigerhost create
-
-    @type ctx: click.Context
-
-    @rtype: str
-    """
-    name = []
-    while ctx is not None:
-        name.append(ctx.info_name)
-        ctx = ctx.parent
-    return ' '.join(reversed(name))

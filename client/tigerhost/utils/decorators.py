@@ -16,7 +16,7 @@ def print_markers(f):
     def new_func(ctx, *args, **kwargs):
         command = ctx.info_name
         assert command is not None
-        command_name = click_utils.full_command_name(ctx)
+        command_name = ctx.command_path
         click_utils.echo_with_markers(command_name)
         try:
             return ctx.invoke(f, *args, **kwargs)
