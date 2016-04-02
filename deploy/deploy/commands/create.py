@@ -49,6 +49,7 @@ def create(elastic_ip_id, rds_database, secret, hosted_zone_id):
             # not used anyways
             elastic_ip_id = 'dummy-ip-id'
     subprocess.check_call([settings.APP_NAME, 'deis', 'create'])
+    subprocess.check_call([settings.APP_NAME, 'deis', 'configure-dns', '--hosted-zone-id', hosted_zone_id])
 
     database_url = None
     addons_ip = None

@@ -3,6 +3,7 @@ import click
 from tigerhost import private_dir
 
 from deploy import settings
+from deploy.commands.deis.configure_dns import configure_dns
 from deploy.commands.deis.create import create
 from deploy.commands.deis.destroy import destroy
 
@@ -15,5 +16,6 @@ def entry():
     private_dir.ensure_private_dir_exists(settings.APP_NAME)
 
 
+entry.add_command(configure_dns)
 entry.add_command(create)
 entry.add_command(destroy)
