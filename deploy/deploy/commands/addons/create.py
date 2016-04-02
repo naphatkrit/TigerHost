@@ -7,6 +7,7 @@ from tigerhost.utils.click_utils import echo_with_markers
 from tigerhost.utils.decorators import print_markers
 
 from deploy import settings
+from deploy.secret import store
 from deploy.secret.docker_machine import store_credentials
 from deploy.project import get_project_path
 from deploy.utils import utils
@@ -61,3 +62,5 @@ def create(ctx, name, instance_type, database):
 
     subprocess.check_call(['docker-compose', '-f', os.path.join(
         project_path, 'proxy/docker-compose.prod.yml'), 'up', '-d'], env=env)
+
+    store.set('addon__database_container_name', database)

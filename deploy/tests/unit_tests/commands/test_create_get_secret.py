@@ -14,9 +14,6 @@ def dummy():
 def test_get_secret_generate(runner):
     result = runner.invoke(dummy, input='1\n\n')
     assert result.exit_code == exit_codes.SUCCESS
-    secret = [x for x in result.output.split('\n') if x.startswith('Generated secret: ')][0]
-    secret = secret[len('Generated secret: '):]
-    assert 'My secret is {}.'.format(secret) in result.output
 
 
 def test_get_secret_input(runner):

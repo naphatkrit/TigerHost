@@ -10,6 +10,7 @@ from tigerhost.utils.click_utils import echo_with_markers
 
 from deploy import settings
 from deploy.project import get_project_path
+from deploy.secret import store
 from deploy.secret.docker_machine import store_credentials
 from deploy.utils import path_utils
 from deploy.utils.decorators import ensure_project_path
@@ -99,3 +100,7 @@ def create(name, instance_type, database, addon_docker_host, secret, elastic_ip_
     env.update(parse_shell_for_exports(env_text))
     subprocess.check_call(['docker-compose', '-f', os.path.join(
         get_project_path(), 'docker-compose.prod.yml'), 'up', '-d'], env=env)
+    store.set('main__database_url', database)
+    store.set('main__django_secret', secret)
+    store.set('main__addon_docker_host', addon_docker_host)
+    store.set('main__elastic_ip_id', elastic_ip_id)

@@ -19,10 +19,7 @@ def _get_secret():
     ])
     if choice == 0:
         secret = random_string(length=100)
-        click.echo('Generated secret: {}'.format(secret))
-        click.echo(
-            'Please save this somewhere safe. You will need it to update TigerHost.')
-        click.confirm('Continue?', default=True, abort=True)
+        click.echo('Generated secret.')
     else:
         # TODO only accept [a-zA-Z0-9]
         secret = click.prompt('Secret', type=str, confirmation_prompt=True)
