@@ -5,6 +5,7 @@ from tigerhost.utils.click_utils import echo_with_markers
 from tigerhost.utils.decorators import print_markers
 
 from deploy.secret import store
+from deploy.secret.docker_machine import remove_credentials
 
 
 @click.command()
@@ -18,3 +19,4 @@ def destroy(name):
     store.unset('main__django_secret')
     store.unset('main__addon_docker_host')
     store.unset('main__elastic_ip_id')
+    remove_credentials(name)
