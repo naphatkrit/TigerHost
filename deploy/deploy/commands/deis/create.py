@@ -9,7 +9,7 @@ from tigerhost.utils.decorators import print_markers
 from deploy import settings
 from deploy.project import get_project_path
 from deploy.utils import path_utils
-from deploy.utils.decorators import ensure_project_path, ensure_key_pair, skip_if_debug
+from deploy.utils.decorators import ensure_project_path, ensure_key_pair, skip_if_debug, ensure_deisctl_exists
 
 
 @click.command()
@@ -17,9 +17,10 @@ from deploy.utils.decorators import ensure_project_path, ensure_key_pair, skip_i
 @print_markers
 @ensure_project_path
 @ensure_key_pair('deis')
+@ensure_deisctl_exists
 @skip_if_debug
 def create(stack):
-    # TODO make sure deisctl is installed
+    deisctl = path_utils.executable_path('deisctl')
     subprocess.check_call(['ssh-add', path_utils.ssh_path('deis')])
     with contextmanagers.chdir(os.path.join(get_project_path(), 'deis')):
         subprocess.check_call(['make', 'discovery-url'])
@@ -49,10 +50,10 @@ def create(stack):
         }
         env.update(os.environ)
         click.echo('Installing Deis.')
-        subprocess.check_call(['deisctl', 'config', 'platform',
+        subprocess.check_call([deisctl, 'config', 'platform',
                                'set', 'sshPrivateKey=' + path_utils.ssh_path('deis')], env=env)
         subprocess.check_call(
-            ['deisctl', 'config', 'platform', 'set', 'domain=' + settings.DOMAIN_NAME], env=env)
-        subprocess.check_call(['deisctl', 'refresh-units'], env=env)
-        subprocess.check_call(['deisctl', 'install', 'platform'], env=env)
-        subprocess.check_call(['deisctl', 'start', 'platform'], env=env)
+            [deisctl, 'config', 'platform', 'set', 'domain=' + settings.DOMAIN_NAME], env=env)
+        subprocess.check_call([deisctl, 'refresh-units'], env=env)
+        subprocess.check_call([deisctl, 'install', 'platform'], env=env)
+        subprocess.check_call([deisctl, 'start', 'platform'], env=env)

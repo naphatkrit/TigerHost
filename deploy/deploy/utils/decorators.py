@@ -10,6 +10,7 @@ import subprocess32 as subprocess
 from functools import update_wrapper
 from tigerhost import exit_codes, private_dir
 from tigerhost.utils import contextmanagers
+from tigerhost.utils.click_utils import echo_with_markers
 
 from deploy import settings
 from deploy.project import get_project_path, save_project_path, default_project_path, clone_project
@@ -135,6 +136,7 @@ def ensure_executable_exists(name, get_executable):
             """
             path = path_utils.executable_path(name)
             if not os.path.exists(path):
+                echo_with_markers('Installing {}.'.format(name), marker='-')
                 get_executable()
                 assert os.path.exists(path)
             return ctx.invoke(f, *args, **kwargs)
