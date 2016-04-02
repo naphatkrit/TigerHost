@@ -7,6 +7,7 @@ from tigerhost import private_dir
 from tigerhost.utils.contextmanagers import temp_dir, chdir
 
 from deploy import settings
+from deploy.secret.secret_dir import ensure_secret_dir_exists
 
 
 @pytest.yield_fixture(scope='function', autouse=True)
@@ -21,6 +22,11 @@ def fake_private_dir():
 @pytest.fixture(scope='function', autouse=True)
 def ensure_private_dir(fake_private_dir):
     private_dir.ensure_private_dir_exists(settings.APP_NAME)
+
+
+@pytest.fixture(scope='function', autouse=True)
+def ensure_secret_dir(fake_private_dir):
+    ensure_secret_dir_exists()
 
 
 @pytest.yield_fixture(scope='function')
