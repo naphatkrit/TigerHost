@@ -41,3 +41,14 @@ def retrieve_credentials(machine_name, target_directory):
         src = os.path.join(dir_path, f)
         dst = os.path.join(target_directory, f)
         shutil.copy2(src, dst)
+
+
+def remove_credentials(machine_name):
+    """Remove any credentials stored for this machine.
+    If not found, nothing happens.
+
+    @type machine_name: str
+    """
+    dir_path = os.path.join(secret_dir_path(), 'docker_machines', machine_name)
+    if os.path.exists(dir_path):
+        shutil.rmtree(dir_path)

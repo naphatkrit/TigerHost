@@ -4,7 +4,7 @@ import pytest
 
 from tigerhost.utils import contextmanagers
 
-from deploy.secret.docker_machine import retrieve_credentials, store_credentials
+from deploy.secret.docker_machine import remove_credentials, retrieve_credentials, store_credentials
 from deploy.secret.secret_dir import secret_dir_path
 from deploy.utils.path_utils import canonical_path
 
@@ -36,3 +36,9 @@ def test_credentials(fake_credentials_folder):
         assert os.path.exists(os.path.join(temp, 'ca.pem'))
         assert os.path.exists(os.path.join(temp, 'cert.pem'))
         assert os.path.exists(os.path.join(temp, 'key.pem'))
+
+    remove_credentials('test_machine')
+    assert not os.path.exists(os.path.join(secret_path, 'docker_machines/test_machine'))
+
+    # ok to call twice
+    remove_credentials('test_machine')
