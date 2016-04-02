@@ -41,3 +41,13 @@ def set(key, value):
     path = os.path.join(base, key.lower())
     with open(path, 'w') as f:
         json.dump(value, f)
+
+
+def unset(key):
+    """Unset the key-value pair. Does nothing if not found.
+
+    @type key: str
+    """
+    path = os.path.join(_store_base_dir(), key.lower())
+    if os.path.exists(path):
+        os.remove(path)
