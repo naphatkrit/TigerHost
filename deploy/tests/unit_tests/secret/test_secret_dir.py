@@ -1,6 +1,6 @@
 import os
 
-from deploy.secret_dir import ensure_secret_dir_exists, secret_dir_path
+from deploy.secret.secret_dir import ensure_secret_dir_exists, secret_dir_path
 
 
 def test_secret_dir_exists():

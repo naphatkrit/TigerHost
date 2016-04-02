@@ -4,13 +4,14 @@ from tigerhost import private_dir
 
 import deploy
 
-from deploy import secret_dir, settings
+from deploy import settings
 from deploy.commands.addons.entry import entry as addons_entry
 from deploy.commands.create import create
 from deploy.commands.deis.entry import entry as deis_entry
 from deploy.commands.destroy import destroy
 from deploy.commands.main.entry import entry as main_entry
 from deploy.commands.secret import secret
+from deploy.secret import secret_dir
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])

@@ -3,7 +3,7 @@ import subprocess32 as subprocess
 
 from tigerhost.utils import contextmanagers
 
-from deploy import secret_dir
+from deploy.secret import secret_dir
 
 
 @click.command()
