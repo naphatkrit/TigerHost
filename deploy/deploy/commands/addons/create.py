@@ -7,6 +7,7 @@ from tigerhost.utils.click_utils import echo_with_markers
 from tigerhost.utils.decorators import print_markers
 
 from deploy import settings
+from deploy.secret.docker_machine import store_credentials
 from deploy.project import get_project_path
 from deploy.utils import utils
 from deploy.utils.decorators import ensure_project_path
@@ -44,6 +45,9 @@ def create(ctx, name, instance_type, database):
     else:
         subprocess.check_call(
             ['docker-machine', 'create', '--driver', 'amazonec2', '--amazonec2-instance-type', instance_type, name])
+
+    # save credentials to secret directory
+    store_credentials(name)
 
     project_path = get_project_path()
 
