@@ -4,12 +4,13 @@ from tigerhost import private_dir
 
 import deploy
 
-from deploy import settings
+from deploy import secret_dir, settings
 from deploy.commands.addons.entry import entry as addons_entry
 from deploy.commands.create import create
 from deploy.commands.deis.entry import entry as deis_entry
 from deploy.commands.destroy import destroy
 from deploy.commands.main.entry import entry as main_entry
+from deploy.commands.secret import secret
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -19,6 +20,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.version_option(version=deploy.__version__, prog_name='deploy')
 def entry():
     private_dir.ensure_private_dir_exists(settings.APP_NAME)
+    secret_dir.ensure_secret_dir_exists()
 
 
 entry.add_command(addons_entry, 'addons')
@@ -26,3 +28,4 @@ entry.add_command(create)
 entry.add_command(deis_entry, 'deis')
 entry.add_command(destroy)
 entry.add_command(main_entry, 'main')
+entry.add_command(secret)
