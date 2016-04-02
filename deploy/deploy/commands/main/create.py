@@ -10,6 +10,7 @@ from tigerhost.utils.click_utils import echo_with_markers
 
 from deploy import settings
 from deploy.project import get_project_path
+from deploy.secret.docker_machine import store_credentials
 from deploy.utils import path_utils
 from deploy.utils.decorators import ensure_project_path
 from deploy.utils.utils import parse_shell_for_exports
@@ -85,6 +86,8 @@ def create(name, instance_type, database, addon_docker_host, secret, elastic_ip_
         echo_with_markers(
             'Saving IP {} to docker-machine.'.format(new_ip), marker='-')
         _update_docker_machine_ip(name, new_ip)
+
+    store_credentials(name)
 
     echo_with_markers('Generating docker-compose file.', marker='-')
     _generate_compose_file(project_path, database, addon_docker_host, secret)
