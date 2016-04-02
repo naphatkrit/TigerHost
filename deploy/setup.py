@@ -9,6 +9,7 @@ tests_require = [
     'flake8>=2.4.0',
     'pytest>=2.5.0',
     'mock>=1.0.0',
+    'responses==0.5.1',
 ]
 
 install_requires = [
@@ -17,6 +18,7 @@ install_requires = [
     'Click>=6.0',
     'pyyaml>=3.11,<4.0',
     'tigerhost==0.3.5',
+    'requests>=2.9.1,<3.0',
     'subprocess32>=3.2.6',
 ]
 

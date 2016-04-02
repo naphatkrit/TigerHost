@@ -2,11 +2,14 @@ import boto3
 import botocore
 import click
 import os
+import requests
 import shutil
 import stat
+import subprocess32 as subprocess
 
 from functools import update_wrapper
-from tigerhost import exit_codes
+from tigerhost import exit_codes, private_dir
+from tigerhost.utils import contextmanagers
 
 from deploy import settings
 from deploy.project import get_project_path, save_project_path, default_project_path, clone_project
@@ -77,7 +80,8 @@ def ensure_key_pair(name):
                     click.echo(
                         'Key pair does not exist at {}.'.format(key_path))
                 else:
-                    click.echo('Key does not exist at {}.pub.'.format(key_path))
+                    click.echo(
+                        'Key does not exist at {}.pub.'.format(key_path))
                 click.confirm('Create a new key on AWS and save it?',
                               default=True, abort=True)
                 key_pair.delete()
@@ -116,3 +120,41 @@ def skip_if_debug(f):
             ctx.exit()
         return ctx.invoke(f, *args, **kwargs)
     return update_wrapper(new_func, f)
+
+
+def ensure_executable_exists(name, get_executable):
+    """Ensures that the private executable exists. If it doesn't, then
+    call get_executable, which must be a callable that installs
+    the executable.
+    """
+    def decorator(f):
+        @click.pass_context
+        def new_func(ctx, *args, **kwargs):
+            """
+            @type ctx: click.Context
+            """
+            path = path_utils.executable_path(name)
+            if not os.path.exists(path):
+                get_executable()
+                assert os.path.exists(path)
+            return ctx.invoke(f, *args, **kwargs)
+        return update_wrapper(new_func, f)
+    return decorator
+
+
+def _install_deisctl():
+    script = requests.get(settings.DEISCTL_INSTALL_URL).text
+    subprocess.check_call(['bash', '-c', script, 'install.sh',
+                           '1.12.3', private_dir.private_dir_path(settings.APP_NAME)])
+    os.chmod(path_utils.executable_path('deisctl'), stat.S_IRWXU)
+
+
+def _install_deis():
+    script = requests.get(settings.DEIS_INSTALL_URL).text
+    with contextmanagers.chdir(private_dir.private_dir_path(settings.APP_NAME)):
+        subprocess.check_call(['bash', '-c', script, 'install.sh', '1.12.3'])
+    os.chmod(path_utils.executable_path('deis'), stat.S_IRWXU)
+
+
+ensure_deisctl_exists = ensure_executable_exists('deisctl', _install_deisctl)
+ensure_deiscli_exists = ensure_executable_exists('deis', _install_deis)
