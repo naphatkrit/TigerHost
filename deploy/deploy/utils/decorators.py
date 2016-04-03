@@ -72,6 +72,35 @@ def require_docker_machine(f):
     return update_wrapper(new_func, f)
 
 
+def option_hosted_zone_id(f):
+    """Similar to click.option for hosted-zone-id, but in the event
+    that the user does not specify the option, try to retrieve
+    the ID from AWS and only error out if that fails or is ambiguous.
+    """
+    @click.option('--hosted-zone-id', '-hz', default=None, help='Route 53 Hosted Zone ID for {}'.format(settings.DOMAIN_NAME))
+    @click.pass_context
+    def new_func(ctx, hosted_zone_id, *args, **kwargs):
+        """
+        @type ctx: click.Context
+        """
+        if hosted_zone_id is None:
+            echo_with_markers('Trying to find hosted zone for {}.'.format(settings.DOMAIN_NAME), marker='-')
+            client = boto3.client('route53')
+            response = client.list_hosted_zones_by_name(
+                DNSName=settings.DOMAIN_NAME
+            )
+            if len(response['HostedZones']) == 0:
+                click.echo('Unable to find a Hosted Zone for {}. Please specify it explicitly by passing --hosted-zone-id/-hz.')
+                ctx.exit(code=exit_codes.OTHER_FAILURE)
+            elif len(response['HostedZones']) > 1:
+                click.echo('Found multiple Hosted Zones for {}. Please specify one explicitly by passing --hosted-zone-id/-hz.')
+                ctx.exit(code=exit_codes.OTHER_FAILURE)
+            hosted_zone_id = response['HostedZones'][0]['Id'].split('/')[-1]
+            click.echo('Done.')
+        return ctx.invoke(f, hosted_zone_id=hosted_zone_id, *args, **kwargs)
+    return update_wrapper(new_func, f)
+
+
 def _ssh_path(name):
     return os.path.join('~/.ssh', name)
 

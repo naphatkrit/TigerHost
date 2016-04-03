@@ -7,7 +7,7 @@ from tigerhost.utils.click_utils import echo_with_markers
 
 from deploy import settings
 from deploy.utils import click_utils
-from deploy.utils.decorators import ensure_project_path, require_docker_machine
+from deploy.utils.decorators import ensure_project_path, require_docker_machine, option_hosted_zone_id
 from deploy.utils.utils import parse_shell_for_exports, random_string
 
 
@@ -29,10 +29,10 @@ def _get_secret():
 @click.command()
 @click.option('--elastic-ip-id', '-e', default=None, help='Elastic IP allocation ID, used to associate the created machine with. Creates a new Elastic IP if not provided.')
 @click.option('--email', '-e', required=True, help='The email of the Deis admin user. A good choice is {netid}+deis.admin@princeton.edu, or a non-Princeton email.')
-@click.option('--hosted-zone-id', '-h', required=True, help='Route 53 Hosted Zone ID for {}'.format(settings.DOMAIN_NAME))
 @click.option('--rds-database/--no-rds-database', default=False, help='Control whether TigerHost uses a dedicated RDS database, or use one on the addon.')
 @click.option('--secret', '-s', default=None, help='Django secret key.')
 @print_markers
+@option_hosted_zone_id
 @ensure_project_path
 @require_docker_machine
 def create(elastic_ip_id, email, rds_database, secret, hosted_zone_id):
