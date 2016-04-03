@@ -14,7 +14,7 @@ from tigerhost.utils.click_utils import echo_with_markers
 
 from deploy import settings
 from deploy.project import get_project_path, save_project_path, default_project_path, clone_project
-from deploy.utils import click_utils, path_utils
+from deploy.utils import click_utils, path_utils, utils
 
 
 def ensure_project_path(f):
@@ -53,6 +53,21 @@ def ensure_project_path(f):
                 click.confirm('Is your project at {}?'.format(
                     value), default=True, abort=True)
                 save_project_path(value)
+        return ctx.invoke(f, *args, **kwargs)
+    return update_wrapper(new_func, f)
+
+
+def require_docker_machine(f):
+    """Check if `docker-machine` is installed. If not, exit with an error.
+    """
+    @click.pass_context
+    def new_func(ctx, *args, **kwargs):
+        """
+        @type ctx: click.Context
+        """
+        if utils.which('docker-machine') is None:
+            click.echo('docker-machine is not installed. Please install it.')
+            ctx.exit(code=exit_codes.OTHER_FAILURE)
         return ctx.invoke(f, *args, **kwargs)
     return update_wrapper(new_func, f)
 
