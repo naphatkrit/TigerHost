@@ -14,7 +14,7 @@ from deploy.utils.decorators import ensure_project_path, require_docker_machine
 
 
 @click.command()
-@click.option('--name', '-n', default='tigerhost-addons-aws', help='The name of the machine to create. Defaults to tigerhost-addons-aws.')
+@click.option('--name', '-n', default='tigerhost-addons-aws', help='The name of the machine to update. Defaults to tigerhost-addons-aws.')
 @print_markers
 @ensure_project_path
 @require_docker_machine
