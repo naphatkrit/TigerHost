@@ -1,3 +1,4 @@
+import boto3
 import random
 import string
 
@@ -35,3 +36,24 @@ def parse_shell_for_exports(text):
         value = value.split('#', 1)[0].strip().strip('"').strip("'")
         env[key] = value
     return env
+
+
+def set_aws_security_group_ingress_rule(group_name, fromPort, toPort, cidrIp):
+    """Add an ingress rule to a security group.
+
+    @type group_name: str
+    @type fromPort: int
+    @type toPort: int
+    @type cidrIp: str
+    """
+    ec2 = boto3.resource('ec2')
+    group = list(ec2.security_groups.filter(GroupNames=[group_name]).limit(1))[0]
+    found = False
+    for perm in group.ip_permissions:
+        if perm['FromPort'] != fromPort or perm['ToPort'] != toPort or perm['IpProtocol'] != 'tcp':
+            continue
+        for ip in perm['IpRanges']:
+            if ip['CidrIp'] == cidrIp:
+                found = True
+    if not found:
+        group.authorize_ingress(IpProtocol='tcp', FromPort=0, ToPort=65535, CidrIp='0.0.0.0/0')

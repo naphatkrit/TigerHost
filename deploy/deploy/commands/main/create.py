@@ -14,7 +14,7 @@ from deploy.secret import store
 from deploy.secret.docker_machine import store_credentials
 from deploy.utils import path_utils
 from deploy.utils.decorators import ensure_project_path
-from deploy.utils.utils import parse_shell_for_exports
+from deploy.utils.utils import parse_shell_for_exports, set_aws_security_group_ingress_rule
 
 
 def _generate_compose_file(project_path, database_url, addon_docker_host, secret):
@@ -78,6 +78,7 @@ def create(name, instance_type, database, addon_docker_host, secret, elastic_ip_
     else:
         subprocess.check_call(['docker-machine', 'create', '--driver',
                                'amazonec2', '--amazonec2-instance-type', instance_type, name])
+        set_aws_security_group_ingress_rule('docker-machine', 0, 65535, '0.0.0.0/0')
 
         echo_with_markers(
             'Associating Elastic IP.'.format(name), marker='-')

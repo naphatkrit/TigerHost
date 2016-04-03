@@ -46,6 +46,7 @@ def create(ctx, name, instance_type, database):
     else:
         subprocess.check_call(
             ['docker-machine', 'create', '--driver', 'amazonec2', '--amazonec2-instance-type', instance_type, name])
+        utils.set_aws_security_group_ingress_rule('docker-machine', 0, 65535, '0.0.0.0/0')
 
     # save credentials to secret directory
     store_credentials(name)
