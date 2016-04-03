@@ -7,7 +7,7 @@ from tigerhost.utils.click_utils import echo_with_markers
 
 from deploy import settings
 from deploy.utils import click_utils
-from deploy.utils.decorators import ensure_project_path
+from deploy.utils.decorators import ensure_project_path, require_docker_machine
 from deploy.utils.utils import parse_shell_for_exports, random_string
 
 
@@ -33,6 +33,7 @@ def _get_secret():
 @click.option('--secret', '-s', default=None, help='Django secret key.')
 @print_markers
 @ensure_project_path
+@require_docker_machine
 def create(elastic_ip_id, rds_database, secret, hosted_zone_id):
     if secret is None:
         secret = _get_secret()

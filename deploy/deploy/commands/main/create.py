@@ -13,7 +13,7 @@ from deploy.project import get_project_path
 from deploy.secret import store
 from deploy.secret.docker_machine import store_credentials
 from deploy.utils import path_utils
-from deploy.utils.decorators import ensure_project_path
+from deploy.utils.decorators import ensure_project_path, require_docker_machine
 from deploy.utils.utils import parse_shell_for_exports, set_aws_security_group_ingress_rule
 
 
@@ -67,6 +67,7 @@ def _update_docker_machine_ip(machine_name, new_ip):
 @click.option('--secret', '-s', required=True, help='Django secret key.')
 @print_markers
 @ensure_project_path
+@require_docker_machine
 def create(name, instance_type, database, addon_docker_host, secret, elastic_ip_id):
     project_path = get_project_path()
 

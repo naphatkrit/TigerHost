@@ -11,7 +11,7 @@ from deploy.secret import store
 from deploy.secret.docker_machine import store_credentials
 from deploy.project import get_project_path
 from deploy.utils import utils
-from deploy.utils.decorators import ensure_project_path
+from deploy.utils.decorators import ensure_project_path, require_docker_machine
 
 
 def _generate_compose_file(project_path, database):
@@ -35,6 +35,7 @@ def _generate_compose_file(project_path, database):
 @click.pass_context
 @print_markers
 @ensure_project_path
+@require_docker_machine
 def create(ctx, name, instance_type, database):
     # TODO ensure docker machine is installed
     # TODO verify that database is [a-zA-Z0-9_]
