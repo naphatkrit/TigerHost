@@ -5,6 +5,7 @@ from tigerhost import private_dir
 from deploy import settings
 from deploy.commands.deis.configure_dns import configure_dns
 from deploy.commands.deis.create import create
+from deploy.commands.deis.create_admin import create_admin
 from deploy.commands.deis.destroy import destroy
 
 
@@ -18,4 +19,5 @@ def entry():
 
 entry.add_command(configure_dns)
 entry.add_command(create)
+entry.add_command(create_admin)
 entry.add_command(destroy)

@@ -3,6 +3,7 @@ import click
 
 from tigerhost.utils.decorators import print_markers
 
+from deploy.secret import store
 from deploy.utils.decorators import skip_if_debug
 
 
@@ -20,3 +21,6 @@ def destroy(stack):
     client = boto3.client('cloudformation')
     waiter = client.get_waiter('stack_delete_complete')
     waiter.wait(StackName=stack_id)
+    store.unset('deis__username')
+    store.unset('deis__password')
+    store.unset('deis__email')
