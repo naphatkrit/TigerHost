@@ -12,6 +12,7 @@ Contents:
    :titlesonly:
 
    getting_started/index
+   core_concepts/index
 
 
 
