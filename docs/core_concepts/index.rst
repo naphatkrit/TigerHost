@@ -6,3 +6,4 @@ Core Concepts
 
     what_is_tigerhost
     stateless_apps
+    git_deploy
