@@ -5,3 +5,4 @@ Core Concepts
     :titlesonly:
 
     what_is_tigerhost
+    stateless_apps
