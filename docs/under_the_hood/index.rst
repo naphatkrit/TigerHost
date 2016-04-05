@@ -10,3 +10,5 @@ This section provides a look at the internals of TigerHost. Unless you are devel
     overview
     main_server
     paas_backends
+    deis
+    other_backends
