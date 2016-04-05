@@ -14,12 +14,3 @@ Contents:
    getting_started/index
    core_concepts/index
    under_the_hood/index
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
