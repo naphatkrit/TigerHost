@@ -7,9 +7,9 @@ from api_server.clients.exceptions import ClientResponseError, ClientError, Clie
 class BaseClient(object):
 
     def __init__(self, url):
-        """Create a new ``BaseClient``.
+        """Create a new BaseClient.
 
-        @type url: str
+        :type url: str
         """
         self.backend_url = url
 
@@ -45,11 +45,16 @@ class BaseClient(object):
     def register(self, username, password, email):
         """Register a new user with the backend.
 
-        @type username: str
-        @type password: str
-        @type email: str
+        :param username: The username to register
+        :type username: str
 
-        @raise e: ClientResponseError
+        :param password: The password to use for authentication
+        :type password: str
+
+        :param email: The email of the user
+        :type email: str
+
+        :raise: ClientResponseError
         """
         raise NotImplementedError
 
