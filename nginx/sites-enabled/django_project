@@ -9,7 +9,7 @@ server {
     }
 
     location /docs {
-        alias /docs/_build/html;
+        alias /code/docs/_build/html;
     }
 
     location / {

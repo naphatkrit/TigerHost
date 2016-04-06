@@ -15,7 +15,9 @@ services:
         volumes_from:
             - docs
     docs:
-        build: ./docs
+        build:
+            context: .
+            dockerfile: Dockerfile-docs
     web:
         restart: always
         build: ./web

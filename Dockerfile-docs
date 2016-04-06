@@ -1,0 +1,8 @@
+FROM python:2.7
+ENV PYTHONUNBUFFERED 1
+RUN mkdir /code
+COPY . /code/
+WORKDIR /code/docs
+RUN pip install -r requirements.txt
+RUN make html
+VOLUME /code/docs/_build/html
