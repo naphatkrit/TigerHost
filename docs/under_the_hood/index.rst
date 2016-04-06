@@ -12,3 +12,5 @@ This section provides a look at the internals of TigerHost. Unless you are devel
     paas_backends
     deis
     other_backends
+    addons
+    addons_server
