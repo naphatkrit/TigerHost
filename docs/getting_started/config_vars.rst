@@ -1,10 +1,10 @@
 .. _config_vars:
 
 ==================
-Config Vars
+Configuration Variables
 ==================
 
-Config vars are used to store app-specific information that you do not necessarily want to check into the repository, such as server secrets and database URL. Config vars are exposed to apps as environmental variables.
+Configuration variables are used to store app-specific information that you do not necessarily want to check into the repository, such as server secrets and database URL. Configuration variables are exposed to apps as environmental variables.
 
 Setting Config Vars
 ====================

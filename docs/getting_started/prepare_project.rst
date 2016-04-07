@@ -4,9 +4,15 @@
 Prepare Your Project
 ======================
 
-If you are moving from Heroku, then your project is already ready for TigerHost. You can skip this section.
+If you are moving from Heroku, then your project is already ready for TigerHost. See :ref:`getting_started/prepare_project//heroku`.
 
-Depending on how your project is structured, you may need to modify your project to work with TigerHost. This section some general ideas and provides links to tutorials on more specific project structures (django, nodejs, etc.).
+Depending on how your project is structured, you may need to modify your project to work with TigerHost. This section discusses some general ideas and provides links to tutorials on more specific project structures (django, nodejs, etc.).
+
+.. _getting_started/prepare_project//heroku:
+
+Migrating From Heroku
+======================
+TigerHost is fully compatible with Heroku. In particular, there will be no code change to your project repository. Furthermore, the TigerHost CLI tool is written with Heroku compatibility in mind. A lot of the commands have a counterpart, such as :code:`tigerhost apps` and :code:`heroku apps`. Important commands are discussed in the next :ref:`section <deploy_app>`. You can skip to it.
 
 .. _prepare_project__core_concept:
 
@@ -26,7 +32,7 @@ TigerHost is deployed using ``git push``. This means that your project must be l
 
 A Project Per Repo
 -------------------
-Each project should have its own repo. Most likely, if you are already using ``git``, you are already doing this. However, if, for example, you are writing an API server with a command-line client, you must make sure that the server and the client each have their own repositories. Otherwise, every time you deploy, your client code will be needlessly cloned.
+It is best practice to only use the git repo for the specific web app you are deploying. For example, if you are writing an API server with a command-line client, you must make sure that the server and the client each have their own repositories. Otherwise, every time you deploy, your client code will be needlessly cloned, slowing down deployment. Or, if your project contains several web apps, and they cannot be deployed together, they must each be contained on a separate repository, and deployed through a separate TigerHost project.
 
 
 .. _prepare_project__core_concept__stateless:
@@ -37,6 +43,7 @@ TigerHost requires your application to be stateless. This means that your applic
 
 If you are using any of the common web modules (django, Flask, NodeJS), most likely, the only state in your application is the database, and most likely, you have a hardcoded database URL. Then, all you have to do is change your app to take this URL from the environmental variables instead. We will have examples of how to do this in the specific project structure guides. You can either host the database yourself, or use one of our database addons - see :ref:`addons`.
 
+Note that if your project absolutely needs to access the disk directly, not via a database (most projects don't), it is possible to provide stateless disk access by mounting an NFS partition of remote disk living somewhere else. TODO make this into an addon.
 
 .. _prepare_project__init_git:
 

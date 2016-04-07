@@ -5,7 +5,7 @@ The Addons Server
 .. _under_the_hood/addons_server//motivation:
 Motivation
 -----------
-In :ref:`under_the_hood/overview`, we talked about a dedicated addons server. Although there is no restriction on where an addon provider live, as long as one can write a subclass of :code:`BaseAddonProvider`, the dedicated addons server is motivated by cost and scale.
+In :ref:`under_the_hood/overview`, we talked about a dedicated addons server. Although there is no restriction on where an addon provider lives, as long as one can write a subclass of :code:`BaseAddonProvider`, the dedicated addons server is motivated by cost and scale.
 
 Consider the case of a PostgreSQL addon. A very reasonable implementation is to provision a number of machines from `Amazon Relational Database Service (AWS RDS) <https://aws.amazon.com/rds/>`_. RDS creates machines dedicated to running a specific database engine. Each new addon can just be a different database on one of these machines, and as the number of addons increase, we can provision more machines.
 
@@ -19,6 +19,9 @@ A Docker-Based Solution
 To engineer a standardized way to run addon providers, we turn to Docker. `Docker <https://www.docker.com/>`_ allows us to run tasks as containers (think of them as lightweight VMs). We can provision a general-purpose `Amazon Elastic Compute Cloud (AWS EC2) <https://aws.amazon.com/ec2/>`_ to serve as our Docker host. If we want, say, a PostgreSQL addon, we can simply bring up a new container for each addon we want based on the `official PostgreSQL Docker image <https://hub.docker.com/_/postgres/>`_. If we want a RabbitMQ addon, we can bring up a new container based on the `official RabbitMQ Docker image <https://hub.docker.com/_/rabbitmq/>`_. This delegates the responsibility of ensuring CPU and memory fairness to Docekr.
 
 Does this solution scale to multiple machines, if it needs to? While there is nothing stopping us from doing something similar to RDS and provisioning more EC2 instances to serve as more Docker hosts, Docker itself provides a better solution in terms of Docker Swarm. `Docker Swarm <https://docs.docker.com/swarm/>`_ binds together multiple machines and have them serve as one logical Docker host, simplifying our logic. As of this writing, however, we have not had a need to scale to multiple machines.
+
+Proxy Container
+-----------------
 
 A missing piece in this picture is how external machines can connect to these containers. Again, consider PostgreSQL. A PostgreSQL server is typically run on port 5432. However, if we have multiple PostgreSQL containers, each acting as PostgreSQL server, we can't very well expose all of them at port 5432. A possible solution is to assign a randomized port to each container, but this means the system will break after we have more than 65535 addons (maximum number of TCP ports).
 

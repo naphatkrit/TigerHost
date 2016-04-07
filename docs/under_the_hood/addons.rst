@@ -19,7 +19,11 @@ Creating a new addon provider is simply a matter of creating a subclass of :code
 .. autoclass:: api_server.addons.providers.base_provider.BaseAddonProvider
     :members:
 
+
+TODO show how the secret addon is implemented.
+
 .. _under_the_hood/addons//how:
+
 How It Works
 ---------------
 Internally, an addon is represented as a state machine.

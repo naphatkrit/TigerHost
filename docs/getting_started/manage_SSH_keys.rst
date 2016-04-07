@@ -2,7 +2,7 @@
 Manage SSH Keys
 =================
 
-TigerHost uses ``git push`` to deploy your code. For that, you will need to tell TigerHost your SSH public key.
+TigerHost, like other similar services, use a Git repository as a mechanism to receive the code base to be deployed. Thus to deploy your code, you will use :code:`git push`. To this end, you will **provide TigerHost with an SSH public key (this key may be generated specifically for TigerHost, and this process is explained in this section)**.
 
 Generating an SSH Key
 ======================
@@ -13,7 +13,7 @@ If you are already using ``git``, chances are, you already have a SSH key genera
 
     $ ls ~/.ssh
 
-This will list all the files under your ``~/.ssh`` directory. If you see something like ``id_rsa.pub``, ``id_dsa.pub``, etc. If you see one, you can skip this section.
+This will list all the files under your ``~/.ssh`` directory. If you see something like ``id_rsa.pub``, ``id_dsa.pub``, etc. If you see one, **and would like to use the same SSH key (this is not necessary, but recommended if you are not familiar with SSH or git)**, you can skip this section.
 
 To generate a new SSH keypair, run:
 

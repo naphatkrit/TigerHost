@@ -6,8 +6,12 @@ Get pip
 =======
 
 If you don’t already have pip on your system, you need to install it.
-Follow the official guide
-`here <https://pip.pypa.io/en/stable/installing/>`__. Note that even if
+
+Pip may installed on Mac OS X using the alternate Python package manager "easy install" that is provided by Apple: :code:`sudo easy_install pip`
+
+On other systems, you may use the installer provided by pip on its `official page <https://pip.pypa.io/en/stable/installing/>`_.
+
+Note that even if
 your project is not a python project, you still need pip to install the
 TigerHost command-line client, since it is distributed using Pypi.
 
@@ -23,8 +27,11 @@ python packages. Here are the recommended steps:
 .. code-block:: console
 
     $ pip install virtualenv virtualenvwrapper
+    $ echo 'source /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc
     ...
     $ mkvirtualenv yourproject
+
+You may need to change the second command depending on where pip installed virtualenvwrapper. See the output of the installation to confirm. (If you can run :code:`mkvirtualenv`, you are good to go.)
 
 Installation
 ============
@@ -38,7 +45,7 @@ First, switch to your virtual environment (skip if you are not using virtualenv)
 
     $ workon yourproject
 
-Now you can install the TigerHost command-line client.
+Now you can install the TigerHost command-line client using pip (this is possible because TigerHost is distributed using Pypi).
 
 .. code-block:: console
 

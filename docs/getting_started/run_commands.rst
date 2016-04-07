@@ -12,7 +12,7 @@ You can run a command on your deployed app, just like you could when running you
 
 .. note::
 
-    A known issue is that if a command fail, the output is empty (``stderr`` is not captured). Take a look at the logs to see what is going on. To see how, see :ref:`view_logs`.
+    A known issue is that if a command fails, the output is empty (``stderr`` is not captured). Take a look at the logs to see what is going on. To see how, see :ref:`view_logs`.
 
 To run a command:
 

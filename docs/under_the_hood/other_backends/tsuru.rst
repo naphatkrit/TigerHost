@@ -17,4 +17,4 @@ What's Good
 What's Bad
 -----------
 - Poor documentation.
-- Along the same line, the instruction for installing is extremely bad. First, there is no official script, and the instruction were like, go install this, then comoe back and run these commands.
+- Along the same line, the instruction for installing is unclear. There is no one script to install Tsuru with all its dependencies, and the instruction does not cover all the dependencies needed.
