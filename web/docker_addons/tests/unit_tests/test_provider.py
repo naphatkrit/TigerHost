@@ -10,6 +10,14 @@ from docker_addons.models import ContainerInfo
 from docker_addons.provider import DockerAddonProvider
 
 
+@pytest.yield_fixture(autouse=True)
+def fake_docker_client():
+    with mock.patch('docker_addons.provider.create_client') as mocked:
+        # not actually used, so return a mock object that can't do anything
+        mocked.return_value = mock.Mock()
+        yield
+
+
 @pytest.fixture(scope='function')
 def fake_type():
     return mock.MagicMock()
