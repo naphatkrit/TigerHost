@@ -1,8 +1,10 @@
 from django.utils import crypto
 from uuid import uuid4
 
+from api_server.addons.providers.base_provider import BaseAddonProvider
 
-class SecretAddonProvider(object):
+
+class SecretAddonProvider(BaseAddonProvider):
 
     config_name = 'SECRET_KEY'
 
