@@ -6,7 +6,9 @@ Prepare Your Project
 
 If you are moving from Heroku, then your project is already ready for TigerHost. See :ref:`getting_started/prepare_project//heroku`.
 
-Depending on how your project is structured, you may need to modify your project to work with TigerHost. This section discusses some general ideas and provides links to tutorials on more specific project structures (django, nodejs, etc.).
+Depending on how your project is structured, you may need to modify your project to work with TigerHost. Check if your project is using one of the structures available in our :ref:`specific project guides <getting_started/prepare_project//specific_guides>`. If not, you can follow this section, which discusses general steps applicable to all projects.
+
+You may also want to check out :ref:`core_concepts/index` to understand why these changes are needed.
 
 .. _getting_started/prepare_project//heroku:
 
@@ -14,36 +16,15 @@ Migrating From Heroku
 ======================
 TigerHost is fully compatible with Heroku. In particular, there will be no code change to your project repository. Furthermore, the TigerHost CLI tool is written with Heroku compatibility in mind. A lot of the commands have a counterpart, such as :code:`tigerhost apps` and :code:`heroku apps`. Important commands are discussed in the next :ref:`section <deploy_app>`. You can skip to it.
 
-.. _prepare_project__core_concept:
+.. _getting_started/prepare_project//specific_guides:
 
-Core Concepts
-==============
-First, let's go over a few core concepts.
+Specific Guides
+================
 
+.. toctree::
+    :titlesonly:
 
-.. _prepare_project__core_concept__git:
-
-Git
-----
-TigerHost is deployed using ``git push``. This means that your project must be living in a ``git`` repository. You don't have to be proficient in ``git`` to deploy on TigerHost - this tutorial will show you all the commands you need. If your project is not currently using ``git``, see :ref:`prepare_project__init_git`.
-
-
-.. _prepare_project__core_concept__project_per_repo:
-
-A Project Per Repo
--------------------
-It is best practice to only use the git repo for the specific web app you are deploying. For example, if you are writing an API server with a command-line client, you must make sure that the server and the client each have their own repositories. Otherwise, every time you deploy, your client code will be needlessly cloned, slowing down deployment. Or, if your project contains several web apps, and they cannot be deployed together, they must each be contained on a separate repository, and deployed through a separate TigerHost project.
-
-
-.. _prepare_project__core_concept__stateless:
-
-Stateless Application
-----------------------
-TigerHost requires your application to be stateless. This means that your application should not be writing to disk and expect the result to be persistent. This is important because we cannot guarantee that your application will always be started up on the same machine every time you deploy (or every time your app gets restarted due to a machine failure).
-
-If you are using any of the common web modules (django, Flask, NodeJS), most likely, the only state in your application is the database, and most likely, you have a hardcoded database URL. Then, all you have to do is change your app to take this URL from the environmental variables instead. We will have examples of how to do this in the specific project structure guides. You can either host the database yourself, or use one of our database addons - see :ref:`addons`.
-
-Note that if your project absolutely needs to access the disk directly, not via a database (most projects don't), it is possible to provide stateless disk access by mounting an NFS partition of remote disk living somewhere else. TODO make this into an addon.
+    specific_projects/prepare_django
 
 .. _prepare_project__init_git:
 
@@ -102,12 +83,3 @@ For more complicated project, you may have multiple process types, such as a bac
 
     web: python start_web.py
     worker: bin/worker.sh
-
-
-Specific Guides
-================
-
-.. toctree::
-    :titlesonly:
-
-    specific_projects/prepare_django

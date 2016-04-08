@@ -1,3 +1,5 @@
+.. _core_concepts/index:
+
 Core Concepts
 =================================
 
