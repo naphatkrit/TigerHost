@@ -14,3 +14,4 @@ This section provides a look at the internals of TigerHost. Unless you are devel
     other_backends/index
     addons
     addons_server
+    future_improvements
