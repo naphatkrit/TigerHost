@@ -50,7 +50,7 @@ help:
 	@echo "  coverage   to run coverage check of the documentation (if enabled)"
 
 api-web:
-	$(SPHINXAPIDOC) -o $(APIDIR)/web ../web cas manage test_url bin --force
+	$(SPHINXAPIDOC) -o $(APIDIR)/web ../web cas manage test_url bin -H "Main Server" --force
 
 .PHONY: clean
 clean:
