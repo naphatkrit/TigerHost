@@ -13,10 +13,4 @@ PaaS backends are responsible for actually hosting apps with high availability. 
 
 The Backend API
 ----------------
-A PaaS project is compatible with TigerHost if a backend client can be created for it. This means that a subclass of both :code:`BaseClient` and :code:`BaseAuthenticatedClient` must be created for the new backend, with **all** the functions implemented.
-
-.. autoclass:: api_server.clients.base_client.BaseClient
-    :members:
-
-.. autoclass:: api_server.clients.base_authenticated_client.BaseAuthenticatedClient
-    :members:
+A PaaS project is compatible with TigerHost if a backend client can be created for it. This means that a subclass of both :py:class:`BaseClient <api_server.clients.base_client.BaseClient>` and :py:class:`BaseAuthenticatedClient <api_server.clients.base_authenticated_client.BaseAuthenticatedClient>` must be created for the new backend, with **all** the functions implemented.

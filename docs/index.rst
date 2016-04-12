@@ -14,3 +14,4 @@ Contents:
    getting_started/index
    core_concepts/index
    under_the_hood/index
+   api

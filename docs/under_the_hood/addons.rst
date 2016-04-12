@@ -14,10 +14,7 @@ An addon is responsible for provisioning a new resource for an app, managing the
 .. _under_the_hood/addons//addons_api:
 The Addons API
 ----------------
-Creating a new addon provider is simply a matter of creating a subclass of :code:`BaseAddonProvider`, which has four methods: :code:`begin_provision`, :code:`deprovision`, :code:`get_config`, and :code:`provision_complete`. Note that every method should be non-blocking, i.e. computationally expensive tasks must be done in the background.
-
-.. autoclass:: api_server.addons.providers.base_provider.BaseAddonProvider
-    :members:
+Creating a new addon provider is simply a matter of creating a subclass of :py:class:`BaseAddonProvider <api_server.addons.providers.base_provider.BaseAddonProvider>`, which has four methods: :py:meth:`begin_provision <api_server.addons.providers.base_provider.BaseAddonProvider.begin_provision>`, :py:meth:`deprovision <api_server.addons.providers.base_provider.BaseAddonProvider.deprovision>`, :py:meth:`get_config <api_server.addons.providers.base_provider.BaseAddonProvider.get_config>`, and :py:meth:`provision_complete <api_server.addons.providers.base_provider.BaseAddonProvider.provision_complete>`. Note that every method should be non-blocking, i.e. computationally expensive tasks must be done in the background.
 
 
 .. _under_the_hood/addons//case_study_secret:
