@@ -1,4 +1,5 @@
 class AddonProviderError(Exception):
+    """The base class for all addon-related error."""
     pass
 
 

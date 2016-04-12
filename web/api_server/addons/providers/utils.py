@@ -7,8 +7,8 @@ from api_server.addons.providers.exceptions import AddonProviderConfigError, Add
 def get_all_provider_names():
     """Get the list of all addon providers installed on this system.
 
-    @rtype: list
-        list of string
+    :rtype: list
+    :return: list of providers (str)
     """
     return settings.ADDON_PROVIDERS.keys()
 
@@ -16,12 +16,12 @@ def get_all_provider_names():
 def get_provider_from_provider_name(provider_name):
     """Given the name of a provider, return the provider object.
 
-    @type provider_name: str
+    :param str provider_name: the name of the addons provider
 
-    @rtype: api_server.addons.providers.base_provider.BaseAddonProvider
+    :rtype: api_server.addons.providers.base_provider.BaseAddonProvider
 
-    @raises: AddonProviderMissingError
-    @raises: AddonProviderConfigError
+    :raises api_server.addons.providers.exceptions.AddonProviderMissingError:
+    :raises api_server.addons.providers.exceptions.AddonProviderConfigError:
     """
     if provider_name not in settings.ADDON_PROVIDERS:
         raise AddonProviderMissingError(

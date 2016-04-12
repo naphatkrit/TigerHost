@@ -13,8 +13,8 @@ def _valid_config(config):
     """Check if the config is valid. Valid config has a string
     for keys and a string, int, or float for values.
 
-    @rtype: bool
-        True iff valid
+    :rtype: bool
+    :returns: True iff valid
     """
     for k, v in config.iteritems():
         if not isinstance(k, basestring):
@@ -29,6 +29,8 @@ def _valid_config(config):
 
 @app.task(bind=True, max_retries=None)
 def check_provision(self, addon_id):
+    """A task that checks if provision is complete
+    """
     try:
         addon = Addon.objects.get(pk=addon_id)
     except Addon.DoesNotExist:
@@ -76,6 +78,8 @@ def check_provision(self, addon_id):
 
 @app.task
 def deprovision(addon_id):
+    """A task that kicks off the deprovision process
+    """
     try:
         addon = Addon.objects.get(pk=addon_id)
     except Addon.DoesNotExist:

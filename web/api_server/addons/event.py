@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class AddonEvent(Enum):
+    """Events used to transition the state machine"""
     provision_success = 1
     provision_failure = 2
 

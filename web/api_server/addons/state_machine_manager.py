@@ -8,10 +8,12 @@ from api_server.models import Addon
 
 
 class StateMachineError(Exception):
+    """Generic state machine errors"""
     pass
 
 
 class StateMachineTransitionError(Exception):
+    """State machine errors having to deal with transitions"""
     pass
 
 
@@ -55,10 +57,10 @@ class StateMachineManager(object):
     def _transition_helper(self, addon, event):
         """Transition to a different state. Doesn't actually save.
 
-        @type addon: api_server.models.Addon
-        @type event: AddonEvent
+        :param api_server.models.Addon addon:
+        :param AddonEvent event:
 
-        @raises: StateMachineTransitionError
+        :raises StateMachineTransitionError:
         """
         try:
             final_state = self.transition_table[addon.state][event]
@@ -79,12 +81,12 @@ class StateMachineManager(object):
         If the transition is  invalid, the yield still
         happens, but the result will be rolled back.
 
-        @type addon_id: int
-        @type event: AddonEvent
+        :param int addon_id: the addon ID
+        :param AddonEvent event: the event that triggered this transition
 
-        @raises: StateMachineTransitionError
-        @raises: Addon.DoesNotExist
-        @raises: Exception
+        :raises api_server.addons.state_machine_manager.StateMachineTransitionError:
+        :raises api_server.models.Addon.DoesNotExist:
+        :raises Exception:
             Whatever was raised in the with block does not
             get caught.
         """
@@ -99,7 +101,7 @@ class StateMachineManager(object):
 
         Uses the tasks table.
 
-        @type: addon: api_server.models.Addon
+        :param Addon addon: the addon to start a task for
         """
         addon = Addon.objects.get(pk=addon_id)
         if addon.state in self.tasks_table:
