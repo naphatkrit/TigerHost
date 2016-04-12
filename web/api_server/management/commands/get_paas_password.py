@@ -10,6 +10,7 @@ class Command(BaseCommand):
         parser.add_argument('backend', type=str)
 
     def handle(self, *args, **options):
+        """Lookup the user using the username and backend, then write the PaaS password to stdout"""
         user = User.objects.get(username=options['username'])
         backend = options['backend']
         c = user.profile.get_credential(backend)
