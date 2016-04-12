@@ -17,9 +17,9 @@ class PaasBackendApiView(ApiBaseView):
             'default': 'backend1'
         }
 
-        @type request: django.http.HttpRequest
+        :param django.http.HttpRequest request: the request object
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
 
         return self.respond({

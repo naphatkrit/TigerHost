@@ -11,12 +11,11 @@ class AppCollaboratorDetailsApiView(ApiBaseView):
     def delete(self, request, app_id, username):
         """Remove a collaborator from the app
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
-        @type domain: str
-        @type username
+        :param django.http.HttpRequest request: the request
+        :param str app_id: the app ID
+        :param str username: the username of the collaborator
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         backend = self.get_backend_for_app(app_id)
         auth_client = get_backend_authenticated_client(

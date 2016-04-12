@@ -14,10 +14,10 @@ class AppCollaboratorsApiView(ApiBaseView):
         """Get the list of usernames who are collaborators on
         this app. This does NOT include the app owner.
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         backend = self.get_backend_for_app(app_id)
         auth_client = get_backend_authenticated_client(
@@ -34,10 +34,10 @@ class AppCollaboratorsApiView(ApiBaseView):
             "username": "userid",
         }
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         username = json.loads(request.body)['username']
 

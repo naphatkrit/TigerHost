@@ -23,9 +23,9 @@ class KeysApiView(ApiBaseView):
             ...
         }
 
-        @type request: django.http.HttpRequest
+        :param django.http.HttpRequest request: the request object
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         result = {}
         for backend in request.user.profile.get_paas_backends():
@@ -44,9 +44,9 @@ class KeysApiView(ApiBaseView):
             "backend": "backend"
         }
 
-        @type request: django.http.HttpRequest
+        :param django.http.HttpRequest request: the request object
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         key_info = json.loads(request.body)
 

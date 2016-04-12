@@ -26,6 +26,8 @@ def _handle_deis_client_response_error(f):
 
 
 def _handle_error(exception, status, message=None):
+    """A decorator that gracefully handles errors, instead of 500'ing
+    """
     def decorator(f):
         @wraps(f, assigned=available_attrs(f))
         def wrapped_view(request, *args, **kwargs):
@@ -39,7 +41,8 @@ def _handle_error(exception, status, message=None):
 
 
 class ErrorResponse(Exception):
-
+    """Raise this to easily return an error to the cilent.
+    """
     def __init__(self, message, status):
         super(ErrorResponse, self).__init__(message)
         self.status = status
@@ -70,10 +73,9 @@ class ApiBaseView(View):
     def respond_multiple(self, items):
         """Returns a HTTP response for multiple items.
 
-        @type items: list
-            Must be a json-serializable list
+        :param list items: a json-serializable list
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         return JsonResponse({'results': items})
 
@@ -83,10 +85,9 @@ class ApiBaseView(View):
         the HTTP status will be ``status``, defaulting
         to 200.
 
-        @type item: dict
-            Must be json-serializable
+        :param dict item: a json-serializable dict
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         if item is None:
             return HttpResponse(status=204)
@@ -95,16 +96,16 @@ class ApiBaseView(View):
             return JsonResponse(item, status=status)
 
     def ensure_user_exists(self, username, backend):
-        """Ensure the user with ``username`` exists, both locally
-        and on Deis. If the user does not exist locally, returns
-        False. If the user does not exist on Deis,
-        create it, but return True.
+        """Ensure the user with :code:`username` exists, both locally
+        and on the specified backend. If the user does not exist locally,
+        returns False. If the user does not exist on the backend, create it,
+        but return True.
 
-        @type username: str
-        @type backend: str
+        :param str username: the username to ensure
+        :param str backend: the PaaS backend to ensure on
 
-        @raises e: ClientError
-        @raises e: BackendsError
+        :raises api_server.clients.exceptions.ClientError:
+        :raises api_server.paas_backends.BackendsError:
         """
         get_backend_authenticated_client(username, backend)
 
@@ -113,11 +114,12 @@ class ApiBaseView(View):
         an exception with an appropriate error message
         if the app does not exist.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @rtype: str
+        :rtype: str
+        :returns: the backend
 
-        @raises e: ErrorResponse
+        :raises api_server.api.api_base_view.ErrorResponse:
         """
         try:
             return App.objects.get(app_id=app_id).backend

@@ -12,10 +12,12 @@ class KeyDetailsApiView(ApiBaseView):
         """Remove a key from the user
 
         @type request: django.http.HttpRequest
-        @type backend: str
-        @type key_name: str
 
-        @rtype: django.http.HttpResponse
+        :param django.http.HttpRequest request: the request object
+        :param str backend: the PaaS backend to add this key to
+        :param str key_name: the name of the key
+
+        :rtype: django.http.HttpResponse
         """
         auth_client = get_backend_authenticated_client(
             request.user.username, backend)

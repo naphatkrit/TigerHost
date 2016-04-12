@@ -23,9 +23,9 @@ class AppsApiView(ApiBaseView):
             ...
         }
 
-        @type request: django.http.HttpRequest
+        :param django.http.HttpRequest request: the request object
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         result = {}
         for backend in request.user.profile.get_paas_backends():
@@ -44,9 +44,9 @@ class AppsApiView(ApiBaseView):
         }
         If the 'backend' field is not provided, then the default is used.
 
-        @type request: django.http.HttpRequest
+        :param django.http.HttpRequest request: the request object
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         data = json.loads(request.body)
         app_id = data['id']

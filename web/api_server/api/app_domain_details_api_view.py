@@ -11,11 +11,11 @@ class AppDomainDetailsApiView(ApiBaseView):
     def delete(self, request, app_id, domain):
         """Remove a domain from the app
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
-        @type domain: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
+        :param str domain: the domain name
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         backend = self.get_backend_for_app(app_id)
         auth_client = get_backend_authenticated_client(

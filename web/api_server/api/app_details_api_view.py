@@ -21,10 +21,10 @@ class AppDetailsApiView(ApiBaseView):
             "remote": "ssh://git@hostname.com/app.git"
         }
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         backend = self.get_backend_for_app(app_id)
         auth_client = get_backend_authenticated_client(request.user.username, backend)
@@ -43,10 +43,10 @@ class AppDetailsApiView(ApiBaseView):
             "owner": "userid"
         }
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         data = json.loads(request.body)
         backend = self.get_backend_for_app(app_id)
@@ -60,10 +60,10 @@ class AppDetailsApiView(ApiBaseView):
     def delete(self, request, app_id):
         """Delete an application
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         backend = self.get_backend_for_app(app_id)
         auth_client = get_backend_authenticated_client(request.user.username, backend)

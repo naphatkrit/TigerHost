@@ -16,10 +16,10 @@ class AddonsApiView(ApiBaseView):
     def get(self, request, app_id):
         """Return all the addons installed for this application.
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         addons = Addon.objects.filter(
             app__app_id=app_id, state__in=visible_states)
@@ -42,9 +42,9 @@ class AddonsApiView(ApiBaseView):
             }
         }
 
-        @type request: django.http.HttpRequest
+        :param django.http.HttpRequest request: the request object
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         app = App.objects.get(app_id=app_id)  # make sure app exists first
         data = json.loads(request.body)

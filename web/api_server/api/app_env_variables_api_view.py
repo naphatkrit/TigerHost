@@ -13,10 +13,10 @@ class AppEnvVariablesApiView(ApiBaseView):
     def get(self, request, app_id):
         """Get the environmental variables
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         backend = self.get_backend_for_app(app_id)
         auth_client = get_backend_authenticated_client(
@@ -36,10 +36,10 @@ class AppEnvVariablesApiView(ApiBaseView):
         }
         To unset a variable, set its value to ``null``.
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         env_vars = json.loads(request.body)
 

@@ -18,10 +18,10 @@ class RunCommandApiView(ApiBaseView):
             "command": "echo 1 2 3"
         }
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         command = json.loads(request.body)['command']
         backend = self.get_backend_for_app(app_id)

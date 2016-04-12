@@ -15,10 +15,10 @@ class AddonDetailsApiView(ApiBaseView):
     def get(self, request, app_id, addon_name):
         """Return all the addons installed for this application.
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         addon = Addon.objects.get(app__app_id=app_id, display_name=addon_name, state__in=visible_states)
         return self.respond(addon.to_dict())
@@ -26,10 +26,10 @@ class AddonDetailsApiView(ApiBaseView):
     def delete(self, request, app_id, addon_name):
         """Return all the addons installed for this application.
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         addon = Addon.objects.get(app__app_id=app_id, display_name=addon_name)
         provider = get_provider_from_provider_name(addon.provider_name)

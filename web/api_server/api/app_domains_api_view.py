@@ -13,10 +13,10 @@ class AppDomainsApiView(ApiBaseView):
     def get(self, request, app_id):
         """Get the domains associated with this app
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         backend = self.get_backend_for_app(app_id)
         auth_client = get_backend_authenticated_client(
@@ -33,10 +33,10 @@ class AppDomainsApiView(ApiBaseView):
             "domain": "example.com",
         }
 
-        @type request: django.http.HttpRequest
-        @type app_id: str
+        :param django.http.HttpRequest request: the request object
+        :param str app_id: the ID of the app
 
-        @rtype: django.http.HttpResponse
+        :rtype: django.http.HttpResponse
         """
         domain = json.loads(request.body)['domain']
         backend = self.get_backend_for_app(app_id)
