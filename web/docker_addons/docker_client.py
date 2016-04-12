@@ -7,7 +7,7 @@ from django.conf import settings
 def create_client():
     """Create a new Docker client from the settings.
 
-    @rtype: docker.Client
+    :rtype: docker.Client
     """
     tls_config = docker.tls.TLSConfig(
         client_cert=(os.path.join(settings.DOCKER_CERT_PATH, 'cert.pem'),

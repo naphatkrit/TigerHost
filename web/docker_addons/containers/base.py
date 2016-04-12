@@ -2,16 +2,17 @@ import urlparse
 
 
 class BaseContainer(object):
+    """The base container class. All addon containers
+    should subclass this.
+    """
 
     def __init__(self, container_info, docker_client, network_name):
         """Create a new container.
         This does NOT create a container on the docker host
 
-        @type container_info: docker_addons.models.ContainerInfo
-        @type docker_client: docker.Client
-
-        @type network_name: str
-            The network to connect new containers to.
+        :param docker_addons.models.ContainerInfo container_info: the container info
+        :param docker.Client docker_client: the docker client to use
+        :param str network_name: The network to connect new containers to.
         """
         self.container_info = container_info
         self.docker_client = docker_client
@@ -20,30 +21,33 @@ class BaseContainer(object):
     def get_environment(self):
         """Get the environment to be created for this container
 
-        @rtype: dict
-            {"VAR1": "value1", ...}
+        :rtype: dict
+        :returns: dictionary representing the environment, like {"VAR1": "value1", ...}
         """
         raise NotImplementedError
 
     def get_image(self):
         """Get the image for this container
 
-        @rtype: str
+        :rtype: str
+        :returns: the image name, like postgres:9.5
         """
         raise NotImplementedError
 
     def get_url(self):
         """Return the URL to connect to this container, in the correct protocol
 
-        @rtype: str
+        :rtype: str
+        :returns: the URL as a string, like postgres://________
         """
         raise NotImplementedError
 
     def get_docker_hostname(self):
-        """Return the docker hostname associated with
-        the docker client.
+        """Return the hostname of the docker host
+        associated with the docker client.
 
-        @rtype: str
+        :rtype: str
+        :returns: the hostname
         """
         url = urlparse.urlparse(self.docker_client.base_url)
         return url.hostname
@@ -69,5 +73,7 @@ class BaseContainer(object):
         self.docker_client.start(self.container_info.container_id)
 
     def stop_container(self):
+        """Stop the container on the docker host
+        """
         assert self.container_info.container_id is not None
         self.docker_client.stop(self.container_info.container_id)

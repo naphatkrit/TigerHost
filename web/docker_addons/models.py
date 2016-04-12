@@ -8,11 +8,16 @@ from django.utils import crypto
 
 
 def make_container_name():
+    """Make a new container name, unique.
+
+    :rtype: str
+    """
     # alphanumeric, length = 50, this gives ~290 bits of entropy
     return crypto.get_random_string(length=50, allowed_chars=string.ascii_letters + string.digits)
 
 
 class ContainerInfo(models.Model):
+    """The info about a specific container."""
     uuid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
 
