@@ -8,10 +8,10 @@ class RdsNotReadyError(Exception):
 def create_instance(db_instance, engine):
     """Create a new RDS instance for this DB instance.
 
-    @type db_instance: aws_db_addons.models.DbInstance
-    @type engine: str
+    :param aws_db_addons.models.DbInstance db_instance:
+    :param str engine:
 
-    @raises: botocore.exceptions.ClientError
+    :raises botocore.exceptions.ClientError:
     """
     rds = boto3.client('rds')
     rds.create_db_instance(
@@ -38,16 +38,16 @@ def get_endpoint(db_instance):
     """Get the endpoint for this DB instance. Raises RdsNotReadyError if
     the instance is not ready.
 
-    @type db_instance: aws_db_addons.models.DbInstance
-    @type engine: str
+    :param aws_db_addons.models.DbInstance db_instance:
+    :param str engine:
 
-    @rtype: str
-        The endpoint (e.g. 'localhost:1234')
+    :rtype: str
+    :returns: The endpoint (e.g. 'localhost:1234')
 
-    @raises: botocore.exceptions.ClientError
+    :raises botocore.exceptions.ClientError:
         when there is a client error, including if the instance is not found
 
-    @raises: RdsNotReadyError
+    :raises RdsNotReadyError:
     """
     rds = boto3.client('rds')
     instances = rds.describe_db_instances(
@@ -65,9 +65,9 @@ def get_endpoint(db_instance):
 def delete_instance(db_instance):
     """Delete the RDS instance corresponding to this DB instance.
 
-    @type db_instance: aws_db_addons.models.DbInstance
+    :type aws_db_addons.models.DbInstance db_instance: aws_db_addons.models.DbInstance
 
-    @raises: botocore.exceptions.ClientError
+    :raises botocore.exceptions.ClientError:
     """
     rds = boto3.client('rds')
     rds.delete_db_instance(
