@@ -1,3 +1,7 @@
+"""The Celery module, use absolute import so that this doesn't
+conflict with the actual Celery library. This module sets up
+a Celery app object that tasks can register to.
+"""
 from __future__ import absolute_import
 
 import os

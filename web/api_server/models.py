@@ -19,12 +19,22 @@ def make_secret():
 
 
 class PaasCredential(models.Model):
+    """The PaaS credential object represents a permission
+    for a user to use the specified PaaS backend. The absence
+    of credential implies the user is not allowed to use
+    the backend.
+    """
     profile = models.ForeignKey(
         'Profile', on_delete=models.CASCADE, related_name='paas_credential_set')
     backend = models.CharField(max_length=50)
     password_seed = models.CharField(default=make_secret, max_length=50)
 
     def get_password(self):
+        """Get the password for this user/backend combination
+
+        :rtype: str
+        :returns: the password
+        """
         signer = Signer()
         return signer.sign(self.password_seed)
 
@@ -33,8 +43,14 @@ class PaasCredential(models.Model):
 
 
 class Profile(models.Model):
+    """The user profile. This follows the user-profile pattern
+    described here:
+    https://docs.djangoproject.com/en/1.9/topics/auth/customizing/#extending-the-existing-user-model
+    """
 
     class NoCredentials(Exception):
+        """If the user does not have credentials for a backend
+        """
         pass
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -43,8 +59,8 @@ class Profile(models.Model):
         """Return the list of names of backends that this user has
         a credential for.
 
-        @rtype: list
-            backend names (str)
+        :rtype: list
+        :returns: backend names (str)
         """
         backends = [x.backend for x in self.paas_credential_set.all()]
         if settings.DEFAULT_PAAS_BACKEND not in backends:
@@ -56,11 +72,11 @@ class Profile(models.Model):
     def get_credential(self, backend):
         """Get the credential for this backend.
 
-        @type backend: str
+        :param str backend:
 
-        @rtype: PaasCredential
+        :rtype: PaasCredential
 
-        @raises e: Profile.NoCredentials
+        :raises Profile.NoCredentials:
         """
         for x in self.paas_credential_set.all():
             if x.backend == backend:
@@ -69,6 +85,10 @@ class Profile(models.Model):
 
 
 class App(models.Model):
+    """An App represents the record of an app on some backend.
+    We try not to duplicate data, so only store here what is
+    necessary to query the backend for more information
+    """
 
     # don't call this id to avoid conflicting with
     # Django's generated primary key

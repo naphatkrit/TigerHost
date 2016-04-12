@@ -29,7 +29,10 @@ class BackendsUserError(BackendsError):
 def get_backend_api_url(backend):
     """Returns the API url for this backend
 
-    @rtype: str
+    :param str backend: the backend name
+
+    :rtype: str
+    :returns: the backend URL
 
     @raises e: BackendsError
     """

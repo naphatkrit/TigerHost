@@ -9,7 +9,8 @@ from wsse.decorators import check_wsse_token
 
 @login_required
 def api_key_view(request):
-    # TODO make this pretty
+    """This view returns the user's WSSE API key and is protected by authentication
+    """
     secret = wsse.utils.get_secret(request.user.username)
     return HttpResponse(secret)
 

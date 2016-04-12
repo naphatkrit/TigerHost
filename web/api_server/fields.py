@@ -6,6 +6,7 @@ from enum import Enum
 
 
 class EnumField(models.IntegerField):
+    """A Django Enum field"""
     desciption = 'A field of enum values'
 
     def __init__(self, enum_class, *args, **kwargs):
