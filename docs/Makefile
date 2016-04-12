@@ -49,33 +49,38 @@ help:
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 	@echo "  coverage   to run coverage check of the documentation (if enabled)"
 
+api: api-web api-client
+
 api-web:
 	$(SPHINXAPIDOC) -o $(APIDIR)/web ../web ../web/cas ../web/manage.py ../web/test_url.py ../web/bin ../web/aws_db_addons ../web/**/migrations ../web/settings -H "Main Server" --force
+
+api-client:
+	$(SPHINXAPIDOC) -o $(APIDIR)/client ../client/tigerhost ../client/tigerhost/settings.py -H "TigerHost CLI" --force
 
 .PHONY: clean
 clean:
 	rm -rf $(BUILDDIR)/* $(APIDIR)
 
 .PHONY: html
-html: api-web
+html: api
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
-livehtml: api-web
+livehtml: api
 	sphinx-autobuild -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 
 .PHONY: dirhtml
-dirhtml: api-web
+dirhtml: api
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml."
 
-livedirhtml: api-web
+livedirhtml: api
 	sphinx-autobuild -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
 
 .PHONY: singlehtml
-singlehtml: api-web
+singlehtml: api
 	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml
 	@echo
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml."

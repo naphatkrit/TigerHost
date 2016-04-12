@@ -7,3 +7,4 @@ API Reference
     :titlesonly:
 
     api/web/modules
+    api/client/modules
