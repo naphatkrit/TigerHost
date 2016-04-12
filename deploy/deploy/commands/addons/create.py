@@ -6,9 +6,8 @@ import yaml
 from tigerhost.utils.click_utils import echo_with_markers
 from tigerhost.utils.decorators import print_markers
 
-from deploy import settings
+from deploy import docker_machine, settings
 from deploy.secret import store
-from deploy.secret.docker_machine import store_credentials
 from deploy.project import get_project_path
 from deploy.utils import utils
 from deploy.utils.decorators import ensure_project_path, require_docker_machine
@@ -42,15 +41,12 @@ def create(ctx, name, instance_type, database):
     echo_with_markers('Creating machine {name} with type {type}.'.format(
         name=name, type=instance_type), marker='-')
     if settings.DEBUG:
-        subprocess.check_call(
-            ['docker-machine', 'create', '--driver', 'virtualbox', name])
+        docker_machine.check_call(
+            ['create', '--driver', 'virtualbox', name])
     else:
-        subprocess.check_call(
-            ['docker-machine', 'create', '--driver', 'amazonec2', '--amazonec2-instance-type', instance_type, name])
+        docker_machine.check_call(
+            ['create', '--driver', 'amazonec2', '--amazonec2-instance-type', instance_type, name])
         utils.set_aws_security_group_ingress_rule('docker-machine', 0, 65535, '0.0.0.0/0')
-
-    # save credentials to secret directory
-    store_credentials(name)
 
     project_path = get_project_path()
 
@@ -58,7 +54,7 @@ def create(ctx, name, instance_type, database):
     _generate_compose_file(project_path, database)
 
     echo_with_markers('Instantiating addons proxy.', marker='-')
-    env_text = subprocess.check_output(['docker-machine', 'env', name])
+    env_text = docker_machine.check_output(['env', name])
     env = os.environ.copy()
     env.update(utils.parse_shell_for_exports(env_text))
 

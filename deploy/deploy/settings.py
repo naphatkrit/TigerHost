@@ -4,7 +4,7 @@ PROJECT_REMOTE = 'git@github.com:naphatkrit/TigerHost.git'
 
 DOMAIN_NAME = 'tigerhostapp.com'
 
-DEBUG = False
+DEBUG = True
 
 DEISCTL_INSTALL_URL = 'http://deis.io/deisctl/install.sh'
 

@@ -5,7 +5,7 @@ import subprocess32 as subprocess
 from tigerhost.utils.click_utils import echo_with_markers
 from tigerhost.utils.decorators import print_markers
 
-from deploy import settings
+from deploy import docker_machine, settings
 from deploy.commands.addons.create import _generate_compose_file
 from deploy.project import get_project_path
 from deploy.secret import store
@@ -31,7 +31,7 @@ def update(name):
     click.echo('Done.')
 
     echo_with_markers('Updating addons proxy.', marker='-')
-    env_text = subprocess.check_output(['docker-machine', 'env', name])
+    env_text = docker_machine.check_output(['env', name])
     env = os.environ.copy()
     env.update(utils.parse_shell_for_exports(env_text))
 

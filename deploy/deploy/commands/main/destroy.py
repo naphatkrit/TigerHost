@@ -1,11 +1,10 @@
 import click
-import subprocess32 as subprocess
 
 from tigerhost.utils.click_utils import echo_with_markers
 from tigerhost.utils.decorators import print_markers
 
+from deploy import docker_machine
 from deploy.secret import store
-from deploy.secret.docker_machine import remove_credentials
 from deploy.utils.decorators import require_docker_machine
 
 
@@ -16,9 +15,8 @@ from deploy.utils.decorators import require_docker_machine
 def destroy(name):
     # TODO ensure docker machine is installed
     echo_with_markers('Destroying machine {name}.'.format(name=name), marker='-')
-    subprocess.check_call(['docker-machine', 'rm', '-y', name])
+    docker_machine.check_call(['rm', '-y', name])
     store.unset('main__database_url')
     store.unset('main__django_secret')
     store.unset('main__addon_docker_host')
     store.unset('main__elastic_ip_id')
-    remove_credentials(name)

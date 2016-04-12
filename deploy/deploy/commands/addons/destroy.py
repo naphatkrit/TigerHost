@@ -1,11 +1,10 @@
 import click
-import subprocess32 as subprocess
 
 from tigerhost.utils.click_utils import echo_with_markers
 from tigerhost.utils.decorators import print_markers
 
+from deploy import docker_machine
 from deploy.secret import store
-from deploy.secret.docker_machine import remove_credentials
 from deploy.utils.decorators import require_docker_machine
 
 
@@ -15,7 +14,7 @@ from deploy.utils.decorators import require_docker_machine
 @require_docker_machine
 def destroy(name):
     # TODO ensure docker machine is installed
-    echo_with_markers('Destroying machine {name}.'.format(name=name), marker='-')
-    subprocess.check_call(['docker-machine', 'rm', '-y', name])
+    echo_with_markers(
+        'Destroying machine {name}.'.format(name=name), marker='-')
+    docker_machine.check_call(['rm', '-y', name])
     store.unset('addon__database_container_name')
-    remove_credentials(name)

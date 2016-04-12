@@ -8,10 +8,9 @@ import yaml
 from tigerhost.utils.decorators import print_markers
 from tigerhost.utils.click_utils import echo_with_markers
 
-from deploy import settings
+from deploy import docker_machine, settings
 from deploy.project import get_project_path
 from deploy.secret import store
-from deploy.secret.docker_machine import store_credentials
 from deploy.utils import path_utils
 from deploy.utils.decorators import ensure_project_path, require_docker_machine
 from deploy.utils.utils import parse_shell_for_exports, set_aws_security_group_ingress_rule
@@ -54,8 +53,8 @@ def _update_docker_machine_ip(machine_name, new_ip):
     data['Driver']['IPAddress'] = new_ip
     with open(config_path, 'w') as f:
         json.dump(data, f)
-    subprocess.check_call(
-        ['docker-machine', 'regenerate-certs', '--force', machine_name])
+    docker_machine.check_call(
+        ['regenerate-certs', '--force', machine_name])
 
 
 @click.command()
@@ -74,12 +73,13 @@ def create(name, instance_type, database, addon_docker_host, secret, elastic_ip_
     echo_with_markers('Creating machine {name} with type {type}.'.format(
         name=name, type=instance_type), marker='-')
     if settings.DEBUG:
-        subprocess.check_call(['docker-machine', 'create', '--driver',
-                               'virtualbox', name])
+        docker_machine.check_call(['create', '--driver',
+                                   'virtualbox', name])
     else:
-        subprocess.check_call(['docker-machine', 'create', '--driver',
-                               'amazonec2', '--amazonec2-instance-type', instance_type, name])
-        set_aws_security_group_ingress_rule('docker-machine', 0, 65535, '0.0.0.0/0')
+        docker_machine.check_call(['create', '--driver',
+                                   'amazonec2', '--amazonec2-instance-type', instance_type, name])
+        set_aws_security_group_ingress_rule(
+            'docker-machine', 0, 65535, '0.0.0.0/0')
 
         echo_with_markers(
             'Associating Elastic IP.'.format(name), marker='-')
@@ -90,14 +90,12 @@ def create(name, instance_type, database, addon_docker_host, secret, elastic_ip_
             'Saving IP {} to docker-machine.'.format(new_ip), marker='-')
         _update_docker_machine_ip(name, new_ip)
 
-    store_credentials(name)
-
     echo_with_markers('Generating docker-compose file.', marker='-')
     _generate_compose_file(project_path, database, addon_docker_host, secret)
     click.echo('Done.')
 
     echo_with_markers('Initializing TigerHost containers.', marker='-')
-    env_text = subprocess.check_output(['docker-machine', 'env', name])
+    env_text = docker_machine.check_output(['env', name])
     env = os.environ.copy()
     env.update(parse_shell_for_exports(env_text))
     subprocess.check_call(['docker-compose', '-f', os.path.join(

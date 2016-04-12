@@ -5,7 +5,7 @@ import subprocess32 as subprocess
 from tigerhost.utils.decorators import print_markers
 from tigerhost.utils.click_utils import echo_with_markers
 
-from deploy import settings
+from deploy import docker_machine, settings
 from deploy.utils import click_utils
 from deploy.utils.decorators import ensure_project_path, require_docker_machine, option_hosted_zone_id
 from deploy.utils.utils import parse_shell_for_exports, random_string
@@ -60,8 +60,8 @@ def create(elastic_ip_id, email, rds_database, secret, hosted_zone_id):
         db_container_name = random_string(length=50)
         subprocess.check_call(
             [settings.APP_NAME, 'addons', 'create', '--database', db_container_name])
-        addons_ip = subprocess.check_output(
-            ['docker-machine', 'ip', 'tigerhost-addons-aws']).strip()
+        addons_ip = docker_machine.check_output(
+            ['ip', 'tigerhost-addons-aws']).strip()
         database_url = 'postgres://{name}@{ip}:5432/{name}'.format(
             name=db_container_name,
             ip=addons_ip,
@@ -69,8 +69,8 @@ def create(elastic_ip_id, email, rds_database, secret, hosted_zone_id):
 
     subprocess.check_call([settings.APP_NAME, 'addons', 'copy-credentials'])
 
-    env_text = subprocess.check_output(
-        ['docker-machine', 'env', 'tigerhost-addons-aws'])
+    env_text = docker_machine.check_output(
+        ['env', 'tigerhost-addons-aws'])
     env = parse_shell_for_exports(env_text)
     subprocess.check_call(
         [settings.APP_NAME, 'main', 'create',

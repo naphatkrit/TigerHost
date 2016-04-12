@@ -4,7 +4,7 @@ import os
 from tigerhost.utils.decorators import print_markers
 
 from deploy.project import get_project_path
-from deploy.secret.docker_machine import retrieve_credentials
+from deploy.docker_machine import retrieve_credentials
 from deploy.utils.decorators import ensure_project_path
 
 

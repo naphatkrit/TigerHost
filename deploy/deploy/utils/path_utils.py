@@ -35,4 +35,5 @@ def ssh_path(name):
 
 
 def docker_machine_path(machine_name):
-    return canonical_path(os.path.join('~/.docker/machine/machines', machine_name))
+    from deploy.docker_machine import docker_machine_storage_path
+    return canonical_path(os.path.join(docker_machine_storage_path(), '/machines', machine_name))
