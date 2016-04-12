@@ -2,14 +2,14 @@ from api_server.clients.base_client import BaseClient
 
 
 class BaseAuthenticatedClient(BaseClient):
-    """The backend client for API that requires authentication
+    """The backend client for APIs that require authentication
     """
 
     def get_all_applications(self):
         """Get all application IDs associated with this user.
 
-        @rtype: list
-            The list of application IDs (str)
+        :rtype: list
+        :returns: The list of application IDs (str)
 
         @raises ClientResponseError
         """
@@ -18,74 +18,72 @@ class BaseAuthenticatedClient(BaseClient):
     def create_application(self, app_id):
         """Create a new application with the specified ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @raises ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def delete_application(self, app_id):
         """Delete an application with the specified ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @raises ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def set_application_env_variables(self, app_id, bindings):
         """Set the environmental variables for the specified app ID. To unset a variable, set it to ``None``.
 
-        @type app_id: str
+        :param str app_id: the app ID
+        :param dict bindings: The key-value pair to set in the environment.
 
-        @type bindings: dict
-            The key-value pair to set in the environmental.
-
-        @raises ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def get_application_env_variables(self, app_id):
         """Get the environmental variables for the specified app ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @rtype: dict
-            The key-value pair representing the environmental variables
+        :rtype: dict
+        :returns: The key-value pair representing the environmental variables
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def get_application_domains(self, app_id):
         """Get all domains associated with the specified app ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @rtype: list
-            List of domains (str)
+        :rtype: list
+        :returns: List of domains (str)
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def add_application_domain(self, app_id, domain):
         """Add a new domain to the specified app ID.
 
-        @type app_id: str
-        @type domain: str
+        :param str app_id: the app ID
+        :param str domain: the domain name
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def remove_application_domain(self, app_id, domain):
         """Remove a domain from the specified app ID.
 
-        @type app_id: str
-        @type domain: str
+        :param str app_id: the app ID
+        :param str domain: the domain name
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
@@ -93,21 +91,22 @@ class BaseAuthenticatedClient(BaseClient):
         """Run a one-off command on the host running application
         with specified ID.
 
-        @type app_id: str
-        @type command: str
+        :param str app_id: the app ID
+        :param str command: the command to run
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def get_application_owner(self, app_id):
         """Get the username of the owner of the specified app ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @rtype: str
+        :rtype: str
+        :returns: the username of the owner
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
@@ -115,10 +114,10 @@ class BaseAuthenticatedClient(BaseClient):
         """Set the owner of the application to be the specified username.
         Can only be done by someone with admin privilege on this application.
 
-        @type app_id: str
-        @type username: str
+        :param str app_id: the app ID
+        :param str username: the username of the new owner
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
@@ -126,12 +125,12 @@ class BaseAuthenticatedClient(BaseClient):
         """Returns the list of users sharing this application.
         This does NOT include the application owner.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @rtype: list
-            The list of usernames of collaborators (str)
+        :rtype: list
+        :returns: The list of usernames of collaborators (str)
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
@@ -139,10 +138,10 @@ class BaseAuthenticatedClient(BaseClient):
         """Adds the user with the specified username to the list of
         collaborators
 
-        @type app_id: str
-        @type username: str
+        :param str app_id: the app ID
+        :param str username: the username of the collaborator
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
@@ -150,41 +149,38 @@ class BaseAuthenticatedClient(BaseClient):
         """Removes the user with the specified username from the list of
         collaborators
 
-        @type app_id: str
-        @type username: str
+        :param str app_id: the app ID
+        :param str username: the username of the collaborator
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def get_keys(self):
         """Get all public keys associated with this user.
 
-        @rtype: dict
-            A dictionary with two keys: 'key_name' and 'key'
+        :rtype: dict
+        :returns: A dictionary with two keys: 'key_name' and 'key', both str
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def add_key(self, key_name, key):
         """Add a public key to this user.
 
-        @type key_name: str
-            An ID to be associated with this key
+        :param str key_name: An ID to be associated with this key
+        :param str key: the actual public key
 
-        @type key: str
-
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError
 
     def remove_key(self, key_name):
         """Remove the specified key from this user.
 
-        @type key_name: str
-            The ID associated with this key when added.
+        :param str key_name: The ID associated with this key when added.
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         raise NotImplementedError

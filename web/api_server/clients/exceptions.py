@@ -2,7 +2,7 @@ class ClientError(Exception):
     pass
 
 
-class ClientTimeoutError(Exception):
+class ClientTimeoutError(ClientError):
     pass
 
 

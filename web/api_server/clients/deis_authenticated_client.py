@@ -7,12 +7,10 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     """
 
     def __init__(self, deis_url, token):
-        """Create a new ``DeisAuthenticatedClient``.
+        """Create a new :code:`DeisAuthenticatedClient`.
 
-        @type deis_url: str
-
-        @type token: str
-            Authentication token for this user.
+        :param str deis_url:
+        :param str token: Authentication token for this user.
         """
         super(self.__class__, self).__init__(deis_url)
         self.token = token
@@ -26,8 +24,8 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def get_all_applications(self):
         """Get all application IDs associated with this user.
 
-        @rtype: list
-            The list of application IDs (str)
+        :rtype: list
+        :returns: The list of application IDs (str)
 
         @raises ClientResponseError
         """
@@ -39,9 +37,9 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def create_application(self, app_id):
         """Create a new application with the specified ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @raises ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise('POST', 'v1/apps/', json={
             'id': app_id
@@ -50,21 +48,19 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def delete_application(self, app_id):
         """Delete an application with the specified ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @raises ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise('DELETE', 'v1/apps/{}/'.format(app_id))
 
     def set_application_env_variables(self, app_id, bindings):
         """Set the environmental variables for the specified app ID. To unset a variable, set it to ``None``.
 
-        @type app_id: str
+        :param str app_id: the app ID
+        :param dict bindings: The key-value pair to set in the environment.
 
-        @type bindings: dict
-            The key-value pair to set in the environmental.
-
-        @raises ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise('POST', 'v1/apps/{}/config/'.format(app_id), json={
             'values': bindings
@@ -73,12 +69,12 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def get_application_env_variables(self, app_id):
         """Get the environmental variables for the specified app ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @rtype: dict
-            The key-value pair representing the environmental variables
+        :rtype: dict
+        :returns: The key-value pair representing the environmental variables
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         resp = self._request_and_raise(
             'GET', 'v1/apps/{}/config/'.format(app_id))
@@ -87,12 +83,12 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def get_application_domains(self, app_id):
         """Get all domains associated with the specified app ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @rtype: list
-            List of domains (str)
+        :rtype: list
+        :returns: List of domains (str)
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         # TODO may have to page
         resp = self._request_and_raise(
@@ -102,10 +98,10 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def add_application_domain(self, app_id, domain):
         """Add a new domain to the specified app ID.
 
-        @type app_id: str
-        @type domain: str
+        :param str app_id: the app ID
+        :param str domain: the domain name
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise(
             'POST', 'v1/apps/{}/domains/'.format(app_id), json={'domain': domain})
@@ -113,10 +109,10 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def remove_application_domain(self, app_id, domain):
         """Remove a domain from the specified app ID.
 
-        @type app_id: str
-        @type domain: str
+        :param str app_id: the app ID
+        :param str domain: the domain name
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise(
             'DELETE', 'v1/apps/{}/domains/{}'.format(app_id, domain))
@@ -125,13 +121,10 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         """Run a one-off command on the host running application
         with specified ID.
 
-        @type app_id: str
-        @type command: str
+        :param str app_id: the app ID
+        :param str command: the command to run
 
-        @rtype: dict
-            dictionary with keys 'exit_code' and 'output'
-
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         ret = self._request_and_raise('POST', 'v1/apps/{}/run/'.format(app_id), json={
             'command': command
@@ -144,11 +137,12 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def get_application_owner(self, app_id):
         """Get the username of the owner of the specified app ID.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @rtype: str
+        :rtype: str
+        :returns: the username of the owner
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         resp = self._request_and_raise('GET', 'v1/apps/{}/'.format(app_id))
         return resp.json()['owner']
@@ -157,10 +151,10 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         """Set the owner of the application to be the specified username.
         Can only be done by someone with admin privilege on this application.
 
-        @type app_id: str
-        @type username: str
+        :param str app_id: the app ID
+        :param str username: the username of the new owner
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise('POST', 'v1/apps/{}/'.format(app_id), json={
             'owner': username
@@ -170,12 +164,12 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         """Returns the list of users sharing this application.
         This does NOT include the application owner.
 
-        @type app_id: str
+        :param str app_id: the app ID
 
-        @rtype: list
-            The list of usernames of collaborators (str)
+        :rtype: list
+        :returns: The list of usernames of collaborators (str)
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         resp = self._request_and_raise(
             'GET', 'v1/apps/{}/perms/'.format(app_id))
@@ -185,10 +179,10 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         """Adds the user with the specified username to the list of
         collaborators
 
-        @type app_id: str
-        @type username: str
+        :param str app_id: the app ID
+        :param str username: the username of the collaborator
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise('POST', 'v1/apps/{}/perms/'.format(app_id), json={
             'username': username
@@ -198,10 +192,10 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         """Removes the user with the specified username from the list of
         collaborators
 
-        @type app_id: str
-        @type username: str
+        :param str app_id: the app ID
+        :param str username: the username of the collaborator
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise(
             'DELETE', 'v1/apps/{}/perms/{}'.format(app_id, username))
@@ -209,10 +203,10 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def get_keys(self):
         """Get all public keys associated with this user.
 
-        @rtype: dict
-            A dictionary with two keys: 'key_name' and 'key'
+        :rtype: dict
+        :returns: A dictionary with two keys: 'key_name' and 'key', both str
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         # TODO may have to page
         resp = self._request_and_raise(
@@ -222,12 +216,10 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def add_key(self, key_name, key):
         """Add a public key to this user.
 
-        @type key_name: str
-            An ID to be associated with this key
+        :param str key_name: An ID to be associated with this key
+        :param str key: the actual public key
 
-        @type key: str
-
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise('POST', 'v1/keys/', json={
             'id': key_name,
@@ -237,9 +229,8 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
     def remove_key(self, key_name):
         """Remove the specified key from this user.
 
-        @type key_name: str
-            The ID associated with this key when added.
+        :param str key_name: The ID associated with this key when added.
 
-        @raises e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise('DELETE', 'v1/keys/{}'.format(key_name))

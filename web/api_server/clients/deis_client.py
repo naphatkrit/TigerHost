@@ -5,13 +5,15 @@ from api_server.clients.exceptions import ClientResponseError
 class DeisClient(BaseClient):
 
     def register(self, username, password, email):
-        """Register a new user with Deis.
+        """Register a new user with the backend.
 
-        @type username: str
-        @type password: str
-        @type email: str
+        :param str username: The username to register
 
-        @raise e: ClientResponseError
+        :param str password: The password to use for authentication
+
+        :param str email: The email of the user
+
+        :raises api_server.clients.exceptions.ClientError:
         """
         self._request_and_raise('POST', 'v1/auth/register/', json={
             "username": username,
@@ -20,14 +22,14 @@ class DeisClient(BaseClient):
         })
 
     def login(self, username, password):
-        """Login to Deis and return an authenticated client.
+        """Login to the backend and return an authenticated client.
 
-        @type username: str
-        @type password: str
+        :param str username: the username to login
+        :param str password: the password
 
-        @rtype: DeisAuthenticatedClient
+        :rtype: api_server.client.base_authenticated_client.AuthenticatedClient
 
-        @raise e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         # this avoids circular imports
         from api_server.clients.deis_authenticated_client import DeisAuthenticatedClient
@@ -43,15 +45,15 @@ class DeisClient(BaseClient):
         """Try to log the user in. If the user has not been created yet, then
         attempt to register the user and then log in.
 
-        @type username: str
-        @type password: str
-        @type email: str
+        :param str username: the username
+        :param str password: the password
+        :param str email: the email, only used when a registration is required
 
-        @rtype: tuple
-            (DeisAuthenticatedClient, bool) - the bool is true if a new user
-            was registered with Deis
+        :rtype: tuple
+        :returns: (api_server.client.base_authenticated_client.AuthenticatedClient, bool) - the bool is true if a new user
+            was registered with the backend
 
-        @raise e: ClientResponseError
+        :raises api_server.clients.exceptions.ClientError:
         """
         try:
             return self.login(username, password), False
