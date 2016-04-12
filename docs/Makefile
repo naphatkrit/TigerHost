@@ -50,7 +50,7 @@ help:
 	@echo "  coverage   to run coverage check of the documentation (if enabled)"
 
 api-web:
-	$(SPHINXAPIDOC) -o $(APIDIR)/web ../web cas manage test_url bin -H "Main Server" --force
+	$(SPHINXAPIDOC) -o $(APIDIR)/web ../web ../web/cas ../web/manage.py ../web/test_url.py ../web/bin ../web/aws_db_addons ../web/**/migrations -H "Main Server" --force
 
 .PHONY: clean
 clean:
