@@ -8,13 +8,13 @@ class WsseBackend(object):
     def authenticate(self, username, digest, nonce, timestamp):
         """Authenticate WSSE
 
-        @type username: str
-        @type digest: str
-        @type nonce: str
-        @type timestamp: str
+        :param str username:
+        :param str digest:
+        :param str nonce:
+        :param str timestamp:
 
-        @rtype: User
-            None if authentication fails
+        :rtype: User
+        :returns: None if authentication fails, otherwise return the user object
         """
         secret = get_secret(username)
         if secret is None:

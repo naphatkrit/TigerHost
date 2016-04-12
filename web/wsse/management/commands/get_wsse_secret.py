@@ -9,6 +9,9 @@ class Command(BaseCommand):
         parser.add_argument('usernames', nargs='+', type=str)
 
     def handle(self, *args, **options):
+        """For each username, print out the token
+        Useful for debugging.
+        """
         for username in options['usernames']:
             self.stdout.write('{username}: {token}\n'.format(
                 username=username, token=get_secret(username)))

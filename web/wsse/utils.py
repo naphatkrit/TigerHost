@@ -13,12 +13,12 @@ def parse_wsse_header(wsse_header):
     """Take a wsse header and parses it, returning a tuple of username,
     password digest, nonce, and timestamp.
 
-    @type wsse_header: str
+    :param str wsse_header:
 
-    @rtype: tuple
-        (username, digest, nonce, timestamp) - all str
+    :rtype: tuple
+    :returns: (username, digest, nonce, timestamp) - all str
 
-    @raises e: ValueError
+    :raises ValueError:
         if the header is not in a valid format
     """
     try:
@@ -44,19 +44,15 @@ def verify_wsse_digest(secret, b64_encoded_nonce, timestamp, digest, max_age=Non
     """Verify the WSSE digest, which means to check the output
     of the digest and to verify that the timestamp is within max_age.
 
-    @type secret: str
-
-    @type b64_encoded_nonce: str
-
-    @type timestamp: str
-
-    @type digest: str
-
-    @type max_age: int
+    :param str secret:
+    :param str b64_encoded_nonce:
+    :param str timestamp:
+    :param str digest:
+    :param int max_age:
         time in seconds. Should be a nonnegative number.
 
-    @rtype: bool
-        True if the WSSE digest is valid
+    :rtype: bool
+    :returns: True if the WSSE digest is valid
     """
     if max_age is not None:
         # TODO verify max age
@@ -68,10 +64,10 @@ def verify_wsse_digest(secret, b64_encoded_nonce, timestamp, digest, max_age=Non
 def get_secret(username):
     """Get the secret for this user.
 
-    @type username: str
+    :param str username: str
 
-    @rtype: str
-        returns a base64 encoded string. Returns None if the user does not exist.
+    :rtype: str
+    :returns: a base64 encoded string, or None if the user does not exist.
     """
     from wsse.models import WsseProfile
     try:
