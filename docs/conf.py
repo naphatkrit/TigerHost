@@ -23,6 +23,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../web'))
 sys.path.insert(0, os.path.abspath('../client'))
 sys.path.insert(0, os.path.abspath('../proxy'))
+sys.path.insert(0, os.path.abspath('../deploy'))
 
 # -- General configuration ------------------------------------------------
 

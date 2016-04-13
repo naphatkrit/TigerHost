@@ -9,3 +9,4 @@ API Reference
     api/web/modules
     api/client/modules
     api/proxy/modules
+    api/deploy/modules
