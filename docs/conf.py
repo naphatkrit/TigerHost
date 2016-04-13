@@ -22,6 +22,7 @@ import sys
 # NOTE: required for links to work (:py:class:`` stuffs)
 sys.path.insert(0, os.path.abspath('../web'))
 sys.path.insert(0, os.path.abspath('../client'))
+sys.path.insert(0, os.path.abspath('../proxy'))
 
 # -- General configuration ------------------------------------------------
 

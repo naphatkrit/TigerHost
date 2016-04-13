@@ -49,13 +49,16 @@ help:
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 	@echo "  coverage   to run coverage check of the documentation (if enabled)"
 
-api: api-web api-client
+api: api-web api-client api-proxy
 
 api-web:
 	$(SPHINXAPIDOC) -o $(APIDIR)/web ../web ../web/cas ../web/manage.py ../web/test_url.py ../web/bin ../web/aws_db_addons ../web/**/migrations ../web/settings -H "Main Server" --force
 
 api-client:
 	$(SPHINXAPIDOC) -o $(APIDIR)/client ../client/tigerhost ../client/tigerhost/settings.py -H "TigerHost CLI" --force
+
+api-proxy:
+	$(SPHINXAPIDOC) -o $(APIDIR)/proxy ../proxy/proxy -H "Addons Proxy" --force
 
 .PHONY: clean
 clean:
