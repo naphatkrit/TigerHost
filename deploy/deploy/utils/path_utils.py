@@ -9,9 +9,9 @@ def canonical_path(path):
     """Return the canonical path. This expands ~ and resolves
     any symbolic links, and returns the absolute path.
 
-    @type path: str
+    :param str path:
 
-    @rtype: str
+    :rtype: str
     """
     return os.path.realpath(os.path.expanduser(path))
 
@@ -19,9 +19,9 @@ def canonical_path(path):
 def executable_path(name):
     """Return the canonical path to a private executable file
 
-    @type name: str
+    :param str name:
 
-    @rtype: str
+    :rtype: str
     """
     return canonical_path(os.path.join(private_dir.private_dir_path(settings.APP_NAME), name))
 
@@ -29,7 +29,7 @@ def executable_path(name):
 def ssh_path(name):
     """Return the canonical path to ~/.ssh/{name}
 
-    @rtype: str
+    :rtype: str
     """
     return canonical_path(os.path.join('~/.ssh', name))
 

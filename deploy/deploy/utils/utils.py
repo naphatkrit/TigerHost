@@ -13,21 +13,21 @@ def random_string(length, allowed_chars=string.ascii_letters + string.digits):
 def parse_shell_for_exports(text):
     """Parses a shell script and extracts all of its exports.
 
-    @type text: str
-        The shell script
+    :param str text: The shell script
 
-    @rtype: dict
-        for example,
+    :rtype: dict
+    :returns: for example,
 
         export VAR1=value1
         ...
         export VAR2="value2"
 
-        will return:
+        will return: {
 
-        {
             'VAR1': 'value1',
+
             'VAR2': 'value2',
+
         }
     """
     lines = [x for x in text.split('\n') if x.startswith('export ')]
@@ -43,10 +43,10 @@ def parse_shell_for_exports(text):
 def set_aws_security_group_ingress_rule(group_name, fromPort, toPort, cidrIp):
     """Add an ingress rule to a security group.
 
-    @type group_name: str
-    @type fromPort: int
-    @type toPort: int
-    @type cidrIp: str
+    :param str group_name:
+    :param int fromPort:
+    :param int toPort:
+    :param str cidrIp:
     """
     ec2 = boto3.resource('ec2')
     group = list(ec2.security_groups.filter(

@@ -4,10 +4,10 @@ import click
 def prompt_choices(choices):
     """Displays a prompt for the given choices
 
-    @type choices: list
+    :param list choices: the choices for the user to choose from
 
-    @rtype: int
-        the index of the chosen choice
+    :rtype: int
+    :returns: the index of the chosen choice
     """
     assert len(choices) > 1
     for i in range(len(choices)):

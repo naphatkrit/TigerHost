@@ -18,10 +18,13 @@ from deploy.utils import click_utils, path_utils, utils
 
 
 def ensure_project_path(f):
+    """Ensure that the project path exists. In the event that it
+    does not exist, prompt the user to specify the path
+    """
     @click.pass_context
     def new_func(ctx, *args, **kwargs):
         """
-        @type ctx: click.Context
+        :param click.Context ctx:
         """
         if get_project_path() is None:
             click.echo('Config project_path not set.')
@@ -63,7 +66,7 @@ def require_docker_machine(f):
     @click.pass_context
     def new_func(ctx, *args, **kwargs):
         """
-        @type ctx: click.Context
+        :param click.Context ctx:
         """
         if utils.which('docker-machine') is None:
             click.echo('docker-machine is not installed. Please install it.')
@@ -81,7 +84,7 @@ def option_hosted_zone_id(f):
     @click.pass_context
     def new_func(ctx, hosted_zone_id, *args, **kwargs):
         """
-        @type ctx: click.Context
+        :param click.Context ctx:
         """
         if hosted_zone_id is None:
             echo_with_markers('Trying to find hosted zone for {}.'.format(settings.DOMAIN_NAME), marker='-')
@@ -158,7 +161,7 @@ def skip_if_debug(f):
     @click.pass_context
     def new_func(ctx, *args, **kwargs):
         """
-        @type ctx: click.Context
+        :param click.Context ctx:
         """
         if settings.DEBUG:
             click.echo('Skipping because DEBUG is True.')

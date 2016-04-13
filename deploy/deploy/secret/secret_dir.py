@@ -11,6 +11,11 @@ class SecretDirConflictError(Exception):
 
 
 def secret_dir_path():
+    """Returns the path to the secret directory.
+
+    :rtype: str
+    :returns: path
+    """
     return path_utils.canonical_path(os.path.join(private_dir.private_dir_path(settings.APP_NAME), 'secret'))
 
 

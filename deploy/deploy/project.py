@@ -20,7 +20,7 @@ def get_project_path():
     """Get the TigerHost project path,
     returning None if it is not stored
 
-    @rtype: str
+    :rtype: str
     """
     return user_config.get(_project_path_key)
 

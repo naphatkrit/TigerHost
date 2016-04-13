@@ -13,7 +13,7 @@ def _config_path():
 def _get_config_dict():
     """Get the user config file parsed as a dictionary.
 
-    @rtype: dict
+    :rtype: dict
     """
     path = _config_path()
     if not os.path.exists(path):
@@ -33,7 +33,7 @@ def _save_config_dict(config_dict):
 def get(key, default=None):
     """Try to get user config `key`, returning default if not found.
 
-    @type: str
+    :type: str
     """
     config = _get_config_dict()
     return config.get(key, default)
@@ -41,8 +41,8 @@ def get(key, default=None):
 
 def set(key, value):
     """Save the user config
-    @type key: str
-    @type value: (str | dict | list | int | float | bool)
+    :param str key:
+    :param (str | dict | list | int | float | bool) value:
     """
     # TODO this should be implemented with a lock
     config = _get_config_dict()

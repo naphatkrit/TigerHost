@@ -11,6 +11,15 @@ class MachineNotFoundError(Exception):
 
 
 def docker_machine_storage_path():
+    """Return the special storage path for docker-machine.
+
+    docker-machine typically uses ~/.docker/machine as
+    the storage path, but that is not portable. We want to be
+    able to keep track of which machines have been the deployed,
+    and the best way to do that is in the secret directory
+
+    :rtype: str
+    """
     return os.path.join(secret_dir_path(), 'docker_machine')
 
 
@@ -44,10 +53,10 @@ def retrieve_credentials(machine_name, target_directory):
     """Given a docker machine, retrieve the credentials
     stored and copy it to the target directory.
 
-    @type machine_name: str
-    @type target_directory: str
+    :param str machine_name:
+    :param str target_directory:
 
-    @raises: MachineNotFoundError
+    :raises deploy.docker_machine.MachineNotFoundError:
     """
     dir_path = _machine_path(machine_name)
     if not os.path.exists(dir_path):

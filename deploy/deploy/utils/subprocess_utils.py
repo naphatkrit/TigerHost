@@ -6,7 +6,7 @@ def check_call_realtime(args):
 
     Stderr is piped into stdout.
 
-    @raises: subprocess.CalledProcessError if exit code is non-zero
+    :raises subprocess.CalledProcessError: if exit code is non-zero
     """
     p = subprocess.Popen(args, stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)

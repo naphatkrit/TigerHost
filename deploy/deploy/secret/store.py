@@ -18,9 +18,10 @@ def get(key, default=None):
     """Try to get the secret stored under `key`, returning
     default if not found.
 
-    @type key: str
+    :param str key:
 
-    @rtype: (str | dict | list | int | float | bool)
+    :rtype: (str | dict | list | int | float | bool)
+    :returns: the value stored, or default
     """
     path = os.path.join(_store_base_dir(), key.lower())
     if not os.path.exists(path):
@@ -32,8 +33,9 @@ def get(key, default=None):
 def set(key, value):
     """Save the key-value pair.
 
-    @type key: str
-    @type value: (str | dict | list | int | float | bool)
+    :param str key:
+    :param value:
+    :type value: (str | dict | list | int | float | bool)
     """
     base = _store_base_dir()
     if not os.path.exists(base):
@@ -46,7 +48,7 @@ def set(key, value):
 def unset(key):
     """Unset the key-value pair. Does nothing if not found.
 
-    @type key: str
+    :param str key:
     """
     path = os.path.join(_store_base_dir(), key.lower())
     if os.path.exists(path):
