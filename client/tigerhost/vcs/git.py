@@ -21,15 +21,13 @@ class GitVcs(Vcs):
     def clone(cls, remote_url, path):
         """Clone the remote and return a GitVcs object pointed at the new repo.
 
-        Args:
-            remote_url (str)
-            path (str) - path to clone to
+        :param str remote_url: the URL to clone from
+        :param str path: path to clone to
 
-        Returns:
-            GitVcs
+        :rtype: GitVcs
+        :returns: a GitVcs object for the new cloned repo
 
-        Raises:
-            CommandError
+        :raises tigerhost.vcs.base.CommandError:
         """
         args = ['git', 'clone', '--recursive', remote_url, path]
         proc = Popen(args, stdout=PIPE, stderr=PIPE)
@@ -41,17 +39,10 @@ class GitVcs(Vcs):
     def get_working_directory(self):
         """Get the working directory for this repo.
 
-        This is available as a class method as it is usually needed to
-        initialize the VCS object itself.
+        :rtype: str
+        :returns: the path to the working directory
 
-        Args:
-            cls (class object): The class
-
-        Returns:
-            str - the path to the working directory
-
-        Raises:
-            CommandError
+        :raises tigerhost.vcs.base.CommandError:
         """
         return self.run('rev-parse', '--show-toplevel').strip()
 
@@ -76,10 +67,9 @@ class GitVcs(Vcs):
         """Resets the repository to the target commit, removing any staged,
         unstaged, and untracked files.
 
-        Args:
-            target_commit (str): the commit ID
-        Raises:
-            CommandError - if the commit does not exist
+        :param str target_commit: the commit ID
+
+        :raises tigerhost.vcs.base.CommandError: if the commit does not exist
         """
         self.run('reset', '--hard', target_commit)
         self.run('clean', '-fd')
@@ -88,8 +78,8 @@ class GitVcs(Vcs):
         """Get the private directory associated with this repo, but untracked
         by the repo.
 
-        Returns:
-            str - absolute path
+        :rtype: str
+        :returns: absolute path
         """
         return os.path.join(self.repository_dir(), settings.APP_NAME)
 
@@ -98,8 +88,8 @@ class GitVcs(Vcs):
 
         e.g. .git for git
 
-        Returns:
-            str - absolute path
+        :rtype: str
+        :returns: absolute path
         """
         return os.path.join(self.path, '.git')
 
@@ -111,11 +101,10 @@ class GitVcs(Vcs):
         accruate diff on new files. This is ok because we only use it on a
         disposable copy of the repo.
 
-        Args:
-            base_commit - the base commit ('HEAD', sha, etc.)
+        :param str base_commit: the base commit ('HEAD', sha, etc.)
 
-        Returns:
-            str
+        :rtype: str
+        :returns: a unique signature for the current state of the repo
         """
         if base_commit is None:
             base_commit = 'HEAD'
@@ -133,11 +122,10 @@ class GitVcs(Vcs):
         return h.hexdigest()
 
     def install_hook(self, hook_name, hook_content):
-        """Install the repository hook for this repo.
+        """The ignore patterns file for this repo type.
 
-        Args:
-            hook_name (str)
-            hook_content (str)
+        :rtype: str
+        :returns: file name
         """
         hook_path = os.path.join(self.path, '.git/hooks', hook_name)
         with open(hook_path, 'w') as f:
@@ -158,8 +146,8 @@ class GitVcs(Vcs):
 
         a/
 
-        Returns:
-            List[str] - list of ignored files. The paths are absolute.
+        :rtype: list
+        :returns: list of ignored files. The paths are relative to the repo.
         """
         return [os.path.join(self.path, p) for p in
                 self.run('ls-files', '--ignored', '--exclude-standard',
@@ -169,35 +157,31 @@ class GitVcs(Vcs):
     def ignore_patterns_file(self):
         """The ignore patterns file for this repo type.
 
-        e.g. .gitignore for git
-
-        Returns:
-            str - file name
+        :rtype: str
+        :returns: file name
         """
         return '.gitignore'
 
     def add_remote(self, name, url):
         """Add a new remote to this repository.
 
-        Args:
-            name (str)
-            url (str)
+        :param str name: remote name
+        :param str url: remote URL
         """
         self.run('remote', 'add', name, url)
 
     def remove_remote(self, name):
         """Remove a remote from this repository.
 
-        Args:
-            name (str)
+        :param str name: remote name
         """
         self.run('remote', 'remove', name)
 
     def get_remotes(self):
         """Returns all the remotes in this repository.
 
-        Returns:
-            Dict[str:str] - mapping from remote name to remote URLs
+        :rtype: dict
+        :returns: mapping from remote name to remote URLs (str to str)
         """
         remotes = self.run('remote', '--verbose').strip().split('\n')
         if remotes == ['']:
@@ -212,8 +196,8 @@ class GitVcs(Vcs):
     def path_is_ignored(self, path):
         """Given a path, check if the path would be ignored.
 
-        Returns:
-            boolean
+        :rtype: bool
+        :returns: True if the path would be ignored
         """
         try:
             self.run('check-ignore', '--quiet', path)

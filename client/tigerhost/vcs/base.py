@@ -14,6 +14,7 @@ from tigerhost.utils import contextmanagers
 
 
 class CommandError(Exception):
+    """An exception when a git command resulted in an error"""
 
     def __init__(self, cmd, retcode, stdout, stderr):
         self.cmd = cmd
@@ -36,8 +37,7 @@ class Vcs(object):
         If `path` is `None`, then `get_working_directory` is used to identify
         the path.
 
-        Args:
-            path (str) - optional. The path to the repo working directory.
+        :param str path: optional. The path to the repo working directory.
         """
         self.path = None
         if path is None:
@@ -66,31 +66,26 @@ class Vcs(object):
     def exists(self):
         """Check if the working directory exists
 
-        Returns:
-            bool - True if the working directory exists
+        :rtype: bool
+        :returns: True if the working directory exists
         """
         return os.path.exists(self.path)
 
     def get_working_directory(self):
         """Get the working directory for this repo.
 
-        Args:
-            cls (class object): The class
+        :rtype: str
+        :returns: the path to the working directory
 
-        Returns:
-            str - the path to the working directory
-
-        Raises:
-            CommandError
+        :raises tigerhost.vcs.base.CommandError:
         """
         raise NotImplementedError  # pragma: no cover
 
     def install_hook(self, hook_name, hook_content):
         """Install the repository hook for this repo.
 
-        Args:
-            hook_name (str)
-            hook_content (str)
+        :param str hook_name: the name of the hook (pre-receive, etc.)
+        :param str hook_content: the content of the script
         """
         raise NotImplementedError  # pragma: no cover
 
@@ -110,10 +105,9 @@ class Vcs(object):
         """Resets the repository to the target commit, removing any staged,
         unstaged, and untracked files.
 
-        Args:
-            target_commit (str): the commit ID
-        Raises:
-            CommandError - if the commit does not exist
+        :param str target_commit: the commit ID
+
+        :raises tigerhost.vcs.base.CommandError: if the commit does not exist
         """
         raise NotImplementedError  # pragma: no cover
 
@@ -121,8 +115,8 @@ class Vcs(object):
         """Get the private directory associated with this repo, but untracked
         by the repo.
 
-        Returns:
-            str - absolute path
+        :rtype: str
+        :returns: absolute path
         """
         raise NotImplementedError  # pragma: no cover
 
@@ -131,16 +125,18 @@ class Vcs(object):
 
         e.g. .git for git
 
-        Returns:
-            str - absolute path
+        :rtype: str
+        :returns: absolute path
         """
         raise NotImplementedError  # pragma: no cover
 
-    def get_signature(self):
+    def get_signature(self, base_commit=None):
         """Get the signature of the current state of the repository
 
-        Returns:
-            str
+        :param str base_commit: the base commit ('HEAD', sha, etc.)
+
+        :rtype: str
+        :returns: a unique signature for the current state of the repo
         """
         raise NotImplementedError  # pragma: no cover
 
@@ -149,16 +145,16 @@ class Vcs(object):
 
         e.g. .gitignore for git
 
-        Returns:
-            str - file name
+        :rtype: str
+        :returns: file name
         """
         raise NotImplementedError  # pragma: no cover
 
     def path_is_ignored(self, path):
         """Given a path, check if the path would be ignored.
 
-        Returns:
-            boolean
+        :rtype: bool
+        :returns: True if the path would be ignored
         """
         raise NotImplementedError  # pragma: no cover
 
@@ -176,33 +172,31 @@ class Vcs(object):
 
         a/
 
-        Returns:
-            List[str] - list of ignored files. The paths are relative to the repo.
+        :rtype: list
+        :returns: list of ignored files. The paths are relative to the repo.
         """
         raise NotImplementedError  # pragma: no cover
 
     def add_remote(self, name, url):
         """Add a new remote to this repository.
 
-        Args:
-            name (str)
-            url (str)
+        :param str name: remote name
+        :param str url: remote URL
         """
         raise NotImplementedError  # pragma: no cover
 
     def remove_remote(self, name):
         """Remove a remote from this repository.
 
-        Args:
-            name (str)
+        :param str name: remote name
         """
         raise NotImplementedError  # pragma: no cover
 
     def get_remotes(self):
         """Returns all the remotes in this repository.
 
-        Returns:
-            Dict[str:str] - mapping from remote name to remote URLs
+        :rtype: dict
+        :returns: mapping from remote name to remote URLs (str to str)
         """
         raise NotImplementedError  # pragma: no cover
 

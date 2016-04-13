@@ -12,6 +12,9 @@ from tigerhost.vcs.git import GitVcs
 
 
 def print_markers(f):
+    """A decorator that prints the invoked command
+    before and after the command.
+    """
     @click.pass_context
     def new_func(ctx, *args, **kwargs):
         command = ctx.info_name
@@ -28,6 +31,8 @@ def print_markers(f):
 
 
 def ensure_obj(f):
+    """A decorator that ensures context.obj exists
+    """
     @click.pass_context
     def new_func(ctx, *args, **kwargs):
         if ctx.obj is None:
@@ -37,6 +42,9 @@ def ensure_obj(f):
 
 
 def store_vcs(f):
+    """A decorator that store the VCS object into
+    the object.
+    """
     # TODO ideally we should detect the type of VCS.
     # But for now, we only support git
     @click.pass_context
@@ -55,6 +63,9 @@ def store_vcs(f):
 
 
 def catch_exception(exception, message=None):
+    """A decorator that gracefully handles exceptions, exiting
+    with :py:obj:`exit_codes.OTHER_FAILURE`.
+    """
     def decorator(f):
         @click.pass_context
         def new_func(ctx, *args, **kwargs):
@@ -69,6 +80,10 @@ def catch_exception(exception, message=None):
 
 
 def store_user(f):
+    """A decorator that store the user object in context.obj.
+
+    If the user does not exist, then exit with an error message
+    """
     @click.pass_context
     @ensure_obj
     def new_func(ctx, *args, **kwargs):
@@ -97,6 +112,8 @@ def store_user(f):
 
 
 def store_api_client(f):
+    """A decorator that stores the API client in context.obj
+    """
     @store_user
     @click.pass_context
     @ensure_obj
@@ -115,6 +132,11 @@ def store_api_client(f):
 
 
 def store_app(f):
+    """A decorator that stores the app name in context.obj
+
+    The app name comes from git remote tigerhost, and can be
+    overidden with the option --app/-a.
+    """
     @click.option('--app', '-a', help='The app to work with')
     @store_vcs
     @click.pass_context

@@ -5,11 +5,14 @@ from wsse import WSSEAuth
 
 
 class ApiClientResponseError(Exception):
+    """Represents an error in communicating with the server
+    """
 
     def __init__(self, response):
-        """Create a new ``ApiClientResponseError``.
+        """Create a new :code:`ApiClientResponseError`.
 
-        @type response: requests.Response
+        :param requests.Response response:
+        the response object returned from the errorneous request
         """
         self.response = response
 
@@ -30,11 +33,11 @@ class ApiClientAuthenticationError(ApiClientResponseError):
 class ApiClient(object):
 
     def __init__(self, api_server_url, username, api_key):
-        """Create a new ``ApiClient``.
+        """Create a new :code:`ApiClient`.
 
-        @type api_server_url: str
-        @type username: str
-        @type api_key: str
+        :param str api_server_url:
+        :param str username:
+        :param str api_key:
         """
         self.api_server_url = api_server_url
         self.username = username
@@ -43,18 +46,15 @@ class ApiClient(object):
     def _request_and_raise(self, method, path, **kwargs):
         """Sends a request to the api server.
 
-        @type method: str
-            HTTP method, such as "POST", "GET", "PUT"
+        :param str method: HTTP method, such as "POST", "GET", "PUT"
+        :param str path: The extra http path to be appended to the deis URL
 
-        @type path: str
-            The extra http path to be appended to the deis URL
+        :rtype: requests.Response
 
-        @rtype: requests.Response
-
-        @raise e: ApiClientAuthenticationError
+        :raises tigerhost.api_client.ApiClientAuthenticationError:
             if the response status code is 401
 
-        @raise e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
             if the response status code is not 401 and not in the [200, 300) range.
         """
         resp = requests.request(method, urlparse.urljoin(
@@ -69,18 +69,19 @@ class ApiClient(object):
     def test_api_key(self):
         """Hit the test end point for API key
 
-        @raise e: ApiClientResponseError
-        @raise e: ApiClientAuthenticationError
+        :raises tigerhost.api_client.ApiClientAuthenticationError:
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise('GET', 'api/test_api_key/')
 
     def get_backends(self):
         """Get the backends that this user has access to.
 
-        @rtype: dict
-            dictionary with the following format:
-            {
+        :rtype: dict
+        :returns: dictionary with the following format:{
+
                 'backends': ['backend1', 'backend2', ...]
+
                 'default': 'backend1'
             }
         """
@@ -90,10 +91,10 @@ class ApiClient(object):
     def create_application(self, app_id, backend=None):
         """Create a new application with the specified ID.
 
-        @type app_id: str
-        @type backend: str
+        :param str app_id:
+        :param str backend:
 
-        @raises ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         body = {
             'id': app_id
@@ -105,20 +106,21 @@ class ApiClient(object):
     def delete_application(self, app_id):
         """Delete an application with the specified ID.
 
-        @type app_id: str
+        :param str app_id:
 
-        @raises ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise('DELETE', 'api/v1/apps/{}/'.format(app_id))
 
     def get_all_applications(self):
         """Get all application IDs associated with this user.
 
-        @rtype: dict
-        format:
-        {
+        :rtype: dict
+        :returns: dict with format: {
             'backend1': ['app1', ...],
+
             'backend2': ['app1', ...],
+
             ...
         }
         """
@@ -128,12 +130,12 @@ class ApiClient(object):
     def set_application_env_variables(self, app_id, bindings):
         """Set the environmental variables for the specified app ID. To unset a variable, set it to ``None``.
 
-        @type app_id: str
+        :param str app_id:
 
-        @type bindings: dict
+        :param dict bindings:
             The key-value pair to set in the environmental. ``None`` value = unset.
 
-        @raises ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise(
             'POST', 'api/v1/apps/{}/env/'.format(app_id), json=bindings)
@@ -141,12 +143,12 @@ class ApiClient(object):
     def get_application_env_variables(self, app_id):
         """Get the environmental variables for the specified app ID.
 
-        @type app_id: str
+        :param str app_id:
 
-        @rtype: dict
-            The key-value pair representing the environmental variables
+        :rtype: dict
+        :returns: The key-value pair representing the environmental variables
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise(
             'GET', 'api/v1/apps/{}/env/'.format(app_id))
@@ -155,12 +157,12 @@ class ApiClient(object):
     def get_application_domains(self, app_id):
         """Get all domains associated with the specified app ID.
 
-        @type app_id: str
+        :param str app_id:
 
-        @rtype: list
-            List of domains (str)
+        :rtype: list
+        :returns: List of domains (str)
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise(
             'GET', 'api/v1/apps/{}/domains/'.format(app_id))
@@ -169,10 +171,10 @@ class ApiClient(object):
     def add_application_domain(self, app_id, domain):
         """Add a new domain to the specified app ID.
 
-        @type app_id: str
-        @type domain: str
+        :param str app_id:
+        :param str domain:
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise(
             'POST', 'api/v1/apps/{}/domains/'.format(app_id), json={'domain': domain})
@@ -180,10 +182,10 @@ class ApiClient(object):
     def remove_application_domain(self, app_id, domain):
         """Remove a domain from the specified app ID.
 
-        @type app_id: str
-        @type domain: str
+        :param str app_id:
+        :param str domain:
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise(
             'DELETE', 'api/v1/apps/{}/domains/{}/'.format(app_id, domain))
@@ -191,13 +193,13 @@ class ApiClient(object):
     def run_command(self, app_id, command):
         """Run a one-off command for this application.
 
-        @type app_id: str
-        @type command: str
+        :param str app_id:
+        :param str command:
 
-        @rtype: dict
-            a dictionary with keys 'exit_code' and 'output'
+        :rtype: dict
+        :returns: a dictionary with keys 'exit_code' and 'output'
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise('POST', 'api/v1/apps/{}/run/'.format(app_id), json={
             'command': command
@@ -207,11 +209,11 @@ class ApiClient(object):
     def get_application_git_remote(self, app_id):
         """Get the git remote for the specified app ID.
 
-        @type app_id: str
+        :param str app_id:
 
-        @rtype: str
+        :rtype: str
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise('GET', 'api/v1/apps/{}/'.format(app_id))
         return resp.json()['remote']
@@ -219,11 +221,11 @@ class ApiClient(object):
     def get_application_owner(self, app_id):
         """Get the username of the owner of the specified app ID.
 
-        @type app_id: str
+        :param str app_id:
 
-        @rtype: str
+        :rtype: str
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise('GET', 'api/v1/apps/{}/'.format(app_id))
         return resp.json()['owner']
@@ -232,10 +234,10 @@ class ApiClient(object):
         """Set the owner of the application to be the specified username.
         Can only be done by someone with admin privilege on this application.
 
-        @type app_id: str
-        @type username: str
+        :param str app_id:
+        :param str username:
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise('POST', 'api/v1/apps/{}/'.format(app_id), json={
             'owner': username
@@ -245,12 +247,12 @@ class ApiClient(object):
         """Returns the list of users sharing this application.
         This does NOT include the application owner.
 
-        @type app_id: str
+        :param str app_id:
 
-        @rtype: list
-            The list of usernames of collaborators (str)
+        :rtype: list
+        :returns: The list of usernames of collaborators (str)
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise(
             'GET', 'api/v1/apps/{}/collaborators/'.format(app_id))
@@ -260,10 +262,10 @@ class ApiClient(object):
         """Adds the user with the specified username to the list of
         collaborators
 
-        @type app_id: str
-        @type username: str
+        :param str app_id:
+        :param str username:
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise('POST', 'api/v1/apps/{}/collaborators/'.format(app_id), json={
             'username': username
@@ -273,10 +275,10 @@ class ApiClient(object):
         """Removes the user with the specified username from the list of
         collaborators
 
-        @type app_id: str
-        @type username: str
+        :param str app_id:
+        :param str username:
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise(
             'DELETE', 'api/v1/apps/{}/collaborators/{}/'.format(app_id, username))
@@ -284,12 +286,12 @@ class ApiClient(object):
     def get_application_addons(self, app_id):
         """Returns all addons installed for this app.
 
-        @type app_id: str
+        :param str app_id:
 
-        @rtype: list
-            list of dictionary with keys 'provider_name', 'display_name', and 'status'
+        :rtype: list
+        :returns: list of dictionary with keys 'provider_name', 'display_name', and 'status'
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise(
             'GET', 'api/v1/apps/{}/addons/'.format(app_id))
@@ -298,13 +300,13 @@ class ApiClient(object):
     def get_application_addon(self, app_id, addon_name):
         """Return a specific addon installed for this app.
 
-        @type app_id: str
-        @type addon_name: str
+        :param str app_id:
+        :param str addon_name:
 
-        @rtype: dict
-            same as the return type for ``get_application_addons``
+        :rtype: dict
+        :returns: same as the return type for ``get_application_addons``
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise(
             'GET', 'api/v1/apps/{}/addons/{}/'.format(app_id, addon_name))
@@ -313,14 +315,14 @@ class ApiClient(object):
     def create_application_addon(self, app_id, addon):
         """Create a new addon for this app.
 
-        @type app_id: str
-        @type addon: str
+        :param str app_id:
+        :param str addon:
 
-        @rtype: dict
-            dict with keys 'message' and 'addon'.
+        :rtype: dict
+        :returns: dict with keys 'message' and 'addon'.
             'addon' contains a dictionary representation of the created addon.
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise('POST', 'api/v1/apps/{}/addons/'.format(app_id), json={
             'provider_name': addon
@@ -330,13 +332,13 @@ class ApiClient(object):
     def delete_application_addon(self, app_id, addon_name):
         """Delete the addon from this app.
 
-        @type app_id: str
-        @type addon: str
+        :param str app_id:
+        :param str addon:
 
-        @rtype: dict
-            dict with keys 'message'
+        :rtype: dict
+        :returns: dict with keys 'message'
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise(
             'DELETE', 'api/v1/apps/{}/addons/{}/'.format(app_id, addon_name))
@@ -345,18 +347,23 @@ class ApiClient(object):
     def get_keys(self):
         """Get all public keys associated with this user.
 
-        @rtype: dict
-        format:
-        {
+        :rtype: dict
+        :returns: dictionary with format: {
+
             'backend1': [{
+
                             "key_name": "my_key_name",
+
                             "key": "ssh-rsa ..."
+
                             }, ...],
+
             'backend2': [...],
+
             ...
         }
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         resp = self._request_and_raise(
             'GET', 'api/v1/keys/')
@@ -365,13 +372,11 @@ class ApiClient(object):
     def add_key(self, key_name, key, backend):
         """Add a public key to this user.
 
-        @type key_name: str
-            An ID to be associated with this key
+        :param str key_name: An ID to be associated with this key
+        :param str key:
+        :param str backend:
 
-        @type key: str
-        @type backend: str
-
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise('POST', 'api/v1/keys/', json={
             'key_name': key_name,
@@ -382,10 +387,9 @@ class ApiClient(object):
     def remove_key(self, key_name, backend):
         """Remove the specified key from this user.
 
-        @type key_name: str
-            The ID associated with this key when added.
+        :param str key_name: The ID associated with this key when added.
 
-        @raises e: ApiClientResponseError
+        :raises tigerhost.api_client.ApiClientResponseError:
         """
         self._request_and_raise(
             'DELETE', 'api/v1/keys/{}/{}/'.format(backend, key_name))

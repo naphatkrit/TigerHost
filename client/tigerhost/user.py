@@ -1,3 +1,4 @@
+"""A module to manage the current user"""
 import json
 import os
 
@@ -6,10 +7,17 @@ from tigerhost import private_dir
 
 
 def _user_path():
+    """Returns the path to the user file
+
+    :rtype: str
+    :returns: path
+    """
     return os.path.join(private_dir.private_dir_path(settings.APP_NAME), 'user.json')
 
 
 class UserFormatError(Exception):
+    """When the user json file has a format error
+    """
     pass
 
 
@@ -18,8 +26,8 @@ class User(object):
     def __init__(self, username, api_key):
         """Create a new user.
 
-        @type username: str
-        @type api_key: str
+        :param str username:
+        :param str api_key:
         """
         self.username = username
         self.api_key = api_key
@@ -27,7 +35,7 @@ class User(object):
     def to_json(self):
         """Serialize the user into a json string.
 
-        @rtype: str
+        :rtype: str
         """
         return json.dumps({
             'username': self.username,
@@ -38,9 +46,9 @@ class User(object):
     def from_json(cls, json_string):
         """Create a new user from the json string.
 
-        @type json_string: str
+        :param str json_string:
 
-        @rtype: User
+        :rtype: User
         """
         try:
             data = json.loads(json_string)
@@ -57,7 +65,7 @@ class User(object):
 def save_user(user):
     """Save user to the private directory
 
-    @type user: User
+    :param User user:
     """
     json_string = user.to_json()
     with open(_user_path(), 'w') as f:
@@ -67,7 +75,7 @@ def save_user(user):
 def has_saved_user():
     """Check if a user has been saved.
 
-    @rtype: bool
+    :rtype: bool
     """
     return os.path.exists(_user_path())
 
@@ -81,7 +89,7 @@ def delete_user():
 def load_user():
     """Load the user from the saved location.
 
-    @rtype: User
+    :rtype: User
     """
     assert has_saved_user()
     with open(_user_path(), 'r') as f:

@@ -10,8 +10,7 @@ def chdir(path):
     """Change the working directory to `path` for the duration of this context
     manager.
 
-    Args:
-        path (str)
+    :param str path:
     """
     cur_cwd = os.getcwd()
     os.chdir(path)
