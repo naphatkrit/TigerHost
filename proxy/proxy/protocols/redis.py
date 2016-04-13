@@ -13,11 +13,10 @@ class RedisProtocol(TcpProxyProtocol):
         """Take a tokens array of length 2, return the bulk string
         represented by the array. Returns None on error.
 
-        @type tokens: list
-            list of strings
+        :param list tokens: list of strings
 
-        @rtype: str
-            The bulk string, or None in case of an error
+        :rtype: str
+        :returns: The bulk string, or None in case of an error
         """
         assert len(tokens) == 2
         if tokens[0][0] != '$':
@@ -38,6 +37,8 @@ class RedisProtocol(TcpProxyProtocol):
 
         That is, the password is used as the host, and the port number
         is fixed to 6379
+
+        :param str data:
         """
         # see http://redis.io/topics/protocol
         if self.hostname is not None:

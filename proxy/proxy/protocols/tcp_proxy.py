@@ -13,12 +13,15 @@ class ServerProtocol(Protocol, object):
     def __init__(self, server_queue, client_queue):
         """Create a new protocol.
 
-        `server_queue` and `client_queue` corresponds to the variables
+        :code:`server_queue` and :code:`client_queue` corresponds to the variables
         in the TCP proxy.
 
-        `self.wait_queue` is used to handle the raise condition where
-        `self.client_queue` is ready to be consumed, but the connection has
+        :code:`self.wait_queue` is used to handle the race condition where
+        :code:`self.client_queue` is ready to be consumed, but the connection has
         not been established.
+
+        :param DeferredQueue server_queue:
+        :param DeferredQueue client_queue:
         """
         self.server_queue = server_queue
         self.client_queue = client_queue
@@ -29,6 +32,8 @@ class ServerProtocol(Protocol, object):
         """A callback for the client queue.
         If the data is the literal False, then close the connection.
         Otherwise, add this data to our wait queue.
+
+        :param data: the data from the client queue
         """
         if data is False:
             self.transport.loseConnection()
@@ -47,9 +52,15 @@ class ServerProtocol(Protocol, object):
         self.wait_queue.get().addCallback(_emptyWaitQueueHelper)
 
     def connectionMade(self):
+        """Connection to target server is established. Empty the wait queue.
+        """
         self.emptyWaitQueue()
 
     def dataReceived(self, data):
+        """Received data from target server, put into server queue
+
+        :param str data:
+        """
         self.server_queue.put(data)
 
 
@@ -72,6 +83,9 @@ class TcpProxyProtocol(Protocol, object):
         The messages in `self.client_queue` will automatically be consumed.
 
         This method should only be called once.
+
+        :param str hostname:
+        :param int port:
         """
         endpoint = TCP4ClientEndpoint(reactor, hostname, port)
         protocol = ServerProtocol(
@@ -79,14 +93,22 @@ class TcpProxyProtocol(Protocol, object):
         connectProtocol(endpoint, protocol)
 
     def serverQueueCallback(self, data):
-        """A callback for `self.server_queue`"""
+        """A callback for `self.server_queue`
+
+        :param str data: data from server queue
+        """
         self.transport.write(data)
         self.server_queue.get().addCallback(self.serverQueueCallback)
 
     def dataReceived(self, data):
+        """Received data from client, put into client queue
+        """
         self.client_queue.put(data)
 
     def connectionLost(self, why):
+        """Client closed connection, or some other issue. close connection
+        to server
+        """
         # TODO pretty sure this only allows client to close connection, not the
         # other way around
         self.client_queue.put(False)
