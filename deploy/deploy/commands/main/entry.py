@@ -11,6 +11,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 def entry():
+    """This is a group of commands for managing the main TigerHost server.
+    """
     pass
 
 

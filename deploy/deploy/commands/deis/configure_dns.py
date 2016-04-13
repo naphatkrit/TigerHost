@@ -14,6 +14,10 @@ from deploy.utils.decorators import option_hosted_zone_id, skip_if_debug
 @option_hosted_zone_id
 @skip_if_debug
 def configure_dns(stack, hosted_zone_id):
+    """Configure the DNS of the Deis cluster.
+
+    This points *.tigerhostapp.com to Deis.
+    """
     echo_with_markers('Creating A record.', marker='-')
     cloudformation = boto3.resource('cloudformation')
     stack_instance = cloudformation.Stack(stack)

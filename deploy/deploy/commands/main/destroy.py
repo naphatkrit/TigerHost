@@ -13,7 +13,8 @@ from deploy.utils.decorators import require_docker_machine
 @print_markers
 @require_docker_machine
 def destroy(name):
-    # TODO ensure docker machine is installed
+    """Destroy the main TigerHost server's machine.
+    """
     echo_with_markers('Destroying machine {name}.'.format(name=name), marker='-')
     docker_machine.check_call(['rm', '-y', name])
     store.unset('main__database_url')

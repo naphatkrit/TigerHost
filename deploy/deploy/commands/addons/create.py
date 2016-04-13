@@ -36,7 +36,8 @@ def _generate_compose_file(project_path, database):
 @ensure_project_path
 @require_docker_machine
 def create(ctx, name, instance_type, database):
-    # TODO ensure docker machine is installed
+    """Create machine for the addon server.
+    """
     # TODO verify that database is [a-zA-Z0-9_]
     echo_with_markers('Creating machine {name} with type {type}.'.format(
         name=name, type=instance_type), marker='-')

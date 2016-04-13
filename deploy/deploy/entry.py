@@ -22,6 +22,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option(version=deploy.__version__, prog_name='deploy')
 def entry():
+    """Commands related to deployment of TigerHost
+    """
     private_dir.ensure_private_dir_exists(settings.APP_NAME)
     secret_dir.ensure_secret_dir_exists()
 

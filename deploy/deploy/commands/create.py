@@ -36,6 +36,10 @@ def _get_secret():
 @ensure_project_path
 @require_docker_machine
 def create(elastic_ip_id, email, rds_database, secret, hosted_zone_id):
+    """This is a shortcut to create the Deis cluster, the addons server,
+    and the main TigerHost server in that order. This also configures
+    the DNS for Deis and the main server.
+    """
     if secret is None:
         secret = _get_secret()
     if elastic_ip_id is None:

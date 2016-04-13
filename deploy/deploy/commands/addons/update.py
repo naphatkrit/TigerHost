@@ -19,6 +19,8 @@ from deploy.utils.decorators import ensure_project_path, require_docker_machine
 @ensure_project_path
 @require_docker_machine
 def update(name):
+    """Update the addon server.
+    """
     echo_with_markers('Retrieving addons config.', marker='-')
     database = store.get('addon__database_container_name', default=False)
     if database is False:

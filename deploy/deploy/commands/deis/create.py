@@ -20,6 +20,8 @@ from deploy.utils.decorators import ensure_project_path, ensure_key_pair, skip_i
 @ensure_deisctl_exists
 @skip_if_debug
 def create(stack):
+    """Create a new Deis cluster.
+    """
     deisctl = path_utils.executable_path('deisctl')
     subprocess.check_call(['ssh-add', path_utils.ssh_path('deis')])
     with contextmanagers.chdir(os.path.join(get_project_path(), 'deis')):

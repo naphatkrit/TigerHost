@@ -19,6 +19,8 @@ from deploy.utils.utils import parse_shell_for_exports
 @ensure_project_path
 @require_docker_machine
 def update(name):
+    """Update the main TigerHost server. This also updates the documentation.
+    """
     echo_with_markers('Retrieving server config.', marker='-')
     project_path = get_project_path()
     database = store.get('main__database_url')

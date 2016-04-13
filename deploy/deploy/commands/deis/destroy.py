@@ -12,6 +12,8 @@ from deploy.utils.decorators import skip_if_debug
 @print_markers
 @skip_if_debug
 def destroy(stack):
+    """Destroy the deis cluster. This waits for the removal to complete.
+    """
     cloudformation = boto3.resource('cloudformation')
     s = cloudformation.Stack(stack)
     stack_id = s.stack_id

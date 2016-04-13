@@ -14,6 +14,10 @@ from deploy.utils.decorators import option_hosted_zone_id, skip_if_debug
 @option_hosted_zone_id
 @skip_if_debug
 def configure_dns(elastic_ip_id, hosted_zone_id):
+    """Configure the DNS of the main TigerHost server.
+
+    This points tigerhost.com (not a subdomain) to the main server
+    """
     echo_with_markers('Creating A record.', marker='-')
     ec2 = boto3.resource('ec2')
     client = boto3.client('route53')

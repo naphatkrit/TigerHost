@@ -68,6 +68,10 @@ def _update_docker_machine_ip(machine_name, new_ip):
 @ensure_project_path
 @require_docker_machine
 def create(name, instance_type, database, addon_name, secret, elastic_ip_id):
+    """Create a new machine for the main TigerHost server.
+
+    The addon servers machine must already be created.
+    """
     project_path = get_project_path()
 
     # get url, ensures addon machine exists

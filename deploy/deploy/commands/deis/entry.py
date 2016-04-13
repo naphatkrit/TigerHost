@@ -14,6 +14,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 def entry():
+    """This is a group of commands for managing the Deis cluster.
+    """
     private_dir.ensure_private_dir_exists(settings.APP_NAME)
 
 
