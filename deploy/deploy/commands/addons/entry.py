@@ -1,6 +1,5 @@
 import click
 
-from deploy.commands.addons.copy_credentials import copy_credentials
 from deploy.commands.addons.create import create
 from deploy.commands.addons.destroy import destroy
 from deploy.commands.addons.update import update
@@ -14,7 +13,6 @@ def entry():
     pass
 
 
-entry.add_command(copy_credentials)
 entry.add_command(create)
 entry.add_command(destroy)
 entry.add_command(update)

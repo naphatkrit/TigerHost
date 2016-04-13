@@ -8,7 +8,7 @@ from tigerhost.utils.click_utils import echo_with_markers
 from deploy import docker_machine, settings
 from deploy.utils import click_utils
 from deploy.utils.decorators import ensure_project_path, require_docker_machine, option_hosted_zone_id
-from deploy.utils.utils import parse_shell_for_exports, random_string
+from deploy.utils.utils import random_string
 
 
 def _get_secret():
@@ -67,14 +67,8 @@ def create(elastic_ip_id, email, rds_database, secret, hosted_zone_id):
             ip=addons_ip,
         )
 
-    subprocess.check_call([settings.APP_NAME, 'addons', 'copy-credentials'])
-
-    env_text = docker_machine.check_output(
-        ['env', 'tigerhost-addons-aws'])
-    env = parse_shell_for_exports(env_text)
     subprocess.check_call(
         [settings.APP_NAME, 'main', 'create',
-         '--addon-docker-host', env['DOCKER_HOST'],
          '--database', database_url,
          '--elastic-ip-id', elastic_ip_id,
          '--secret', secret,

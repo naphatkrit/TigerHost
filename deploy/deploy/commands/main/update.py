@@ -23,9 +23,20 @@ def update(name):
     project_path = get_project_path()
     database = store.get('main__database_url')
     secret = store.get('main__django_secret')
-    addon_docker_host = store.get('main__addon_docker_host')
-    if database is None or secret is None or addon_docker_host is None:
+    addon_name = store.get('main__addon_name')
+    if database is None or secret is None or addon_name is None:
         raise click.exceptions.ClickException('Server config not found. Was a TigerHost server created with `{} main create`?'.format(settings.APP_NAME))
+    click.echo('Done.')
+
+    echo_with_markers('Making sure addon machine exists.', marker='-')
+    addon_docker_host = docker_machine.get_url(addon_name)
+    click.echo('Done.')
+
+    echo_with_markers('Copying addon machine credentials.', marker='-')
+    target_path = os.path.join(project_path, 'web/credentials')
+    if not os.path.exists(target_path):
+        os.mkdir(target_path)
+    docker_machine.retrieve_credentials(addon_name, target_path)
     click.echo('Done.')
 
     echo_with_markers('Generating docker-compose file.', marker='-')

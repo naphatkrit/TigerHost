@@ -58,7 +58,7 @@ def _update_docker_machine_ip(machine_name, new_ip):
 
 
 @click.command()
-@click.option('--addon-docker-host', '-a', required=True, help='The URL for the addon docker host. This is DOCKER_HOST from running `docker-machine env {machine_name}`')
+@click.option('--addon-name', '-a', default='tigerhost-addons-aws', help='The name of the addons server machine. This must be a valid, existing Docker machine. Defaults to tigerhost-addons-aws.')
 @click.option('--database', '-d', required=True, help='Postgres URL for TigerHost.')
 @click.option('--elastic-ip-id', '-e', required=True, help='Elastic IP allocation ID, used to associate the created machine with.')
 @click.option('--instance-type', '-i', default='t2.medium', help='The AWS instance type to use. Defaults to t2.medium.')
@@ -67,8 +67,20 @@ def _update_docker_machine_ip(machine_name, new_ip):
 @print_markers
 @ensure_project_path
 @require_docker_machine
-def create(name, instance_type, database, addon_docker_host, secret, elastic_ip_id):
+def create(name, instance_type, database, addon_name, secret, elastic_ip_id):
     project_path = get_project_path()
+
+    # get url, ensures addon machine exists
+    echo_with_markers('Making sure addon machine exists.', marker='-')
+    addon_docker_host = docker_machine.get_url(addon_name)
+    click.echo('Done.')
+
+    echo_with_markers('Copying addon machine credentials.', marker='-')
+    target_path = os.path.join(project_path, 'web/credentials')
+    if not os.path.exists(target_path):
+        os.mkdir(target_path)
+    docker_machine.retrieve_credentials(addon_name, target_path)
+    click.echo('Done.')
 
     echo_with_markers('Creating machine {name} with type {type}.'.format(
         name=name, type=instance_type), marker='-')
@@ -102,5 +114,5 @@ def create(name, instance_type, database, addon_docker_host, secret, elastic_ip_
         get_project_path(), 'docker-compose.prod.yml'), 'up', '-d'], env=env)
     store.set('main__database_url', database)
     store.set('main__django_secret', secret)
-    store.set('main__addon_docker_host', addon_docker_host)
+    store.set('main__addon_name', addon_name)
     store.set('main__elastic_ip_id', elastic_ip_id)

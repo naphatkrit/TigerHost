@@ -18,5 +18,5 @@ def destroy(name):
     docker_machine.check_call(['rm', '-y', name])
     store.unset('main__database_url')
     store.unset('main__django_secret')
-    store.unset('main__addon_docker_host')
+    store.unset('main__addon_name')
     store.unset('main__elastic_ip_id')
