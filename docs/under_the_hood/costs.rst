@@ -15,20 +15,20 @@ As discussed throughout :ref:`under_the_hood/index`, TigerHost is comprised of t
 AWS Configurations
 --------------------
 
-=============  ==============  =============  =========== ==========
-Component      instance type   Cost (hourly)  # Instances Total cost (30.5 days)
-=============  ==============  =============  =========== ==========
-main server    t2.medium       $0.052         1           $38.07
-addon server   t2.large        $0.104         1           $76.13
-Deis           m4.large        $0.120         3           $263.52
-Total                                                     $377.72
-=============  ==============  =============  =========== ==========
+=============  ==============  =============  =========== ======================  =====================  ===================================
+Component      instance type   Cost (hourly)  # Instances Total cost (30.5 days)  Total cost (reserved)  Total cost (reserved, paid upfront)
+=============  ==============  =============  =========== ======================  =====================  ===================================
+main server    t2.medium       $0.052         1           $38.07                  $26.28                 $25.17
+addon server   t2.large        $0.104         1           $76.13                  $52.56                 $50.33
+Deis           m4.large        $0.120         3           $263.52                 $181.77                $150.75
+Total                                                     $377.72                 $260.61                $226.25
+=============  ==============  =============  =========== ======================  =====================  ===================================
 
 .. _under_the_hood/costs//changes:
 
 Potential Changes
 ------------------
-- The main server may not need to be t2.medium. In fact, I suspect t2.small may do.
+- The main server may not need to be t2.medium.
 - The addon server may need to be upgraded to m4.large or turned into a cluster.
 - Right now, even the TigerHost database is run on the addon server to save cost. We may want to run this on a dedicated RDS instance.
 - These prices are on-demand. Since we will be running TigerHost over a long time, we can switch to a reserved model, which will bring down the cost.
