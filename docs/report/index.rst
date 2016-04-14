@@ -6,5 +6,5 @@ TigerHost - IW Spring 2016
 
    /core_concepts/index
    /under_the_hood/index
-   /future_improvements
+   /future_works
    /report/appendix
