@@ -1,4 +1,4 @@
-.. _under_the_hood/future_improvements:
+.. _future_improvements:
 
 Future Improvements
 ====================

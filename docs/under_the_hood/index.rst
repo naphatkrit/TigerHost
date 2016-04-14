@@ -15,4 +15,3 @@ This section provides a look at the internals of TigerHost. Unless you are devel
     addons
     addons_server
     costs
-    future_improvements

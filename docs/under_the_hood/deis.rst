@@ -8,7 +8,7 @@ Deis
 
 Why Deis?
 -----------
-Deis was one of the three projects in consideration at the start of TigerHost. The other two are :ref:`Flynn <under_the_hood/other_backends/flynn>` and :ref:`Tsuru<under_the_hood/other_backends/tsuru>`. Flynn was out of the running early because of its lack of user system and that it is meant to be used by a single system admin as opposed to a group of users. It should be noted that at the beginning, we were looking for a simpler architecture for TigerHost, namely without the main server and exposing the PaaS backend directly. Now that we have the current architecture in place, Flynn *may* have been a better choice (see :ref:`under_the_hood/future_improvements`).
+Deis was one of the three projects in consideration at the start of TigerHost. The other two are :ref:`Flynn <under_the_hood/other_backends/flynn>` and :ref:`Tsuru<under_the_hood/other_backends/tsuru>`. Flynn was out of the running early because of its lack of user system and that it is meant to be used by a single system admin as opposed to a group of users. It should be noted that at the beginning, we were looking for a simpler architecture for TigerHost, namely without the main server and exposing the PaaS backend directly. Now that we have the current architecture in place, Flynn *may* have been a better choice (see :ref:`future_improvements`).
 
 Tsuru almost became the project of choice. this is because it already has a addon-like system in place (that is, it exposes an API similar to the :ref:`addons API <under_the_hood/addons//addons_api>`). However, the documentation is not as thorough as Deis, and it was decided that the cost of re-engineering the addon API is smaller than the cost of dealing with a less thorough documentation.
 
