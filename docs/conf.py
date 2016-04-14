@@ -231,7 +231,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'TigerHost.tex', u'TigerHost Documentation',
+    ('report/index', 'TigerHost.tex', u'TigerHost - IW Spring 2016',
      u'Naphat Sanguansin', 'manual'),
 ]
 
@@ -253,7 +253,7 @@ latex_documents = [
 #latex_appendices = []
 
 # If false, no module index is generated.
-#latex_domain_indices = True
+latex_domain_indices = False
 
 
 # -- Options for manual page output ---------------------------------------

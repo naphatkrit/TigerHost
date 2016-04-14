@@ -17,7 +17,9 @@ A PaaS project is compatible with TigerHost if a backend client can be created f
 
 .. autoclass:: api_server.clients.base_client.BaseClient
     :members:
+    :noindex:
 
 
 .. autoclass:: api_server.clients.base_authenticated_client.BaseAuthenticatedClient
     :members:
+    :noindex:

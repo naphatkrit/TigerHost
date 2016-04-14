@@ -21,6 +21,7 @@ Creating a new addon provider is simply a matter of creating a subclass of :py:c
 
 .. autoclass:: api_server.addons.providers.base_provider.BaseAddonProvider
     :members:
+    :noindex:
 
 
 .. _under_the_hood/addons//case_study_secret:
