@@ -23,6 +23,8 @@ To engineer a standardized way to run addon providers, we turn to Docker. `Docke
 
 Does this solution scale to multiple machines, if it needs to? While there is nothing stopping us from doing something similar to RDS and provisioning more EC2 instances to serve as more Docker hosts, Docker itself provides a better solution in terms of Docker Swarm. `Docker Swarm <https://docs.docker.com/swarm/>`_ binds together multiple machines and have them serve as one logical Docker host, simplifying our logic. As of this writing, however, we have not had a need to scale to multiple machines.
 
+.. _under_the_hood/addons_server//proxy:
+
 Proxy Container
 -----------------
 

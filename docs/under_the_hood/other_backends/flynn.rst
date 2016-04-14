@@ -9,12 +9,14 @@ Flynn
     In hindsight, Flynn may actually be a very good match as a backend. In particular, its limitations are not too relevant given that we are putting TigerHost as an extra layer between Flynn and end-users. So if we run into problems with Deis, we may want to spend time switching to Flynn.
 
 .. _under_the_hood/other_backends/flynn//good:
+
 What's Good
 -------------
 - Extremely flexible, can run any kind of applications and expose any ports.
   - In particular, it may be possible to run both addons and apps on Flynn.
 
 ..  _under_the_hood/other_backends/flynn//bad:
+
 What's Bad
 ------------
 - Not meant as a public cloud. It's meant for a single sysadmin to use to easily deploy apps.

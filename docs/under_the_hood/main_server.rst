@@ -18,6 +18,8 @@ There are a couple of reasons why we chose to write the separate server (as oppo
 3. Most 3rd party backends do not have built-in support for addons. By abstracting away the actual backend used to deploy apps, we can add extra features like addons without worrying about compatibility with 3rd party code.
 
 
+.. _under_the_hood/main_server//tech_stack:
+
 Technology Stack
 -----------------
 The source code for the TigerHost server is available at `/web/ <https://github.com/naphatkrit/TigerHost/tree/master/web>`_.
@@ -28,6 +30,7 @@ The TigerHost server is deployed using Docker, as a :code:`docker-compose` proje
 
 .. TODO link to deployment docs
 
+.. _under_the_hood/main_server//authentication:
 
 Authentication
 ----------------

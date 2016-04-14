@@ -7,11 +7,13 @@ Addons
     A note on terminology: an *addon* refers to a resource, such as a database, while an *addon provider* refers to the server on which the database is running on.
 
 .. _under_the_hood/addons//responsibility:
+
 Responsibility
 ----------------
 An addon is responsible for provisioning a new resource for an app, managing the resource life time, and making the resource available via a URL. Anything can become an addon provider as long as it satisfies the addon provider API.
 
 .. _under_the_hood/addons//addons_api:
+
 The Addons API
 ----------------
 Creating a new addon provider is simply a matter of creating a subclass of :py:class:`BaseAddonProvider <api_server.addons.providers.base_provider.BaseAddonProvider>`, which has four methods: :py:meth:`begin_provision <api_server.addons.providers.base_provider.BaseAddonProvider.begin_provision>`, :py:meth:`deprovision <api_server.addons.providers.base_provider.BaseAddonProvider.deprovision>`, :py:meth:`get_config <api_server.addons.providers.base_provider.BaseAddonProvider.get_config>`, and :py:meth:`provision_complete <api_server.addons.providers.base_provider.BaseAddonProvider.provision_complete>`. Note that every method should be non-blocking, i.e. computationally expensive tasks must be done in the background.
@@ -22,6 +24,7 @@ Creating a new addon provider is simply a matter of creating a subclass of :py:c
 
 
 .. _under_the_hood/addons//case_study_secret:
+
 Case Study: The :code:`secret` Addon
 +++++++++++++++++++++++++++++++++++++++
 As a case study, let's take a look at how the :code:`secret` addon is implemented. The goal of the :code:`secret` addon is to generate a cryptographically secure symmetric secret key, available as the environmental variable :code:`SECRET_KEY`.
