@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.utils.decorators import method_decorator
 
 from api_server.api.api_base_view import ApiBaseView
@@ -43,6 +44,7 @@ class KeysApiView(ApiBaseView):
             "key": "ssh-rsa ...",
             "backend": "backend"
         }
+        "backend" is optional and default to the default backend.
 
         :param django.http.HttpRequest request: the request object
 
@@ -50,7 +52,7 @@ class KeysApiView(ApiBaseView):
         """
         key_info = json.loads(request.body)
 
-        backend = key_info['backend']
+        backend = key_info.get('backend', settings.DEFAULT_PAAS_BACKEND)
         auth_client = get_backend_authenticated_client(
             request.user.username, backend)
 
