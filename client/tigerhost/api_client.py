@@ -369,7 +369,7 @@ class ApiClient(object):
             'GET', 'api/v1/keys/')
         return resp.json()
 
-    def add_key(self, key_name, key, backend):
+    def add_key(self, key_name, key, backend=None):
         """Add a public key to this user.
 
         :param str key_name: An ID to be associated with this key
@@ -378,16 +378,19 @@ class ApiClient(object):
 
         :raises tigerhost.api_client.ApiClientResponseError:
         """
-        self._request_and_raise('POST', 'api/v1/keys/', json={
+        body = {
             'key_name': key_name,
             'key': key,
-            'backend': backend,
-        })
+        }
+        if backend is not None:
+            body['backend'] = backend
+        self._request_and_raise('POST', 'api/v1/keys/', json=body)
 
     def remove_key(self, key_name, backend):
         """Remove the specified key from this user.
 
         :param str key_name: The ID associated with this key when added.
+        :param str backend:
 
         :raises tigerhost.api_client.ApiClientResponseError:
         """

@@ -8,7 +8,7 @@ from tigerhost.utils import decorators
 @click.command()
 @click.argument('name')
 @click.argument('path', default='~/.ssh/id_rsa.pub')
-@click.option('--backend', '-b', required=True, help='The backend to add this key to.')
+@click.option('--backend', '-b', help='The backend to add this key to. Defaults to the default backend.')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.catch_exception(IOError)
@@ -59,7 +59,7 @@ def list_keys(ctx):
 
 @click.command()
 @click.argument('name')
-@click.option('--backend', '-b', required=True, help='The backend to remove this key from.')
+@click.option('--backend', '-b', help='The backend to remove this key from. Defaults to the default backend.')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.catch_exception(IOError)
@@ -69,5 +69,7 @@ def remove_key(ctx, name, backend):
     """Removes the key with label NAME.
     """
     api_client = ctx.obj['api_client']
+    if backend is None:
+        backend = api_client.get_backends()['default']
     api_client.remove_key(name, backend)
     click.echo('Key {} removed from {}.'.format(name, backend))

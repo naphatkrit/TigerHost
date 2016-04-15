@@ -286,6 +286,7 @@ def test_add_application_key(api_client, fake_api_server_url):
     responses.add(responses.POST, urlparse.urljoin(
         fake_api_server_url, 'api/v1/keys/'), status=201)
     api_client.add_key('key_name', 'key', 'backend1')
+    api_client.add_key('key_name', 'key')
 
 
 @responses.activate

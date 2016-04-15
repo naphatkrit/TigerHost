@@ -42,3 +42,12 @@ def test_remove_key(runner, fake_api_client, saved_user):
     result = runner.invoke(entry, ['keys:remove', key_name, '--backend', 'backend'])
     assert result.exit_code == 0
     fake_api_client.remove_key.assert_called_once_with(key_name, 'backend')
+
+
+def test_remove_key_default(runner, fake_api_client, saved_user):
+    key_name = 'key_name'
+    fake_api_client.get_backends.return_value = {'default': 'default_backend'}
+    result = runner.invoke(entry, ['keys:remove', key_name])
+    assert result.exit_code == 0
+    fake_api_client.get_backends.assert_called_once_with()
+    fake_api_client.remove_key.assert_called_once_with(key_name, 'default_backend')
