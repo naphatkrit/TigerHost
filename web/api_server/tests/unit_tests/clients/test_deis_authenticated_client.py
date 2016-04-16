@@ -137,14 +137,14 @@ def test_remove_application_collaborator(deis_authenticated_client, fake_deis_ur
 
 
 @responses.activate
-def test_get_application_log(deis_authenticated_client, fake_deis_url):
+def test_get_application_logs(deis_authenticated_client, fake_deis_url):
     responses.add(responses.GET, urlparse.urljoin(
         fake_deis_url, 'v1/apps/{}/logs/'.format('testid')), status=200, json='''log1
 
 log2
 log3
 ''')
-    logs = deis_authenticated_client.get_application_log(
+    logs = deis_authenticated_client.get_application_logs(
         'testid')
     assert logs == ['log1', '', 'log2', 'log3']
 

@@ -10,7 +10,7 @@ from api_server.api.app_details_api_view import AppDetailsApiView
 from api_server.api.app_domains_api_view import AppDomainsApiView
 from api_server.api.app_domain_details_api_view import AppDomainDetailsApiView
 from api_server.api.app_env_variables_api_view import AppEnvVariablesApiView
-from api_server.api.app_log_api_view import AppLogApiView
+from api_server.api.app_logs_api_view import AppLogsApiView
 from api_server.api.keys_api_view import KeysApiView
 from api_server.api.key_details_api_view import KeyDetailsApiView
 from api_server.api.paas_backends_api_view import PaasBackendApiView
@@ -37,8 +37,8 @@ urlpatterns = [
         AppDomainDetailsApiView.as_view(), name='app_domain_details'),
     url(r'^v1/apps/([a-z0-9-]+)/env/$',
         AppEnvVariablesApiView.as_view(), name='app_env_variables'),
-    url(r'^v1/apps/([a-z0-9-]+)/log/$',
-        AppLogApiView.as_view(), name='app_log'),
+    url(r'^v1/apps/([a-z0-9-]+)/logs/$',
+        AppLogsApiView.as_view(), name='app_logs'),
     url(r'^v1/apps/([a-z0-9-]+)/run/$',
         RunCommandApiView.as_view(), name='run_command'),
     url(r'^v1/keys/$', KeysApiView.as_view(), name='keys'),

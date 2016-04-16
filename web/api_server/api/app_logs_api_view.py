@@ -6,10 +6,10 @@ from wsse.decorators import check_wsse_token
 
 
 @method_decorator(check_wsse_token, 'dispatch')
-class AppLogApiView(ApiBaseView):
+class AppLogsApiView(ApiBaseView):
 
     def get(self, request, app_id):
-        """Get the log for this application
+        """Get the logs for this application
 
         Returns a JSON list of log entries (str).
 
@@ -29,5 +29,5 @@ class AppLogApiView(ApiBaseView):
         if lines is not None:
             lines = int(lines)
 
-        logs = auth_client.get_application_log(app_id, lines)
+        logs = auth_client.get_application_logs(app_id, lines)
         return self.respond_multiple(logs)

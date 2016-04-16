@@ -156,7 +156,7 @@ class BaseAuthenticatedClient(BaseClient):
         """
         raise NotImplementedError
 
-    def get_application_log(self, app_id, lines):
+    def get_application_logs(self, app_id, lines):
         """Get the application log.
 
         :param str app_id: the app ID

@@ -200,7 +200,7 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         self._request_and_raise(
             'DELETE', 'v1/apps/{}/perms/{}'.format(app_id, username))
 
-    def get_application_log(self, app_id, lines=None):
+    def get_application_logs(self, app_id, lines=None):
         """Get the application log.
 
         :param str app_id: the app ID

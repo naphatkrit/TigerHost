@@ -173,9 +173,9 @@ def test_log(deis_authenticated_client, app_id, create_application):
     domain = '{}.example.com'.format(app_id)
     deis_authenticated_client.add_application_domain(app_id, domain)
     deis_authenticated_client.remove_application_domain(app_id, domain)
-    logs = deis_authenticated_client.get_application_log(app_id, 2)
+    logs = deis_authenticated_client.get_application_logs(app_id, 2)
     assert len(logs) == 2
-    logs = deis_authenticated_client.get_application_log(app_id)
+    logs = deis_authenticated_client.get_application_logs(app_id)
     assert len(logs) == 3
 
 
