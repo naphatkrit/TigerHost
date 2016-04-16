@@ -11,10 +11,18 @@ class AppLogsApiView(ApiBaseView):
     def get(self, request, app_id):
         """Get the logs for this application
 
-        Returns a JSON list of log entries (str).
+        Returns a JSON list of log entries (dict). Each entry has the following structure:{
 
-        TODO this is not true currently
-        Each entry is a string which may contain newline characters
+            'process': 'run.1',
+
+            'message': 'sample message',
+
+            'app': 'sample-python',
+
+            'timestamp': '2016-04-16T14:26:03UTC',
+
+        }
+
 
         :param django.http.HttpRequest request: the request object
         :param str app_id: the ID of the app

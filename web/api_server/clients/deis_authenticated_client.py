@@ -207,7 +207,17 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         :param int lines: the number of lines of log to return
 
         :rtype: list
-        :returns: list of string, one log entry per line
+        :returns: list of dictionary with the following keys:{
+
+            'process': 'run.1',
+
+            'message': 'sample message',
+
+            'app': 'sample-python',
+
+            'timestamp': '2016-04-16T14:26:03UTC',
+
+        }
 
         :raises api_server.clients.exceptions.ClientError:
         """
@@ -217,8 +227,20 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         resp = self._request_and_raise(
             'GET', 'v1/apps/{}/logs/'.format(app_id), params=params)
         logs = resp.json().strip('\n')
-        # TODO this doesn't properly handle multi-line logs
-        return logs.split('\n')
+        # sample response as of 04/16/2016:
+        # 2016-04-16T14:26:03UTC sample-python[run.1]: int(None)
+        ret = []
+        for l in logs.split('\n'):
+            header, message = l.split(']: ', 1)
+            header, process = header.rsplit('[', 1)
+            timestamp, app_name = header.rsplit(' ', 1)
+            ret.append({
+                'process': process,
+                'message': message,
+                'timestamp': timestamp,
+                'app': app_name,
+            })
+        return ret
 
     def get_keys(self):
         """Get all public keys associated with this user.

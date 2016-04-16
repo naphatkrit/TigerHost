@@ -139,14 +139,23 @@ def test_remove_application_collaborator(deis_authenticated_client, fake_deis_ur
 @responses.activate
 def test_get_application_logs(deis_authenticated_client, fake_deis_url):
     responses.add(responses.GET, urlparse.urljoin(
-        fake_deis_url, 'v1/apps/{}/logs/'.format('testid')), status=200, json='''log1
-
-log2
-log3
+        fake_deis_url, 'v1/apps/{}/logs/'.format('testid')), status=200, json='''2016-04-16T14:26:03UTC sample-python[run.1]: int(None)
+2016-04-16T14:26:04UTC sample-python[run.2]:     some message
 ''')
     logs = deis_authenticated_client.get_application_logs(
         'testid')
-    assert logs == ['log1', '', 'log2', 'log3']
+    assert logs == [{
+        'process': 'run.1',
+        'message': 'int(None)',
+        'timestamp': '2016-04-16T14:26:03UTC',
+        'app': 'sample-python',
+    }, {
+        'process': 'run.2',
+        'message': '    some message',
+        'timestamp': '2016-04-16T14:26:04UTC',
+        'app': 'sample-python',
+    },
+    ]
 
 
 @responses.activate
