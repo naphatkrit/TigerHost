@@ -156,6 +156,19 @@ class BaseAuthenticatedClient(BaseClient):
         """
         raise NotImplementedError
 
+    def get_application_log(self, app_id, lines):
+        """Get the application log.
+
+        :param str app_id: the app ID
+        :param int lines: the number of lines of log to return
+
+        :rtype: list
+        :returns: list of string, one log entry per line
+
+        :raises api_server.clients.exceptions.ClientError:
+        """
+        raise NotImplementedError
+
     def get_keys(self):
         """Get all public keys associated with this user.
 

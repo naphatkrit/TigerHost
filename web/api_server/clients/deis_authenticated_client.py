@@ -200,6 +200,26 @@ class DeisAuthenticatedClient(DeisClient, BaseAuthenticatedClient):
         self._request_and_raise(
             'DELETE', 'v1/apps/{}/perms/{}'.format(app_id, username))
 
+    def get_application_log(self, app_id, lines=None):
+        """Get the application log.
+
+        :param str app_id: the app ID
+        :param int lines: the number of lines of log to return
+
+        :rtype: list
+        :returns: list of string, one log entry per line
+
+        :raises api_server.clients.exceptions.ClientError:
+        """
+        params = {}
+        if lines is not None:
+            params['log_lines'] = lines
+        resp = self._request_and_raise(
+            'GET', 'v1/apps/{}/logs/'.format(app_id), params=params)
+        logs = resp.json().strip('\n')
+        # TODO this doesn't properly handle multi-line logs
+        return logs.split('\n')
+
     def get_keys(self):
         """Get all public keys associated with this user.
 

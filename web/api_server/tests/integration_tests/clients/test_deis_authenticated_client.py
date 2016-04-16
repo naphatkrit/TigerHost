@@ -166,6 +166,19 @@ def test_application_collaborators(deis_authenticated_client, app_id, create_app
         deis_authenticated_client2.get_application_owner(app_id)
 
 
+def test_log(deis_authenticated_client, app_id, create_application):
+    """
+    @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
+    """
+    domain = '{}.example.com'.format(app_id)
+    deis_authenticated_client.add_application_domain(app_id, domain)
+    deis_authenticated_client.remove_application_domain(app_id, domain)
+    logs = deis_authenticated_client.get_application_log(app_id, 2)
+    assert len(logs) == 2
+    logs = deis_authenticated_client.get_application_log(app_id)
+    assert len(logs) == 3
+
+
 def test_keys(deis_authenticated_client, public_key):
     """
     @type deis_authenticated_client: api_server.clients.deis_authenticated_client.DeisAuthenticatedClient
