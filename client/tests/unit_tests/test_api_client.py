@@ -269,7 +269,7 @@ def test_delete_application_addon(api_client, fake_api_server_url):
 def test_get_application_logs(api_client, fake_api_server_url):
     responses.add(responses.GET,
                   urlparse.urljoin(fake_api_server_url,
-                                   'api/v1/apps/{}/log/'.format('testid')),
+                                   'api/v1/apps/{}/logs/'.format('testid')),
                   json={'results': ['entry1', 'entry2']}, status=200)
     result = api_client.get_application_logs('testid')
     assert result == ['entry1', 'entry2']
