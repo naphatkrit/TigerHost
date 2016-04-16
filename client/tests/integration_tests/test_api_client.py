@@ -224,9 +224,9 @@ def test_log(api_client, app_id, create_application):
     domain = '{}.example.com'.format(app_id)
     api_client.add_application_domain(app_id, domain)
     api_client.remove_application_domain(app_id, domain)
-    logs = api_client.get_application_log(app_id, 2)
+    logs = api_client.get_application_logs(app_id, 2)
     assert len(logs) == 2
-    logs = api_client.get_application_log(app_id)
+    logs = api_client.get_application_logs(app_id)
     assert len(logs) == 3
 
 

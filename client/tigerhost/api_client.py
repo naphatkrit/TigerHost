@@ -344,7 +344,7 @@ class ApiClient(object):
             'DELETE', 'api/v1/apps/{}/addons/{}/'.format(app_id, addon_name))
         return resp.json()
 
-    def get_application_log(self, app_id, lines=None):
+    def get_application_logs(self, app_id, lines=None):
         """Get the application log
 
         :param str app_id:
@@ -359,7 +359,7 @@ class ApiClient(object):
         if lines is not None:
             params['lines'] = lines
         resp = self._request_and_raise(
-            'GET', 'api/v1/apps/{}/log/'.format(app_id), params=params)
+            'GET', 'api/v1/apps/{}/logs/'.format(app_id), params=params)
         return resp.json()['results']
 
     def get_keys(self):
