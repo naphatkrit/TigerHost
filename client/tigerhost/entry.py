@@ -3,7 +3,7 @@ import click
 import tigerhost
 
 from tigerhost import private_dir, settings
-from tigerhost.commands import access, addons, apps, config, domains, git, keys, backends, run_command
+from tigerhost.commands import access, addons, apps, config, domains, git, keys, backends, run_command, logs
 from tigerhost.commands.user import login, user_info, logout
 
 
@@ -40,6 +40,8 @@ entry.add_command(config.unset_config, name='config:unset')
 entry.add_command(domains.list_domains, name='domains')
 entry.add_command(domains.add_domain, name='domains:add')
 entry.add_command(domains.remove_domain, name='domains:remove')
+
+entry.add_command(logs.get_logs, name='logs')
 
 entry.add_command(run_command.run_one_off, name='run')
 

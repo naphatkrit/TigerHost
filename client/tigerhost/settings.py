@@ -1,2 +1,2 @@
-API_SERVER_URL = 'http://tigerhostapp.com'
+API_SERVER_URL = 'http://localhost:8000'
 APP_NAME = 'tigerhost'

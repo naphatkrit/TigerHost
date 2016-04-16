@@ -351,7 +351,17 @@ class ApiClient(object):
         :param int lines: the number of log entries to return
 
         :rtype: list
-        :returns: list of log entries (str)
+        :returns: list of dictionary with the following keys:{
+
+            'process': 'run.1',
+
+            'message': 'sample message',
+
+            'app': 'sample-python',
+
+            'timestamp': '2016-04-16T14:26:03UTC',
+
+        }
 
         :raises tigerhost.api_client.ApiClientResponseError:
         """
