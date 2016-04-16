@@ -266,6 +266,16 @@ def test_delete_application_addon(api_client, fake_api_server_url):
 
 
 @responses.activate
+def test_get_application_log(api_client, fake_api_server_url):
+    responses.add(responses.GET,
+                  urlparse.urljoin(fake_api_server_url,
+                                   'api/v1/apps/{}/log/'.format('testid')),
+                  json={'results': ['entry1', 'entry2']}, status=200)
+    result = api_client.get_application_log('testid')
+    assert result == ['entry1', 'entry2']
+
+
+@responses.activate
 def test_get_application_keys(api_client, fake_api_server_url):
     keys = [{
         'key_name': 'key1',

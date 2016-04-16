@@ -217,6 +217,19 @@ def test_application_addons(api_client, app_id, create_application):
     assert len(addons) == 0
 
 
+def test_log(api_client, app_id, create_application):
+    """
+    @type api_client: tigerhost.api_client.ApiClient
+    """
+    domain = '{}.example.com'.format(app_id)
+    api_client.add_application_domain(app_id, domain)
+    api_client.remove_application_domain(app_id, domain)
+    logs = api_client.get_application_log(app_id, 2)
+    assert len(logs) == 2
+    logs = api_client.get_application_log(app_id)
+    assert len(logs) == 3
+
+
 def test_keys(api_client, public_key):
     """
     @type api_client: tigerhost.api_client.ApiClient

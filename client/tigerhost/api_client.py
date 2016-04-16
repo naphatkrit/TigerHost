@@ -344,6 +344,24 @@ class ApiClient(object):
             'DELETE', 'api/v1/apps/{}/addons/{}/'.format(app_id, addon_name))
         return resp.json()
 
+    def get_application_log(self, app_id, lines=None):
+        """Get the application log
+
+        :param str app_id:
+        :param int lines: the number of log entries to return
+
+        :rtype: list
+        :returns: list of log entries (str)
+
+        :raises tigerhost.api_client.ApiClientResponseError:
+        """
+        params = {}
+        if lines is not None:
+            params['lines'] = lines
+        resp = self._request_and_raise(
+            'GET', 'api/v1/apps/{}/log/'.format(app_id), params=params)
+        return resp.json()['results']
+
     def get_keys(self):
         """Get all public keys associated with this user.
 
