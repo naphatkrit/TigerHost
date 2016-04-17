@@ -25,6 +25,6 @@ setup(
     url='https://github.com/naphatkrit/TigerHost',
     entry_points='''
         [console_scripts]
-        proxy=proxy.proxy
+        proxy=proxy.proxy:main
     ''',
 )

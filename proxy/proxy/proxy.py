@@ -16,7 +16,8 @@ class RedisFactory(Factory):
 
     protocol = RedisProtocol
 
-if __name__ == '__main__':
+
+def main():
     reactor.listenTCP(5432, PostgresFactory())
     reactor.listenTCP(6379, RedisFactory())
     reactor.run()
