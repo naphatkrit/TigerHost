@@ -115,7 +115,7 @@ def create(name, instance_type, database, addon_name, secret, elastic_ip_id):
     env = os.environ.copy()
     env.update(parse_shell_for_exports(env_text))
     subprocess.check_call(['docker-compose', '-f', os.path.join(
-        get_project_path(), 'docker-compose.prod.yml'), 'up', '-d'], env=env)
+        get_project_path(), 'docker-compose.prod.yml'), '-p', settings.MAIN_COMPOSE_PROJECT_NAME, 'up', '-d'], env=env)
     store.set('main__database_url', database)
     store.set('main__django_secret', secret)
     store.set('main__addon_name', addon_name)

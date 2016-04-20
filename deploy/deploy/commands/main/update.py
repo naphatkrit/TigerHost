@@ -50,4 +50,6 @@ def update(name):
     env = os.environ.copy()
     env.update(parse_shell_for_exports(env_text))
     subprocess.check_call(['docker-compose', '-f', os.path.join(
-        get_project_path(), 'docker-compose.prod.yml'), 'up', '-d'], env=env)
+        get_project_path(), 'docker-compose.prod.yml'), '-p', settings.MAIN_COMPOSE_PROJECT_NAME, 'build'], env=env)
+    subprocess.check_call(['docker-compose', '-f', os.path.join(
+        get_project_path(), 'docker-compose.prod.yml'), '-p', settings.MAIN_COMPOSE_PROJECT_NAME, 'up', '-d'], env=env)

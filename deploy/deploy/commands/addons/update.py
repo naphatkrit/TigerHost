@@ -38,4 +38,6 @@ def update(name):
     env.update(utils.parse_shell_for_exports(env_text))
 
     subprocess.check_call(['docker-compose', '-f', os.path.join(
-        project_path, 'proxy/docker-compose.prod.yml'), 'up', '-d'], env=env)
+        project_path, 'proxy/docker-compose.prod.yml'), '-p', settings.ADDONS_COMPOSE_PROJECT_NAME, 'build'], env=env)
+    subprocess.check_call(['docker-compose', '-f', os.path.join(
+        project_path, 'proxy/docker-compose.prod.yml'), '-p', settings.ADDONS_COMPOSE_PROJECT_NAME, 'up', '-d'], env=env)
