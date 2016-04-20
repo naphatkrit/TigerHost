@@ -1,4 +1,4 @@
-.. _prepare_django:
+.. _getting_started/specific_projects/prepare_django:
 
 ========================
 Prepare a Django Project
@@ -20,7 +20,7 @@ project locally*, then you might also want to install the python dependencies th
 
     $ pip install -r requirements.txt
 
-.. _prepare_django__git:
+.. _getting_started/specific_projects/prepare_django//git:
 
 Git
 ---
@@ -56,7 +56,7 @@ Next, you can check in your project.
     $ git commit -m "initial commit"
 
 
-.. _prepare_django__virtualenv:
+.. _getting_started/specific_projects/prepare_django//virtualenv:
 
 Virtualenv
 ----------
@@ -83,7 +83,7 @@ To switch to another virtualenv:
 
     $ workon <virtualenv_name>
 
-.. _prepare_django__requirements:
+.. _getting_started/specific_projects/prepare_django//requirements:
 
 Requirements.txt
 ----------------
@@ -115,7 +115,7 @@ requirements by running:
 
     $ pip install -r requirements.txt
 
-.. _prepare_django__procfile:
+.. _getting_started/specific_projects/prepare_django//procfile:
 
 Procfile
 --------
@@ -217,12 +217,12 @@ guide <https://devcenter.heroku.com/articles/django-app-configuration#migrating-
 After Deploy
 ------------
 
-You will want to do the following after deploying your code. For instructions on how to deploy, see :ref:`deploy_app`.
+You will want to do the following after deploying your code. For instructions on how to deploy, see :ref:`getting_started/deploy_app`.
 
 Addons
 =======
-You will want to add two addons: ``secret`` and ``postgres``. These will store the appropriate values into the ``SECRET`` and ``DATABASE_URL`` environmental variables that we referenced earlier. For instructions on how to do this, see :ref:`addons`.
+You will want to add two addons: ``secret`` and ``postgres``. These will store the appropriate values into the ``SECRET`` and ``DATABASE_URL`` environmental variables that we referenced earlier. For instructions on how to do this, see :ref:`getting_started/addons`.
 
 Migrate Your Database
 =======================
-You can migrate your database as a one-off command. See :ref:`run_commands`.
+You can migrate your database as a one-off command. See :ref:`getting_started/run_commands`.

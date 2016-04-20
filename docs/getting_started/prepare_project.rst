@@ -1,4 +1,4 @@
-.. _prepare_project:
+.. _getting_started/prepare_project:
 
 ======================
 Prepare Your Project
@@ -14,7 +14,7 @@ You may also want to check out :ref:`core_concepts/index` to understand why thes
 
 Migrating From Heroku
 ======================
-TigerHost is fully compatible with Heroku. In particular, there will be no code change to your project repository. Furthermore, the TigerHost CLI tool is written with Heroku compatibility in mind. A lot of the commands have a counterpart, such as :code:`tigerhost apps` and :code:`heroku apps`. Important commands are discussed in the next :ref:`section <deploy_app>`. You can skip to it.
+TigerHost is fully compatible with Heroku. In particular, there will be no code change to your project repository. Furthermore, the TigerHost CLI tool is written with Heroku compatibility in mind. A lot of the commands have a counterpart, such as :code:`tigerhost apps` and :code:`heroku apps`. Important commands are discussed in the next :ref:`section <getting_started/deploy_app>`. You can skip to it.
 
 .. _getting_started/prepare_project//specific_guides:
 
@@ -26,7 +26,7 @@ Specific Guides
 
     specific_projects/prepare_django
 
-.. _prepare_project__init_git:
+.. _getting_started/prepare_project//init_git:
 
 Initialize a Git Repo
 ======================

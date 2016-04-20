@@ -1,4 +1,4 @@
-.. _deploy_app:
+.. _getting_started/deploy_app:
 
 ======================
 Deploy an App

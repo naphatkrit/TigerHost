@@ -1,4 +1,4 @@
-.. _run_commands:
+.. _getting_started/run_commands:
 
 =====================
 Run One-Off Commands

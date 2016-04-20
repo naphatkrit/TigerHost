@@ -1,4 +1,4 @@
-.. _config_vars:
+.. _getting_started/config_vars:
 
 ==================
 Configuration Variables
@@ -28,7 +28,7 @@ To get the list of config vars for the app, use the command:
     $ tigerhost config
 
 
-.. _config_vars__unset:
+.. _getting_started/config_vars//unset:
 
 Unsetting Config Vars
 ======================

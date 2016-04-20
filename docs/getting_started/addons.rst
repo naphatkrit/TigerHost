@@ -1,4 +1,4 @@
-.. _addons:
+.. _getting_started/addons:
 
 ============
 Addons
@@ -61,4 +61,4 @@ To remove an addon from your app:
 
     $ tigerhost addons:destroy <addon_name>
 
-``addon_name`` is the unique name assigned to the addon when you added it (you can retrieve it by running ``tigerhost addons``). Note that this does **not** unset the relevant config var from your app - it may not be safe for us to do that automatically! You should do that yourself. See :ref:`config_vars__unset`.
+``addon_name`` is the unique name assigned to the addon when you added it (you can retrieve it by running ``tigerhost addons``). Note that this does **not** unset the relevant config var from your app - it may not be safe for us to do that automatically! You should do that yourself. See :ref:`getting_started/config_vars//unset`.
