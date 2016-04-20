@@ -1,7 +1,10 @@
 version: '2'
 services:
+    mongospoof:
+        image: tutum/mongodb:3.2
     proxy:
         build: .
         command: proxy
         ports:
             - "5432:5432"
+            - "27017:27017"
