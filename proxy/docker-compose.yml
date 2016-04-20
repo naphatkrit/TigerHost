@@ -1,5 +1,19 @@
 version: '2'
 services:
+    mongospoof:
+        image: tutum/mongodb:3.2
+    mongo1:
+        image: tutum/mongodb:3.2
+        environment:
+            MONGODB_PASS: 'pass1'
+            MONGODB_USER: 'mongo1'
+            MONGODB_DATABASE: 'test-db'
+    mongo2:
+        image: tutum/mongodb:3.2
+        environment:
+            MONGODB_PASS: 'pass2'
+            MONGODB_USER: 'mongo2'
+            MONGODB_DATABASE: 'test-db'
     addon1:
         environment:
             POSTGRES_USER: "addon1"
@@ -12,4 +26,5 @@ services:
         build: .
         command: proxy
         ports:
+            - "27017:27017"
             - "5432:5432"
