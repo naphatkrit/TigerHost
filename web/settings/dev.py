@@ -138,6 +138,14 @@ ADDON_PROVIDERS = {
             'config_name': 'DATABASE_URL',
         },
     },
+    'mongo': {
+        'CLASS': 'docker_addons.provider.DockerAddonProvider',
+        'ARGS': [],
+        'KWARGS': {
+            'container_type': AddonTypes.mongo,
+            'config_name': 'DATABASE_URL',
+        },
+    },
 }
 
 # END ADDON PROVIDER CONFIGURATION
