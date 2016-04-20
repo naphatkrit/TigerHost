@@ -5,3 +5,4 @@ Appendix
    :titlesonly:
 
    /getting_started/index
+   /addons/index

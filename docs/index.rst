@@ -12,6 +12,7 @@ Contents:
    :titlesonly:
 
    getting_started/index
+   addons/index
    core_concepts/index
    under_the_hood/index
    future_works
