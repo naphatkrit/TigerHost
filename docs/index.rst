@@ -16,4 +16,5 @@ Contents:
    core_concepts/index
    under_the_hood/index
    future_works
+   deploy/index
    api
