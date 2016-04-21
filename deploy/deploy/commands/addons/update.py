@@ -21,18 +21,18 @@ from deploy.utils.decorators import ensure_project_path, require_docker_machine
 def update(name):
     """Update the addon server.
     """
-    echo_heading('Retrieving addons config.', marker='-')
+    echo_heading('Retrieving addons config.', marker='-', marker_color='magenta')
     database = store.get('addon__database_container_name', default=False)
     if database is False:
         raise click.exceptions.ClickException('Addons config not found. Was an addon server created with `{} addons create`?'.format(settings.APP_NAME))
     click.echo('Done.')
 
     project_path = get_project_path()
-    echo_heading('Generating docker-compose file.', marker='-')
+    echo_heading('Generating docker-compose file.', marker='-', marker_color='magenta')
     _generate_compose_file(project_path, database)
     click.echo('Done.')
 
-    echo_heading('Updating addons proxy.', marker='-')
+    echo_heading('Updating addons proxy.', marker='-', marker_color='magenta')
     env_text = docker_machine.check_output(['env', name])
     env = os.environ.copy()
     env.update(utils.parse_shell_for_exports(env_text))

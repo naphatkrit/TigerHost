@@ -75,11 +75,11 @@ def create(name, instance_type, database, addon_name, secret, elastic_ip_id):
     project_path = get_project_path()
 
     # get url, ensures addon machine exists
-    echo_heading('Making sure addon machine exists.', marker='-')
+    echo_heading('Making sure addon machine exists.', marker='-', marker_color='magenta')
     addon_docker_host = docker_machine.get_url(addon_name)
     click.echo('Done.')
 
-    echo_heading('Copying addon machine credentials.', marker='-')
+    echo_heading('Copying addon machine credentials.', marker='-', marker_color='magenta')
     target_path = os.path.join(project_path, 'web/credentials')
     if not os.path.exists(target_path):
         os.mkdir(target_path)
@@ -87,7 +87,7 @@ def create(name, instance_type, database, addon_name, secret, elastic_ip_id):
     click.echo('Done.')
 
     echo_heading('Creating machine {name} with type {type}.'.format(
-        name=name, type=instance_type), marker='-')
+        name=name, type=instance_type), marker='-', marker_color='magenta')
     if settings.DEBUG:
         docker_machine.check_call(['create', '--driver',
                                    'virtualbox', name])
@@ -98,19 +98,19 @@ def create(name, instance_type, database, addon_name, secret, elastic_ip_id):
             'docker-machine', 0, 65535, '0.0.0.0/0')
 
         echo_heading(
-            'Associating Elastic IP.'.format(name), marker='-')
+            'Associating Elastic IP.'.format(name), marker='-', marker_color='magenta')
         click.echo('Done.')
         new_ip = _associate_elastic_ip(name, elastic_ip_id)
 
         echo_heading(
-            'Saving IP {} to docker-machine.'.format(new_ip), marker='-')
+            'Saving IP {} to docker-machine.'.format(new_ip), marker='-', marker_color='magenta')
         _update_docker_machine_ip(name, new_ip)
 
-    echo_heading('Generating docker-compose file.', marker='-')
+    echo_heading('Generating docker-compose file.', marker='-', marker_color='magenta')
     _generate_compose_file(project_path, database, addon_docker_host, secret)
     click.echo('Done.')
 
-    echo_heading('Initializing TigerHost containers.', marker='-')
+    echo_heading('Initializing TigerHost containers.', marker='-', marker_color='magenta')
     env_text = docker_machine.check_output(['env', name])
     env = os.environ.copy()
     env.update(parse_shell_for_exports(env_text))

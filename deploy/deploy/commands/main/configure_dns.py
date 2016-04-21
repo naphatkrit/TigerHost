@@ -18,7 +18,7 @@ def configure_dns(elastic_ip_id, hosted_zone_id):
 
     This points tigerhost.com (not a subdomain) to the main server
     """
-    echo_heading('Creating A record.', marker='-')
+    echo_heading('Creating A record.', marker='-', marker_color='magenta')
     ec2 = boto3.resource('ec2')
     client = boto3.client('route53')
     client.change_resource_record_sets(

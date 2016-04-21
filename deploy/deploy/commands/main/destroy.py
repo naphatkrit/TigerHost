@@ -15,7 +15,7 @@ from deploy.utils.decorators import require_docker_machine
 def destroy(name):
     """Destroy the main TigerHost server's machine.
     """
-    echo_heading('Destroying machine {name}.'.format(name=name), marker='-')
+    echo_heading('Destroying machine {name}.'.format(name=name), marker='-', marker_color='magenta')
     docker_machine.check_call(['rm', '-y', name])
     store.unset('main__database_url')
     store.unset('main__django_secret')

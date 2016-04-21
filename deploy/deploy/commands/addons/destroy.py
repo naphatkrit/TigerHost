@@ -16,6 +16,6 @@ def destroy(name):
     """Destroy the addon server machine.
     """
     echo_heading(
-        'Destroying machine {name}.'.format(name=name), marker='-')
+        'Destroying machine {name}.'.format(name=name), marker='-', marker_color='magenta')
     docker_machine.check_call(['rm', '-y', name])
     store.unset('addon__database_container_name')

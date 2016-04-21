@@ -40,7 +40,7 @@ def create(ctx, name, instance_type, database):
     """
     # TODO verify that database is [a-zA-Z0-9_]
     echo_heading('Creating machine {name} with type {type}.'.format(
-        name=name, type=instance_type), marker='-')
+        name=name, type=instance_type), marker='-', marker_color='magenta')
     if settings.DEBUG:
         docker_machine.check_call(
             ['create', '--driver', 'virtualbox', name])
@@ -51,10 +51,10 @@ def create(ctx, name, instance_type, database):
 
     project_path = get_project_path()
 
-    echo_heading('Generating docker-compose file.', marker='-')
+    echo_heading('Generating docker-compose file.', marker='-', marker_color='magenta')
     _generate_compose_file(project_path, database)
 
-    echo_heading('Instantiating addons proxy.', marker='-')
+    echo_heading('Instantiating addons proxy.', marker='-', marker_color='magenta')
     env_text = docker_machine.check_output(['env', name])
     env = os.environ.copy()
     env.update(utils.parse_shell_for_exports(env_text))

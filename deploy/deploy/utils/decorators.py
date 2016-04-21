@@ -87,7 +87,7 @@ def option_hosted_zone_id(f):
         :param click.Context ctx:
         """
         if hosted_zone_id is None:
-            echo_heading('Trying to find hosted zone for {}.'.format(settings.DOMAIN_NAME), marker='-')
+            echo_heading('Trying to find hosted zone for {}.'.format(settings.DOMAIN_NAME), marker='-', marker_color='magenta')
             client = boto3.client('route53')
             response = client.list_hosted_zones_by_name(
                 DNSName=settings.DOMAIN_NAME
@@ -183,7 +183,7 @@ def ensure_executable_exists(name, get_executable):
             """
             path = path_utils.executable_path(name)
             if not os.path.exists(path):
-                echo_heading('Installing {}.'.format(name), marker='-')
+                echo_heading('Installing {}.'.format(name), marker='-', marker_color='magenta')
                 get_executable()
                 assert os.path.exists(path)
             return ctx.invoke(f, *args, **kwargs)

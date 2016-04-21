@@ -44,7 +44,7 @@ def create(elastic_ip_id, email, rds_database, secret, hosted_zone_id):
         secret = _get_secret()
     if elastic_ip_id is None:
         if not settings.DEBUG:
-            echo_heading('Allocating a new Elastic IP.', marker='-')
+            echo_heading('Allocating a new Elastic IP.', marker='-', marker_color='magenta')
             client = boto3.client('ec2')
             elastic_ip_id = client.allocate_address(Domain='vpc')['AllocationId']
             click.echo('Done. Allocation ID: {}'.format(elastic_ip_id))

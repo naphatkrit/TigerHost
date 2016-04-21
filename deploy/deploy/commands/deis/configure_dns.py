@@ -18,7 +18,7 @@ def configure_dns(stack, hosted_zone_id):
 
     This points *.tigerhostapp.com to Deis.
     """
-    echo_heading('Creating A record.', marker='-')
+    echo_heading('Creating A record.', marker='-', marker_color='magenta')
     cloudformation = boto3.resource('cloudformation')
     stack_instance = cloudformation.Stack(stack)
 
