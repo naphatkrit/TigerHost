@@ -20,13 +20,34 @@ def print_markers(f):
         command = ctx.info_name
         assert command is not None
         command_name = ctx.command_path
-        click_utils.echo_with_markers(command_name, marker_color='cyan')
+        click_utils.echo_with_markers(command_name, marker_color='green')
+
+        def print_error(code):
+            click_utils.echo_with_markers('end of {} (exit code: {code})'.format(
+                command_name, code=code), marker_color='red')
         try:
-            return ctx.invoke(f, *args, **kwargs)
-        finally:
-            click.echo()
+            ctx.invoke(f, *args, **kwargs)
+        except SystemExit as e:
+            code = e.code if e.code is not None else exit_codes.ABORT
+            print_error(code)
+            raise
+        except click.ClickException as e:
+            code = e.exit_code
+            print_error(code)
+            raise
+        except click.Abort as e:
+            code = exit_codes.ABORT
+            print_error(code)
+            raise
+        except Exception as e:
+            code = -1
+            print_error(code)
+            raise
+        else:
+            click.echo('passed')
             click_utils.echo_with_markers('end of {}'.format(
-                command_name), marker_color='cyan')
+                command_name), marker_color='green')
+            return
     return update_wrapper(new_func, f)
 
 
