@@ -10,3 +10,4 @@ This section details how to deploy the TigerHost service itself. If you are a de
 
     install_deploy
     basic_operations
+    secret_management
