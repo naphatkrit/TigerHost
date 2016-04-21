@@ -65,11 +65,11 @@ install from there. First, clone the repository:
 
 .. code-block:: console
 
-    $ git clone https://github.com/naphatkrit/TigerHost-Client
+    $ git clone https://github.com/naphatkrit/TigerHost
 
 Now, install:
 
 .. code-block:: console
 
-    $ cd TigerHost-Client
+    $ cd TigerHost/client
     $ pip install .
