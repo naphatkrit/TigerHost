@@ -1,10 +1,13 @@
+import os
+
+
 APP_NAME = 'tigerhost-deploy'
 
 PROJECT_REMOTE = 'git@github.com:naphatkrit/TigerHost.git'
 
 DOMAIN_NAME = 'tigerhostapp.com'
 
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', False))
 
 DEISCTL_INSTALL_URL = 'http://deis.io/deisctl/install.sh'
 
