@@ -1,7 +1,7 @@
 import click
 
 
-def echo_with_markers(text, marker='=', marker_color='blue'):
+def echo_with_markers(text, marker='=', marker_color='blue', text_color=None):
     """Print a text to the screen with markers surrounding it.
 
     The output looks like:
@@ -14,6 +14,7 @@ def echo_with_markers(text, marker='=', marker_color='blue'):
     :param str text: the text to echo
     :param str marker: the marker to surround the text
     :param str marker_color: one of ('black' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan' | 'white')
+    :param str text_color: one of ('black' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan' | 'white')
     """
     text = ' ' + text + ' '
     width, _ = click.get_terminal_size()
@@ -22,7 +23,7 @@ def echo_with_markers(text, marker='=', marker_color='blue'):
     else:
         leftovers = width - len(text)
         click.secho(marker * (leftovers / 2), fg=marker_color, nl=False)
-        click.echo(text, nl=False)
+        click.secho(text, nl=False, fg=text_color)
         click.secho(marker * (leftovers / 2 + leftovers % 2), fg=marker_color)
 
 
