@@ -9,3 +9,4 @@ This section details how to deploy the TigerHost service itself. If you are a de
     :titlesonly:
 
     install_deploy
+    basic_operations
