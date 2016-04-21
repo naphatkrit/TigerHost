@@ -1,7 +1,7 @@
 import boto3
 import click
 
-from tigerhost.utils.click_utils import echo_with_markers
+from tigerhost.utils.click_utils import echo_heading
 from tigerhost.utils.decorators import print_markers
 
 from deploy import settings
@@ -18,7 +18,7 @@ def configure_dns(elastic_ip_id, hosted_zone_id):
 
     This points tigerhost.com (not a subdomain) to the main server
     """
-    echo_with_markers('Creating A record.', marker='-')
+    echo_heading('Creating A record.', marker='-')
     ec2 = boto3.resource('ec2')
     client = boto3.client('route53')
     client.change_resource_record_sets(

@@ -1,7 +1,7 @@
 import boto3
 import click
 
-from tigerhost.utils.click_utils import echo_with_markers
+from tigerhost.utils.click_utils import echo_heading
 from tigerhost.utils.decorators import print_markers
 
 from deploy import settings
@@ -18,7 +18,7 @@ def configure_dns(stack, hosted_zone_id):
 
     This points *.tigerhostapp.com to Deis.
     """
-    echo_with_markers('Creating A record.', marker='-')
+    echo_heading('Creating A record.', marker='-')
     cloudformation = boto3.resource('cloudformation')
     stack_instance = cloudformation.Stack(stack)
 

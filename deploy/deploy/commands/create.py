@@ -3,7 +3,7 @@ import click
 import subprocess32 as subprocess
 
 from tigerhost.utils.decorators import print_markers
-from tigerhost.utils.click_utils import echo_with_markers
+from tigerhost.utils.click_utils import echo_heading
 
 from deploy import docker_machine, settings
 from deploy.utils import click_utils
@@ -44,7 +44,7 @@ def create(elastic_ip_id, email, rds_database, secret, hosted_zone_id):
         secret = _get_secret()
     if elastic_ip_id is None:
         if not settings.DEBUG:
-            echo_with_markers('Allocating a new Elastic IP.', marker='-')
+            echo_heading('Allocating a new Elastic IP.', marker='-')
             client = boto3.client('ec2')
             elastic_ip_id = client.allocate_address(Domain='vpc')['AllocationId']
             click.echo('Done. Allocation ID: {}'.format(elastic_ip_id))

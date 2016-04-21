@@ -1,7 +1,7 @@
 import click
 import subprocess32 as subprocess
 
-from tigerhost.utils.click_utils import echo_with_markers
+from tigerhost.utils.click_utils import echo_heading
 from tigerhost.utils.decorators import print_markers
 
 from deploy import settings
@@ -20,7 +20,7 @@ from deploy.utils.utils import random_string
 def create_admin(password, email):
     """Create an admin user on Deis
     """
-    echo_with_markers('Creating admin user.')
+    echo_heading('Creating admin user.')
     username = 'admin'
     if password is None:
         password = random_string(length=30)

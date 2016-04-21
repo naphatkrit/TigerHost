@@ -3,7 +3,7 @@ import os
 import subprocess32 as subprocess
 
 from tigerhost.utils.decorators import print_markers
-from tigerhost.utils.click_utils import echo_with_markers
+from tigerhost.utils.click_utils import echo_heading
 
 from deploy import docker_machine, settings
 from deploy.commands.main.create import _generate_compose_file
@@ -21,7 +21,7 @@ from deploy.utils.utils import parse_shell_for_exports
 def update(name):
     """Update the main TigerHost server. This also updates the documentation.
     """
-    echo_with_markers('Retrieving server config.', marker='-')
+    echo_heading('Retrieving server config.', marker='-')
     project_path = get_project_path()
     database = store.get('main__database_url')
     secret = store.get('main__django_secret')
@@ -30,22 +30,22 @@ def update(name):
         raise click.exceptions.ClickException('Server config not found. Was a TigerHost server created with `{} main create`?'.format(settings.APP_NAME))
     click.echo('Done.')
 
-    echo_with_markers('Making sure addon machine exists.', marker='-')
+    echo_heading('Making sure addon machine exists.', marker='-')
     addon_docker_host = docker_machine.get_url(addon_name)
     click.echo('Done.')
 
-    echo_with_markers('Copying addon machine credentials.', marker='-')
+    echo_heading('Copying addon machine credentials.', marker='-')
     target_path = os.path.join(project_path, 'web/credentials')
     if not os.path.exists(target_path):
         os.mkdir(target_path)
     docker_machine.retrieve_credentials(addon_name, target_path)
     click.echo('Done.')
 
-    echo_with_markers('Generating docker-compose file.', marker='-')
+    echo_heading('Generating docker-compose file.', marker='-')
     _generate_compose_file(project_path, database, addon_docker_host, secret)
     click.echo('Done.')
 
-    echo_with_markers('Initializing TigerHost containers.', marker='-')
+    echo_heading('Initializing TigerHost containers.', marker='-')
     env_text = docker_machine.check_output(['env', name])
     env = os.environ.copy()
     env.update(parse_shell_for_exports(env_text))

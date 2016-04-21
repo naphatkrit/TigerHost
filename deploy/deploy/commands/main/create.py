@@ -6,7 +6,7 @@ import subprocess32 as subprocess
 import yaml
 
 from tigerhost.utils.decorators import print_markers
-from tigerhost.utils.click_utils import echo_with_markers
+from tigerhost.utils.click_utils import echo_heading
 
 from deploy import docker_machine, settings
 from deploy.project import get_project_path
@@ -75,18 +75,18 @@ def create(name, instance_type, database, addon_name, secret, elastic_ip_id):
     project_path = get_project_path()
 
     # get url, ensures addon machine exists
-    echo_with_markers('Making sure addon machine exists.', marker='-')
+    echo_heading('Making sure addon machine exists.', marker='-')
     addon_docker_host = docker_machine.get_url(addon_name)
     click.echo('Done.')
 
-    echo_with_markers('Copying addon machine credentials.', marker='-')
+    echo_heading('Copying addon machine credentials.', marker='-')
     target_path = os.path.join(project_path, 'web/credentials')
     if not os.path.exists(target_path):
         os.mkdir(target_path)
     docker_machine.retrieve_credentials(addon_name, target_path)
     click.echo('Done.')
 
-    echo_with_markers('Creating machine {name} with type {type}.'.format(
+    echo_heading('Creating machine {name} with type {type}.'.format(
         name=name, type=instance_type), marker='-')
     if settings.DEBUG:
         docker_machine.check_call(['create', '--driver',
@@ -97,20 +97,20 @@ def create(name, instance_type, database, addon_name, secret, elastic_ip_id):
         set_aws_security_group_ingress_rule(
             'docker-machine', 0, 65535, '0.0.0.0/0')
 
-        echo_with_markers(
+        echo_heading(
             'Associating Elastic IP.'.format(name), marker='-')
         click.echo('Done.')
         new_ip = _associate_elastic_ip(name, elastic_ip_id)
 
-        echo_with_markers(
+        echo_heading(
             'Saving IP {} to docker-machine.'.format(new_ip), marker='-')
         _update_docker_machine_ip(name, new_ip)
 
-    echo_with_markers('Generating docker-compose file.', marker='-')
+    echo_heading('Generating docker-compose file.', marker='-')
     _generate_compose_file(project_path, database, addon_docker_host, secret)
     click.echo('Done.')
 
-    echo_with_markers('Initializing TigerHost containers.', marker='-')
+    echo_heading('Initializing TigerHost containers.', marker='-')
     env_text = docker_machine.check_output(['env', name])
     env = os.environ.copy()
     env.update(parse_shell_for_exports(env_text))

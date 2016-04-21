@@ -10,7 +10,7 @@ import subprocess32 as subprocess
 from functools import update_wrapper
 from tigerhost import exit_codes, private_dir
 from tigerhost.utils import contextmanagers
-from tigerhost.utils.click_utils import echo_with_markers
+from tigerhost.utils.click_utils import echo_heading
 
 from deploy import settings
 from deploy.project import get_project_path, save_project_path, default_project_path, clone_project
@@ -87,7 +87,7 @@ def option_hosted_zone_id(f):
         :param click.Context ctx:
         """
         if hosted_zone_id is None:
-            echo_with_markers('Trying to find hosted zone for {}.'.format(settings.DOMAIN_NAME), marker='-')
+            echo_heading('Trying to find hosted zone for {}.'.format(settings.DOMAIN_NAME), marker='-')
             client = boto3.client('route53')
             response = client.list_hosted_zones_by_name(
                 DNSName=settings.DOMAIN_NAME
@@ -183,7 +183,7 @@ def ensure_executable_exists(name, get_executable):
             """
             path = path_utils.executable_path(name)
             if not os.path.exists(path):
-                echo_with_markers('Installing {}.'.format(name), marker='-')
+                echo_heading('Installing {}.'.format(name), marker='-')
                 get_executable()
                 assert os.path.exists(path)
             return ctx.invoke(f, *args, **kwargs)

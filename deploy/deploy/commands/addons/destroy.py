@@ -1,6 +1,6 @@
 import click
 
-from tigerhost.utils.click_utils import echo_with_markers
+from tigerhost.utils.click_utils import echo_heading
 from tigerhost.utils.decorators import print_markers
 
 from deploy import docker_machine
@@ -15,7 +15,7 @@ from deploy.utils.decorators import require_docker_machine
 def destroy(name):
     """Destroy the addon server machine.
     """
-    echo_with_markers(
+    echo_heading(
         'Destroying machine {name}.'.format(name=name), marker='-')
     docker_machine.check_call(['rm', '-y', name])
     store.unset('addon__database_container_name')

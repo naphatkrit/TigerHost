@@ -3,7 +3,7 @@ import os
 import subprocess32 as subprocess
 import yaml
 
-from tigerhost.utils.click_utils import echo_with_markers
+from tigerhost.utils.click_utils import echo_heading
 from tigerhost.utils.decorators import print_markers
 
 from deploy import docker_machine, settings
@@ -39,7 +39,7 @@ def create(ctx, name, instance_type, database):
     """Create machine for the addon server.
     """
     # TODO verify that database is [a-zA-Z0-9_]
-    echo_with_markers('Creating machine {name} with type {type}.'.format(
+    echo_heading('Creating machine {name} with type {type}.'.format(
         name=name, type=instance_type), marker='-')
     if settings.DEBUG:
         docker_machine.check_call(
@@ -51,10 +51,10 @@ def create(ctx, name, instance_type, database):
 
     project_path = get_project_path()
 
-    echo_with_markers('Generating docker-compose file.', marker='-')
+    echo_heading('Generating docker-compose file.', marker='-')
     _generate_compose_file(project_path, database)
 
-    echo_with_markers('Instantiating addons proxy.', marker='-')
+    echo_heading('Instantiating addons proxy.', marker='-')
     env_text = docker_machine.check_output(['env', name])
     env = os.environ.copy()
     env.update(utils.parse_shell_for_exports(env_text))
