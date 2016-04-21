@@ -1,6 +1,10 @@
+.. _getting_started/install_client:
+
 ================================
 Install The TigerHost CLI Client
 ================================
+
+.. _getting_started/install_client//pip:
 
 Get pip
 =======
@@ -14,6 +18,8 @@ On other systems, you may use the installer provided by pip on its `official pag
 Note that even if
 your project is not a python project, you still need pip to install the
 TigerHost command-line client, since it is distributed using Pypi.
+
+.. _getting_started/install_client//virtualenv:
 
 Use virtualenv
 ==============
