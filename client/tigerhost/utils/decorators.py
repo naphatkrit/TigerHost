@@ -20,13 +20,13 @@ def print_markers(f):
         command = ctx.info_name
         assert command is not None
         command_name = ctx.command_path
-        click_utils.echo_with_markers(command_name)
+        click_utils.echo_with_markers(command_name, marker_color='cyan')
         try:
             return ctx.invoke(f, *args, **kwargs)
         finally:
             click.echo()
             click_utils.echo_with_markers('end of {}'.format(
-                command_name))
+                command_name), marker_color='cyan')
     return update_wrapper(new_func, f)
 
 
