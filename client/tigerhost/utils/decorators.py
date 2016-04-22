@@ -44,7 +44,6 @@ def print_markers(f):
             print_error(code)
             raise
         else:
-            click.echo('passed')
             click_utils.echo_with_markers('end of {}'.format(
                 command_name), marker_color='green')
             return
