@@ -5,6 +5,7 @@ import tigerhost
 from tigerhost import private_dir, settings
 from tigerhost.commands import access, addons, apps, config, domains, git, keys, backends, run_command, logs
 from tigerhost.commands.user import login, user_info, logout
+from tigerhost.utils.click_utils import bash_complete_command
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -14,6 +15,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.version_option(version=tigerhost.__version__, prog_name='TigerHost')
 def entry():
     private_dir.ensure_private_dir_exists(settings.APP_NAME)
+
+entry.add_command(bash_complete_command(settings.APP_NAME))
 
 entry.add_command(login)
 entry.add_command(logout)
