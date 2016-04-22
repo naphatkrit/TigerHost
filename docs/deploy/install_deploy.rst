@@ -21,7 +21,33 @@ AWS CLI
 --------
 The deployment script is meant to be used for deploying on AWS. To that end, you need to have the AWS CLI installed.
 
-TODO
+AWS CLI is distributed via Pypi. To install it, switch to your virtual environment (you should have one specifically for TigerHost deployment).
+
+.. code-block:: console
+
+    # if you don't already have a virtual environment for deployment
+    $ mkvirtualenv tigerhost-deploy
+
+    # if you already have a virtual environment for deployment
+    $ workon tigerhost-deploy
+
+Next, make sure you have your IAM user access key and credentials. If you don't know what that is, follow this `guide <http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html#cli-signup>`_.
+
+.. code-block:: console
+
+    $ aws configure
+    AWS Access Key ID [None]: ***************
+    AWS Secret Access Key [None]: ************************
+    Default region name [None]: us-east-1
+    Default output format [None]:
+
+.. warning::
+    Make sure you put some value for default region. Since we are deploying for Princeton, the recommended value is :code:`us-east-1`.
+
+
+Docker Toolbox
+----------------
+Docker is used to deploy the main server and the addons server. You need to have Docker Toolbox installed. The download links are `here <https://www.docker.com/products/docker-toolbox>`_.
 
 
 .. _deploy/install_deploy//installations:
