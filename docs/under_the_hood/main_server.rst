@@ -28,7 +28,7 @@ The TigerHost server is a Django server. The Django app :code:`api_server` is wh
 
 The TigerHost server is deployed using Docker, as a :code:`docker-compose` project. The project sets up a nginx proxy and serves the Django server from :code:`/`. It also serves this documentation from :code:`/docs/`.
 
-.. TODO link to deployment docs
+To learn more about how to deploy TigerHost, see :ref:`deploy/index`.
 
 .. _under_the_hood/main_server//authentication:
 
