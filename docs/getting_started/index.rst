@@ -11,5 +11,6 @@ Getting Started With TigerHost
     prepare_project
     deploy_app
     run_commands
+    view_logs
     config_vars
     addons
