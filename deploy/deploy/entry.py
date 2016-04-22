@@ -10,6 +10,7 @@ from deploy.commands.create import create
 from deploy.commands.deis.entry import entry as deis_entry
 from deploy.commands.destroy import destroy
 from deploy.commands.main.entry import entry as main_entry
+from deploy.commands.project import project
 from deploy.commands.secret import secret
 from deploy.commands.secret_clone import secret_clone
 from deploy.commands.update import update
@@ -33,6 +34,7 @@ entry.add_command(create)
 entry.add_command(deis_entry, 'deis')
 entry.add_command(destroy)
 entry.add_command(main_entry, 'main')
+entry.add_command(project)
 entry.add_command(secret)
 entry.add_command(secret_clone)
 entry.add_command(update)
