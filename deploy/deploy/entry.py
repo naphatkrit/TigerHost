@@ -1,6 +1,7 @@
 import click
 
 from tigerhost import private_dir
+from tigerhost.utils.click_utils import bash_complete_command
 
 import deploy
 
@@ -28,6 +29,8 @@ def entry():
     private_dir.ensure_private_dir_exists(settings.APP_NAME)
     secret_dir.ensure_secret_dir_exists()
 
+
+entry.add_command(bash_complete_command(settings.APP_NAME))
 
 entry.add_command(addons_entry, 'addons')
 entry.add_command(create)
