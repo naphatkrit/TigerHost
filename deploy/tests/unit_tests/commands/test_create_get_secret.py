@@ -14,9 +14,3 @@ def dummy():
 def test_get_secret_generate(runner):
     result = runner.invoke(dummy, input='1\n\n')
     assert result.exit_code == exit_codes.SUCCESS
-
-
-def test_get_secret_input(runner):
-    result = runner.invoke(dummy, input='2\nsecret\nsecret\n')
-    assert result.exit_code == exit_codes.SUCCESS
-    assert 'My secret is secret.' in result.output

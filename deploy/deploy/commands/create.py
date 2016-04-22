@@ -6,23 +6,13 @@ from tigerhost.utils.decorators import print_markers
 from tigerhost.utils.click_utils import echo_heading
 
 from deploy import docker_machine, settings
-from deploy.utils import click_utils
 from deploy.utils.decorators import ensure_project_path, require_docker_machine, option_hosted_zone_id
 from deploy.utils.utils import random_string
 
 
 def _get_secret():
-    click.echo('Django needs a secret key.')
-    choice = click_utils.prompt_choices([
-        'Generate a random secret key.',
-        'Enter a secret key.'
-    ])
-    if choice == 0:
-        secret = random_string(length=100)
-        click.echo('Generated secret.')
-    else:
-        # TODO only accept [a-zA-Z0-9]
-        secret = click.prompt('Secret', type=str, confirmation_prompt=True)
+    secret = random_string(length=100)
+    click.echo('Generated secret.')
     return secret
 
 
