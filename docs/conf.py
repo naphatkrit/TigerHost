@@ -232,7 +232,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     ('report/index', 'TigerHost.tex', u'TigerHost - IW Spring 2016',
-     u'Naphat Sanguansin', 'manual'),
+     u'Naphat Sanguansin, \\and Advisor: Jérémie Lumbroso', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
