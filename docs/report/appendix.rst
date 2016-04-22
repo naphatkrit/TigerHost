@@ -6,3 +6,4 @@ Appendix
 
    /getting_started/index
    /addons/index
+   /deploy/index
