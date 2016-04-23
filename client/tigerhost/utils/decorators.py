@@ -25,15 +25,25 @@ def print_markers(f):
         def print_error(code):
             click_utils.echo_with_markers('end of {} (exit code: {code})'.format(
                 command_name, code=code), marker_color='red')
+
+        def print_success():
+            click_utils.echo_with_markers('end of {}'.format(
+                command_name), marker_color='green')
         try:
             ctx.invoke(f, *args, **kwargs)
         except SystemExit as e:
             code = e.code if e.code is not None else exit_codes.ABORT
-            print_error(code)
+            if code == 0:
+                print_success()
+            else:
+                print_error(code)
             raise
         except click.ClickException as e:
             code = e.exit_code
-            print_error(code)
+            if code == 0:
+                print_success()
+            else:
+                print_error(code)
             raise
         except click.Abort as e:
             code = exit_codes.ABORT
@@ -44,8 +54,7 @@ def print_markers(f):
             print_error(code)
             raise
         else:
-            click_utils.echo_with_markers('end of {}'.format(
-                command_name), marker_color='green')
+            print_success()
             return
     return update_wrapper(new_func, f)
 

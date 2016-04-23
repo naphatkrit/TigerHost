@@ -42,6 +42,13 @@ def exited_command(ctx):
 @click.command()
 @click.pass_context
 @decorators.print_markers
+def exited_success_command(ctx):
+    ctx.exit(0)
+
+
+@click.command()
+@click.pass_context
+@decorators.print_markers
 def aborted_command(ctx):
     ctx.abort()
 
@@ -52,6 +59,15 @@ def aborted_command(ctx):
 def custom_exit_command(ctx):
     e = click.ClickException('custom message')
     e.exit_code = 5
+    raise e
+
+
+@click.command()
+@click.pass_context
+@decorators.print_markers
+def custom_exit_success_command(ctx):
+    e = click.ClickException('custom message')
+    e.exit_code = 0
     raise e
 
 
@@ -75,9 +91,11 @@ def passing_command_with_context(ctx):
     (failing_command, -1, '= end of {} (exit code: -1) ='),
     (failing_handled_command, 2, '= end of {} (exit code: 2) ='),
     (exited_command, 3, '= end of {} (exit code: 3) ='),
+    (exited_success_command, 0, '= end of {} ='),
     (aborted_command, 1, '= end of {} (exit code: 1) ='),
     (default_exit_command, 1, '= end of {} (exit code: 1) ='),
     (custom_exit_command, 5, '= end of {} (exit code: 5) ='),
+    (custom_exit_success_command, 0, '= end of {} ='),
     (syntax_error_command, -1, '= end of {} (exit code: -1) ='),
 ])
 def test_simple(runner, command, exit_code, end_template):
