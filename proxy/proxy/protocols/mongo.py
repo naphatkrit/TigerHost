@@ -15,8 +15,10 @@ class MongoProtocol(SpoofTcpProxyProtocol):
         if self.hostname is None and 'saslStart' in data:
             if 'n=' not in data or 'SCRAM-SHA-1' not in data:
                     # unsupported authentication format
+                    # TODO log
                     self.transport.loseConnection()
                     return
+            # TODO catch array index out of bounds error
             username = data.split('n=', 1)[1].split(',', 1)[0]
             self.hostname = username
             self.connectServer(self.hostname, 27017)
