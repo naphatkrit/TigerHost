@@ -2,7 +2,7 @@ import click
 
 from tigerhost import settings
 from tigerhost.api_client import ApiClientResponseError
-from tigerhost.utils import decorators
+from tigerhost.utils import click_utils, decorators
 
 
 @click.command()
@@ -87,6 +87,12 @@ def destroy_app(ctx):
     """
     app = ctx.obj['app']
     api_client = ctx.obj['api_client']
+    click_utils.echo_heading('Destroying all addons.', marker_color='magenta')
+    addons = api_client.get_application_addons(app)
+    for x in addons:
+        click.echo('Destroying {name} ({addon}).'.format(name=x['display_name'], addon=x['provider_name']))
+        api_client.delete_application_addon(app, x['display_name'])
+    click_utils.echo_heading('Destroying app.', marker_color='magenta')
     api_client.delete_application(app)
     click.echo('App {} destroyed.'.format(app))
 
