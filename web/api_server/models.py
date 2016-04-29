@@ -158,15 +158,18 @@ def _make_display_name():
 
 
 class Addon(models.Model):
+    # NOTE: blank deals with validation, null deals with database storage
+    # see https://docs.djangoproject.com/en/1.9/ref/models/fields/#django.db.models.Field.blank
     provider_name = models.CharField(max_length=50)
     provider_uuid = models.UUIDField()
-    app = models.ForeignKey(App, on_delete=models.SET_NULL, null=True)
+    app = models.ForeignKey(App, on_delete=models.SET_NULL, null=True, blank=True)
     state = EnumField(AddonState)
-    config = JSONField(null=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    config = JSONField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     display_name = models.CharField(
         max_length=100, unique=True, default=_make_display_name)
-    config_customization = models.CharField(max_length=100, null=True)
+    config_customization = models.CharField(max_length=100, null=True, blank=True, validators=[
+        RegexValidator(regex=r'^[A-Z0-9_]+$')])
 
     def to_dict(self):
         return {
@@ -175,3 +178,9 @@ class Addon(models.Model):
             'provider_name': self.provider_name,
             'state': self.state.name,
         }
+
+    def save(self, *args, **kwargs):
+        # call the validation methods
+        # TODO there is a validation bug with EnumField
+        self.full_clean(exclude=['state'])
+        super(self.__class__, self).save(*args, **kwargs)
