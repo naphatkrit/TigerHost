@@ -160,7 +160,6 @@ def _make_display_name():
 class Addon(models.Model):
     provider_name = models.CharField(max_length=50)
     provider_uuid = models.UUIDField()
-    # TODO on app deletion, should deprovision all resources
     app = models.ForeignKey(App, on_delete=models.SET_NULL, null=True)
     state = EnumField(AddonState)
     config = JSONField(null=True)
