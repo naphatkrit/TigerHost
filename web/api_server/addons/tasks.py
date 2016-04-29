@@ -61,7 +61,7 @@ def check_provision(self, addon_id):
 
     # provision is done, store result
     try:
-        result = provider.get_config(addon.provider_uuid)
+        result = provider.get_config(addon.provider_uuid, config_customization=addon.config_customization)
     except AddonProviderError:
         with manager.transition(addon_id, AddonEvent.provision_failure):
             pass
