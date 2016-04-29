@@ -47,6 +47,60 @@ def test_POST(client, http_headers, app_id, make_app, mock_manager, mock_addon_p
     result = resp.json()
     assert result['message'] == 'test message'
     assert 'addon' in result
+    assert result['addon']['config_customization'] is None
 
     mock_addon_provider.begin_provision.assert_called_once_with(app_id)
     assert mock_manager.start_task.call_count == 1
+
+
+@pytest.mark.django_db
+def test_POST_with_config_customization(client, http_headers, app_id, make_app, mock_manager, mock_addon_provider):
+    """
+    @type client: django.test.Client
+    @type http_headers: dict
+    """
+    mock_addon_provider.begin_provision.return_value = {
+        'message': 'test message',
+        'uuid': uuid.uuid4(),
+    }
+    with mock.patch('api_server.api.addons_api_view.StateMachineManager') as mocked:
+        mocked.return_value = mock_manager
+        with mock.patch('api_server.api.addons_api_view.get_provider_from_provider_name') as mock_get_provider:
+            mock_get_provider.return_value = mock_addon_provider
+            resp = client.post('/api/v1/apps/{}/addons/'.format(app_id), data=json.dumps(
+                {'provider_name': 'test_provider', 'config_customization': 'test'}), content_type='application/json', **http_headers)
+    assert resp.status_code == 200
+    result = resp.json()
+    assert result['message'] == 'test message'
+    assert 'addon' in result
+    assert result['addon']['config_customization'] == 'TEST'
+
+    mock_addon_provider.begin_provision.assert_called_once_with(app_id)
+    assert mock_manager.start_task.call_count == 1
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize('config_customization', [
+    'invalid#',
+    'invalid-',
+    'invalid@',
+])
+def test_POST_with_config_customization_invalid(client, http_headers, app_id, make_app, mock_manager, mock_addon_provider, config_customization):
+    """
+    @type client: django.test.Client
+    @type http_headers: dict
+    """
+    mock_addon_provider.begin_provision.return_value = {
+        'message': 'test message',
+        'uuid': uuid.uuid4(),
+    }
+    with mock.patch('api_server.api.addons_api_view.StateMachineManager') as mocked:
+        mocked.return_value = mock_manager
+        with mock.patch('api_server.api.addons_api_view.get_provider_from_provider_name') as mock_get_provider:
+            mock_get_provider.return_value = mock_addon_provider
+            resp = client.post('/api/v1/apps/{}/addons/'.format(app_id), data=json.dumps(
+                {'provider_name': 'test_provider', 'config_customization': config_customization}), content_type='application/json', **http_headers)
+    assert resp.status_code == 400
+    result = resp.json()
+    assert config_customization in result['error']
+    assert mock_manager.start_task.call_count == 0
