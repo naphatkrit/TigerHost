@@ -83,3 +83,11 @@ def test_addon_to_dict(addon):
     assert obj['display_name'] == addon.display_name
     assert obj['provider_name'] == addon.provider_name
     assert obj['state'] == addon.state.name
+    assert obj['config_customization'] is None
+
+    addon.config_customization = 'test'
+    obj = addon.to_dict()
+    assert obj['display_name'] == addon.display_name
+    assert obj['provider_name'] == addon.provider_name
+    assert obj['state'] == addon.state.name
+    assert obj['config_customization'] == 'test'
