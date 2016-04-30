@@ -1,3 +1,5 @@
+import logging
+
 from api_server.addons.event import AddonEvent
 from api_server.addons.providers.exceptions import AddonProviderError
 from api_server.addons.providers.utils import get_provider_from_provider_name
@@ -31,19 +33,26 @@ def _valid_config(config):
 def check_provision(self, addon_id):
     """A task that checks if provision is complete
     """
+    logger = logging.getLogger(__name__)
     try:
         addon = Addon.objects.get(pk=addon_id)
     except Addon.DoesNotExist:
-        # TODO log?
+        logger.exception('Addon with ID {} does not exist.'.format(addon_id))
         raise
     if addon.state is not AddonState.waiting_for_provision:
-        # TODO log?
+        logger.warning('Addon ID {addon_id}: State {state} is invalid for check_provision task.'.format(
+            addon_id=addon_id,
+            state=addon.state,
+        ))
         return addon_id
     manager = StateMachineManager()
     try:
         provider = get_provider_from_provider_name(addon.provider_name)
     except AddonProviderError:
-        # TODO log?
+        logger.exception('Addon ID {addon_id}: Could not get provider for {name}.'.format(
+            addon_id=addon_id,
+            name=addon.provider_name,
+        ))
         # transition so this task doesn't get restarted needlessly
         with manager.transition(addon_id, AddonEvent.provision_failure):
             pass
@@ -61,7 +70,8 @@ def check_provision(self, addon_id):
 
     # provision is done, store result
     try:
-        result = provider.get_config(addon.provider_uuid, config_customization=addon.config_customization)
+        result = provider.get_config(
+            addon.provider_uuid, config_customization=addon.config_customization)
     except AddonProviderError:
         with manager.transition(addon_id, AddonEvent.provision_failure):
             pass
@@ -80,17 +90,21 @@ def check_provision(self, addon_id):
 def deprovision(addon_id):
     """A task that kicks off the deprovision process
     """
+    logger = logging.getLogger(__name__)
     try:
         addon = Addon.objects.get(pk=addon_id)
     except Addon.DoesNotExist:
-        # TODO log?
+        logger.exception('Addon with ID {} does not exist.'.format(addon_id))
         raise
 
     manager = StateMachineManager()
     try:
         provider = get_provider_from_provider_name(addon.provider_name)
     except AddonProviderError:
-        # TODO log?
+        logger.exception('Addon ID {addon_id}: Could not get provider for {name}.'.format(
+            addon_id=addon_id,
+            name=addon.provider_name,
+        ))
         # transition so this task doesn't get restarted needlessly
         with manager.transition(addon_id, AddonEvent.deprovision_failure):
             pass
@@ -111,20 +125,32 @@ def deprovision(addon_id):
 @app.task
 def set_config(addon_id):
     """The addon has been provisioned. Now set the config"""
+    logger = logging.getLogger(__name__)
     try:
         addon = Addon.objects.get(pk=addon_id)
     except Addon.DoesNotExist:
-        # TODO log?
+        logger.exception('Addon with ID {} does not exist.'.format(addon_id))
         raise
 
     manager = StateMachineManager()
 
     if addon.state is not AddonState.provisioned:
-        # TODO log?
+        logger.warning('Addon ID {addon_id}: State {state} is invalid for set_config task.'.format(
+            addon_id=addon_id,
+            state=addon.state,
+        ))
         return addon_id
 
     if not addon.app or not addon.user or addon.config is None:
-        # TODO log?
+        logger.error('''Addon ID {addon_id}: One of the following is invalid for set_config task:
+app: {app}
+user: {user}
+config: {config}
+'''.format(
+            app=addon.app,
+            user=addon.user,
+            config=addon.config,
+        ))
         with manager.transition(addon_id, AddonEvent.config_variables_set_failure):
             pass
         return addon_id
@@ -133,7 +159,10 @@ def set_config(addon_id):
         backend_client = get_backend_authenticated_client(
             addon.user.username, addon.app.backend)
     except BackendsError:
-        # TODO log?
+        logger.exception('Addon ID {addon_id}: Could not get backend client for {backend}.'.format(
+            addon_id=addon_id,
+            backend=addon.app.backend,
+        ))
         with manager.transition(addon_id, AddonEvent.config_variables_set_failure):
             pass
         return addon_id
@@ -143,7 +172,9 @@ def set_config(addon_id):
             addon.app.app_id, addon.config)
     except ClientError:
         # TODO retriable
-        # TODO log?
+        logger.exception('Addon ID {addon_id}: Could not set config.'.format(
+            addon_id=addon_id,
+        ))
         with manager.transition(addon_id, AddonEvent.config_variables_set_failure):
             pass
         return addon_id
