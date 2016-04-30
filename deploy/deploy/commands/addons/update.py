@@ -10,7 +10,7 @@ from deploy.commands.addons.create import _generate_compose_file
 from deploy.project import get_project_path
 from deploy.secret import store
 from deploy.utils import utils
-from deploy.utils.decorators import ensure_project_path, require_docker_machine
+from deploy.utils.decorators import ensure_project_path, require_docker_machine, require_docker_compose
 
 
 @click.command()
@@ -18,6 +18,7 @@ from deploy.utils.decorators import ensure_project_path, require_docker_machine
 @print_markers
 @ensure_project_path
 @require_docker_machine
+@require_docker_compose
 def update(name):
     """Update the addon server.
     """

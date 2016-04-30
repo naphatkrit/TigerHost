@@ -10,7 +10,7 @@ from deploy import docker_machine, settings
 from deploy.secret import store
 from deploy.project import get_project_path
 from deploy.utils import utils
-from deploy.utils.decorators import ensure_project_path, require_docker_machine
+from deploy.utils.decorators import ensure_project_path, require_docker_machine, require_docker_compose
 
 
 def _generate_compose_file(project_path, database):
@@ -35,6 +35,7 @@ def _generate_compose_file(project_path, database):
 @print_markers
 @ensure_project_path
 @require_docker_machine
+@require_docker_compose
 def create(ctx, name, instance_type, database):
     """Create machine for the addon server.
     """

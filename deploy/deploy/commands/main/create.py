@@ -12,7 +12,7 @@ from deploy import docker_machine, settings
 from deploy.project import get_project_path
 from deploy.secret import store
 from deploy.utils import path_utils
-from deploy.utils.decorators import ensure_project_path, require_docker_machine
+from deploy.utils.decorators import ensure_project_path, require_docker_machine, require_docker_compose
 from deploy.utils.utils import parse_shell_for_exports, set_aws_security_group_ingress_rule
 
 
@@ -67,6 +67,7 @@ def _update_docker_machine_ip(machine_name, new_ip):
 @print_markers
 @ensure_project_path
 @require_docker_machine
+@require_docker_compose
 def create(name, instance_type, database, addon_name, secret, elastic_ip_id):
     """Create a new machine for the main TigerHost server.
 

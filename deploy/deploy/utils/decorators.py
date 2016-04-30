@@ -60,19 +60,26 @@ def ensure_project_path(f):
     return update_wrapper(new_func, f)
 
 
-def require_docker_machine(f):
-    """Check if `docker-machine` is installed. If not, exit with an error.
+def require_executable(executable):
+    """Check if an executable is installed. If not, exit with an
+    error.
     """
-    @click.pass_context
-    def new_func(ctx, *args, **kwargs):
-        """
-        :param click.Context ctx:
-        """
-        if utils.which('docker-machine') is None:
-            click.echo('docker-machine is not installed. Please install it.')
-            ctx.exit(code=exit_codes.OTHER_FAILURE)
-        return ctx.invoke(f, *args, **kwargs)
-    return update_wrapper(new_func, f)
+    def decorator(f):
+        @click.pass_context
+        def new_func(ctx, *args, **kwargs):
+            """
+            :param click.Context ctx:
+            """
+            if utils.which(executable) is None:
+                click.echo('{} is not installed. Please install it.'.format(executable))
+                ctx.exit(code=exit_codes.OTHER_FAILURE)
+            return ctx.invoke(f, *args, **kwargs)
+        return update_wrapper(new_func, f)
+    return decorator
+
+
+require_docker_machine = require_executable('docker-machine')
+require_docker_compose = require_executable('docker-compose')
 
 
 def option_hosted_zone_id(f):

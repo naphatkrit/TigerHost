@@ -6,7 +6,7 @@ from tigerhost.utils.decorators import print_markers
 from tigerhost.utils.click_utils import echo_heading
 
 from deploy import docker_machine, settings
-from deploy.utils.decorators import ensure_project_path, require_docker_machine, option_hosted_zone_id
+from deploy.utils.decorators import ensure_project_path, require_docker_machine, require_docker_compose, option_hosted_zone_id
 from deploy.utils.utils import random_string
 
 
@@ -25,6 +25,7 @@ def _get_secret():
 @option_hosted_zone_id
 @ensure_project_path
 @require_docker_machine
+@require_docker_compose
 def create(elastic_ip_id, email, rds_database, secret, hosted_zone_id):
     """This is a shortcut to create the Deis cluster, the addons server,
     and the main TigerHost server in that order. This also configures

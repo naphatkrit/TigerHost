@@ -9,7 +9,7 @@ from deploy import docker_machine, settings
 from deploy.commands.main.create import _generate_compose_file
 from deploy.project import get_project_path
 from deploy.secret import store
-from deploy.utils.decorators import ensure_project_path, require_docker_machine
+from deploy.utils.decorators import ensure_project_path, require_docker_machine, require_docker_compose
 from deploy.utils.utils import parse_shell_for_exports
 
 
@@ -18,6 +18,7 @@ from deploy.utils.utils import parse_shell_for_exports
 @print_markers
 @ensure_project_path
 @require_docker_machine
+@require_docker_compose
 def update(name):
     """Update the main TigerHost server. This also updates the documentation.
     """
