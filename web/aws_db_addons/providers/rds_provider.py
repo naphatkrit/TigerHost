@@ -16,6 +16,11 @@ class RdsAddonProvider(BaseAddonProvider):
         self.engine = engine
         self.config_name = 'DATABASE_URL'
 
+    def _get_config_name(self, config_customization=None):
+        if config_customization is None:
+            return self.config_name
+        return config_customization + '_' + self.config_name
+
     def begin_provision(self, app_id):
         """Kick off the provision process and return a UUID
         for the new addon. This method MUST return immediately.
@@ -41,7 +46,7 @@ class RdsAddonProvider(BaseAddonProvider):
             instance.delete()
             raise AddonProviderError('The database cannot be allocated.')
         return {
-            'message': 'Database allocated. Please wait a while for it to become available. The URL will be stored at {}.'.format(self.config_name),
+            'message': 'Database allocated. Please wait a while for it to become available. The URL will be stored at {} or {}.'.format(self.config_name, self._get_config_name('<CUSTOM_NAME>')),
             'uuid': instance.uuid,
         }
 
@@ -74,11 +79,14 @@ class RdsAddonProvider(BaseAddonProvider):
                 'An unexpcted error has occured. {}'.format(e))
         return True, 0
 
-    def get_config(self, uuid):
+    def get_config(self, uuid, config_customization=None):
         """Get the config necesary to allow the app to use this
         addon's resources.
 
         :param uuid.UUID uuid: The UUID returned from :py:meth:`begin_provision`
+        :param str config_customization: A string used to avoid conflict in config
+        variable names. This string should be incorporated into each of the config
+        variable names somehow, for example, <custom_name>_DATABASE_URL.
 
         :rtype: dict
         :return: A dictionary with the following keys:\{
@@ -115,7 +123,7 @@ class RdsAddonProvider(BaseAddonProvider):
         )
         return {
             'config': {
-                self.config_name: url,
+                self._get_config_name(config_customization=config_customization): url,
             }
         }
 
@@ -143,5 +151,7 @@ class RdsAddonProvider(BaseAddonProvider):
         except botocore.exceptions.ClientError as e:
             raise AddonProviderError('{}'.format(e))
         return {
-            'message': 'Database deleted. Please remove {config_name} manually.'.format(config_name=self.config_name)
+            'message': 'Database deleted. Please remove {config_name} or {custom_name} manually.'.format(
+                config_name=self.config_name,
+                custom_name=self._get_config_name('<CUSTOM_NAME>'))
         }

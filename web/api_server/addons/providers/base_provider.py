@@ -38,11 +38,14 @@ class BaseAddonProvider(object):
         """
         raise NotImplementedError
 
-    def get_config(self, uuid):
+    def get_config(self, uuid, config_customization=None):
         """Get the config necesary to allow the app to use this
         addon's resources.
 
         :param uuid.UUID uuid: The UUID returned from :py:meth:`begin_provision`
+        :param str config_customization: A string used to avoid conflict in config
+        variable names. This string should be incorporated into each of the config
+        variable names somehow, for example, <custom_name>_DATABASE_URL.
 
         :rtype: dict
         :return: A dictionary with the following keys:\{

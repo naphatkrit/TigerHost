@@ -10,6 +10,11 @@ class SecretAddonProvider(BaseAddonProvider):
 
     config_name = 'SECRET_KEY'
 
+    def _get_config_name(self, config_customization=None):
+        if config_customization is None:
+            return self.config_name
+        return config_customization + '_' + self.config_name
+
     def begin_provision(self, app_id):
         """Kick off the provision process and return a UUID
         for the new addon. This method MUST return immediately.
@@ -29,7 +34,7 @@ class SecretAddonProvider(BaseAddonProvider):
         :raises api_server.addons.providers.exceptions.AddonProviderError: If the resource cannot be allocated.
         """
         return {
-            'message': 'A secret key will be stored into {}.'.format(self.config_name),
+            'message': 'A secret key will be stored into {} or {}.'.format(self.config_name, self._get_config_name('<CUSTOM_NAME>')),
             'uuid': uuid4(),
         }
 
@@ -50,11 +55,14 @@ class SecretAddonProvider(BaseAddonProvider):
         """
         return True, 0
 
-    def get_config(self, uuid):
+    def get_config(self, uuid, config_customization=None):
         """Get the config necesary to allow the app to use this
         addon's resources.
 
         :param uuid.UUID uuid: The UUID returned from :py:meth:`begin_provision`
+        :param str config_customization: A string used to avoid conflict in config
+        variable names. This string should be incorporated into each of the config
+        variable names somehow, for example, <custom_name>_DATABASE_URL.
 
         :rtype: dict
         :return: A dictionary with the following keys:\{
@@ -72,7 +80,7 @@ class SecretAddonProvider(BaseAddonProvider):
         """
         return {
             'config': {
-                self.config_name: crypto.get_random_string(length=100)
+                self._get_config_name(config_customization=config_customization): crypto.get_random_string(length=100)
             }
         }
 
@@ -91,5 +99,5 @@ class SecretAddonProvider(BaseAddonProvider):
             If deprovision cannot start, or if it has already started.
         """
         return {
-            'message': 'Please remove {} from your config manually.'.format(self.config_name)
+            'message': 'Please remove {} or {} from your config manually.'.format(self.config_name, self._get_config_name('<CUSTOM_NAME>'))
         }

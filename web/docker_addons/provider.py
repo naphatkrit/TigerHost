@@ -21,6 +21,11 @@ class DockerAddonProvider(BaseAddonProvider):
         self.docker_client = create_client()
         self.container_type = container_type
 
+    def _get_config_name(self, config_customization=None):
+        if config_customization is None:
+            return self.config_name
+        return config_customization + '_' + self.config_name
+
     def begin_provision(self, app_id):
         """Kick off the provision process and return a UUID
         for the new addon. This method MUST return immediately.
@@ -50,7 +55,7 @@ class DockerAddonProvider(BaseAddonProvider):
         except (docker.errors.APIError, docker.errors.DockerException):
             raise AddonProviderError('Addon cannot be allocated.')
         return {
-            'message': 'Addon allocated. Please wait a while for it to become available. The URL will be stored at {}.'.format(self.config_name),
+            'message': 'Addon allocated. Please wait a while for it to become available. The URL will be stored at {}.'.format(self.config_name, self._get_config_name('<CUSTOM_NAME>')),
             'uuid': instance.uuid,
         }
 
@@ -71,11 +76,14 @@ class DockerAddonProvider(BaseAddonProvider):
         """
         return True, 0
 
-    def get_config(self, uuid):
+    def get_config(self, uuid, config_customization=None):
         """Get the config necesary to allow the app to use this
         addon's resources.
 
         :param uuid.UUID uuid: The UUID returned from :py:meth:`begin_provision`
+        :param str config_customization: A string used to avoid conflict in config
+        variable names. This string should be incorporated into each of the config
+        variable names somehow, for example, <custom_name>_DATABASE_URL.
 
         :rtype: dict
         :return: A dictionary with the following keys:\{
@@ -103,7 +111,7 @@ class DockerAddonProvider(BaseAddonProvider):
         )
         return {
             'config': {
-                self.config_name: container.get_url(),
+                self._get_config_name(config_customization=config_customization): container.get_url(),
             }
         }
 
@@ -136,5 +144,7 @@ class DockerAddonProvider(BaseAddonProvider):
         except (docker.errors.APIError, docker.errors.DockerException) as e:
             raise AddonProviderError('{}'.format(e))
         return {
-            'message': 'Addon deleted. Please remove {config_name} manually.'.format(config_name=self.config_name)
+            'message': 'Addon deleted. PPlease remove {config_name} or {custom_name} manually.'.format(
+                config_name=self.config_name,
+                custom_name=self._get_config_name('<CUSTOM_NAME>'))
         }

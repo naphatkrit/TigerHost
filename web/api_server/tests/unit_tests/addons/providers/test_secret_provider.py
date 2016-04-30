@@ -5,6 +5,8 @@ def test_get_config():
     provider = SecretAddonProvider()
     result = provider.get_config(None)
     assert len(result['config']['SECRET_KEY']) == 100
+    result = provider.get_config(None, config_customization='TEST')
+    assert len(result['config']['TEST_SECRET_KEY']) == 100
 
 
 def test_provision_complete():

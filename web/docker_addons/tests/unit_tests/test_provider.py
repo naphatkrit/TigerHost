@@ -69,6 +69,16 @@ def test_get_config_success(provider, fake_container_info, fake_container):
     fake_container.get_url.assert_called_once_with()
 
 
+def test_get_config_success_with_config_customization(provider, fake_container_info, fake_container):
+    url = 'url'
+    fake_container.get_url.return_value = url
+    with mock.patch('docker_addons.provider.ContainerInfo.objects.get') as mocked:
+        mocked.return_value = fake_container_info
+        result = provider.get_config(None, config_customization='TEST')
+    assert result['config']['TEST_DATABASE_URL'] == url
+    fake_container.get_url.assert_called_once_with()
+
+
 def test_get_config_error(provider, fake_container_info, fake_container):
     with mock.patch('docker_addons.provider.ContainerInfo.objects.get') as mocked:
         mocked.side_effect = ContainerInfo.DoesNotExist

@@ -89,6 +89,17 @@ def test_get_config_success(provider, mock_rds, db_instance):
 
 
 @pytest.mark.django_db
+def test_get_config_success_with_config_customization(provider, mock_rds, db_instance):
+    mock_rds.get_endpoint.return_value = 'localhost:1234'
+    with mock.patch('aws_db_addons.providers.rds_provider.rds', new=mock_rds):
+        result = provider.get_config(
+            db_instance.uuid, config_customization='TEST')
+    mock_rds.get_endpoint.assert_called_once_with(db_instance)
+    assert 'localhost:1234' in result['config'][
+        provider._get_config_name('TEST')]
+
+
+@pytest.mark.django_db
 def test_get_config_failure_not_ready(provider, mock_rds, db_instance):
     mock_rds.get_endpoint.side_effect = rds.RdsNotReadyError
     with mock.patch('aws_db_addons.providers.rds_provider.rds', new=mock_rds):
