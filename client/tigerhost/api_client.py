@@ -312,11 +312,12 @@ class ApiClient(object):
             'GET', 'api/v1/apps/{}/addons/{}/'.format(app_id, addon_name))
         return resp.json()
 
-    def create_application_addon(self, app_id, addon):
+    def create_application_addon(self, app_id, addon, config_customization=None):
         """Create a new addon for this app.
 
         :param str app_id:
         :param str addon:
+        :param str config_customization:
 
         :rtype: dict
         :returns: dict with keys 'message' and 'addon'.
@@ -324,9 +325,13 @@ class ApiClient(object):
 
         :raises tigerhost.api_client.ApiClientResponseError:
         """
-        resp = self._request_and_raise('POST', 'api/v1/apps/{}/addons/'.format(app_id), json={
+        data = {
             'provider_name': addon
-        })
+        }
+        if config_customization is not None:
+            data['config_customization'] = config_customization
+        resp = self._request_and_raise(
+            'POST', 'api/v1/apps/{}/addons/'.format(app_id), json=data)
         return resp.json()
 
     def delete_application_addon(self, app_id, addon_name):

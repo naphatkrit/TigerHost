@@ -256,6 +256,22 @@ def test_create_application_addon(api_client, fake_api_server_url):
 
 
 @responses.activate
+def test_create_application_addon_with_config_customization(api_client, fake_api_server_url):
+    addon = {
+        'provider_name': 'postgres',
+        'display_name': 'fun-monkey-12d',
+        'status': 'available',
+    }
+    responses.add(responses.POST,
+                  urlparse.urljoin(fake_api_server_url,
+                                   'api/v1/apps/{}/addons/'.format('testid')),
+                  json={'message': 'test message', 'addon': addon}, status=200)
+    result = api_client.create_application_addon('testid', 'postgres', config_customization='TEST')
+    assert result['message'] == 'test message'
+    assert result['addon'] == addon
+
+
+@responses.activate
 def test_delete_application_addon(api_client, fake_api_server_url):
     responses.add(responses.DELETE,
                   urlparse.urljoin(fake_api_server_url,

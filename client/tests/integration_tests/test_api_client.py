@@ -206,6 +206,32 @@ def test_application_addons(api_client, app_id, create_application):
     assert len(addons) == 1
     assert addons[0]['display_name'] == addon['display_name']
     assert addons[0]['provider_name'] == 'secret'
+    assert addons[0]['config_customization'] is None
+
+    addon == api_client.get_application_addon(app_id, name)
+    assert addons[0]['display_name'] == addon['display_name']
+    assert addons[0]['provider_name'] == addon['provider_name']
+
+    result = api_client.delete_application_addon(app_id, name)
+
+    addons = api_client.get_application_addons(app_id)
+    assert len(addons) == 0
+
+
+def test_application_addons_with_config_customization(api_client, app_id, create_application):
+    """
+    @type api_client: tigerhost.api_client.ApiClient
+    """
+    result = api_client.create_application_addon(app_id, 'secret', config_customization='TEST')
+    assert 'message' in result
+
+    addon = result['addon']
+    name = addon['display_name']
+    addons = api_client.get_application_addons(app_id)
+    assert len(addons) == 1
+    assert addons[0]['display_name'] == addon['display_name']
+    assert addons[0]['provider_name'] == 'secret'
+    assert addons[0]['config_customization'] == 'TEST'
 
     addon == api_client.get_application_addon(app_id, name)
     assert addons[0]['display_name'] == addon['display_name']
