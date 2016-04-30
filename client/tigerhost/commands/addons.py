@@ -27,17 +27,18 @@ def list_addons(ctx):
 
 @click.command()
 @click.argument('addon', required=True)
+@click.option('--attach-as', '-as', default=None, help='Attachment name, used to customize the name of the config var(s)')
 @decorators.print_markers
 @decorators.catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context
-def create_addon(ctx, addon):
+def create_addon(ctx, addon, attach_as):
     """Create a new addon for this app.
     """
     app = ctx.obj['app']
     api_client = ctx.obj['api_client']
-    result = api_client.create_application_addon(app, addon)
+    result = api_client.create_application_addon(app, addon, config_customization=attach_as)
     click.echo('Name: {}'.format(result['addon']['display_name']))
     click.echo(result['message'])
 

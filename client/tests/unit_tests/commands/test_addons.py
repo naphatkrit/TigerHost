@@ -38,7 +38,23 @@ def test_create_addons(runner, saved_user, fake_api_client):
     assert 'test message' in result.output
     assert 'fun-monkey-12d' in result.output
     fake_api_client.create_application_addon.assert_called_once_with(
-        'app', 'postgres')
+        'app', 'postgres', config_customization=None)
+
+
+def test_create_addons_with_config_customization(runner, saved_user, fake_api_client):
+    """
+    @type runner: click.testing.CliRunner
+    @type fake_api_client: mock.Mock
+    """
+    fake_api_client.create_application_addon.return_value = {
+        'message': 'test message', 'addon': {'display_name': 'fun-monkey-12d'}}
+    result = runner.invoke(
+        entry, ['addons:create', '--app', 'app', 'postgres', '--attach-as', 'TEST'])
+    assert result.exit_code == 0
+    assert 'test message' in result.output
+    assert 'fun-monkey-12d' in result.output
+    fake_api_client.create_application_addon.assert_called_once_with(
+        'app', 'postgres', config_customization='TEST')
 
 
 def test_wait_addons(runner, saved_user, fake_api_client):
