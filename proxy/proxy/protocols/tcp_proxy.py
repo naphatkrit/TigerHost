@@ -63,6 +63,12 @@ class ServerProtocol(Protocol, object):
         """
         self.server_queue.put(data)
 
+    def connectionLost(self, why):
+        """Server closed connection, or some other issue. close connection
+        to server
+        """
+        self.server_queue.put(False)
+
 
 class TcpProxyProtocol(Protocol, object):
     """A simple TCP proxy"""
@@ -97,6 +103,9 @@ class TcpProxyProtocol(Protocol, object):
 
         :param str data: data from server queue
         """
+        if data is False:
+            self.transport.loseConnection()
+            return
         self.transport.write(data)
         self.server_queue.get().addCallback(self.serverQueueCallback)
 
@@ -109,6 +118,4 @@ class TcpProxyProtocol(Protocol, object):
         """Client closed connection, or some other issue. close connection
         to server
         """
-        # TODO pretty sure this only allows client to close connection, not the
-        # other way around
         self.client_queue.put(False)

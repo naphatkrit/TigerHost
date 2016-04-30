@@ -52,6 +52,9 @@ class SpoofTcpProxyProtocol(Protocol, object):
 
         :param str data: data from server queue
         """
+        if data is False:
+            self.transport.loseConnection()
+            return
         assert self.spoof_messages_length >= 0
         if self.spoof_messages_length == 0:
             self.transport.write(data)
@@ -70,6 +73,9 @@ class SpoofTcpProxyProtocol(Protocol, object):
         :param str data: data from server queue
         """
         if self.spoof_server_queue is not None:
+            if data is False:
+                self.transport.loseConnection()
+                return
             self.spoof_messages_length += len(data)
             self.transport.write(data)
             self.spoof_server_queue.get().addCallback(self.spoofServerQueueCallback)
@@ -98,9 +104,12 @@ class SpoofTcpProxyProtocol(Protocol, object):
         :param DeferredQueue client_queue:
         """
         # close connection
-        self.spoof_client_queue.put(False)
+        spoof_client_queue = self.spoof_client_queue
+
+        # setting to None first prevents a race condition
         self.spoof_client_queue = None
         self.spoof_server_queue = None
+        spoof_client_queue.put(False)
 
         self._connectServer(
             hostname, port, self.server_queue, self.client_queue)
