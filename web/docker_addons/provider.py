@@ -55,7 +55,7 @@ class DockerAddonProvider(BaseAddonProvider):
         except (docker.errors.APIError, docker.errors.DockerException):
             raise AddonProviderError('Addon cannot be allocated.')
         return {
-            'message': 'Addon allocated. Please wait a while for it to become available. The URL will be stored at {}.'.format(self.config_name, self._get_config_name('<CUSTOM_NAME>')),
+            'message': 'Addon allocated. Please wait a while for it to become available. The URL will be stored at {} or {}.'.format(self.config_name, self._get_config_name('<CUSTOM_NAME>')),
             'uuid': instance.uuid,
         }
 
