@@ -24,7 +24,10 @@ def add_key(ctx, name, path, backend):
     with open(path, 'r') as f:
         key = f.read()
     api_client.add_key(name, key, backend)
-    click.echo('Added key {} to {}.'.format(name, backend))
+    if backend is not None:
+        click.echo('Added key {} to {}.'.format(name, backend))
+    else:
+        click.echo('Added key {}.'.format(name))
 
 
 def _truncate(text):
