@@ -1,11 +1,13 @@
 import click
 
+from click_extensions import private_dir
+from click_extensions.commands import bash_complete_command
+
 import tigerhost
 
-from tigerhost import private_dir, settings
+from tigerhost import settings
 from tigerhost.commands import access, addons, apps, config, domains, git, keys, backends, run_command, logs
 from tigerhost.commands.user import login, user_info, logout
-from tigerhost.utils.click_utils import bash_complete_command
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])

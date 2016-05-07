@@ -2,8 +2,9 @@
 import json
 import os
 
+from click_extensions import private_dir
+
 from tigerhost import settings
-from tigerhost import private_dir
 
 
 def _user_path():

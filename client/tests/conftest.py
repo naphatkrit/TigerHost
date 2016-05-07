@@ -5,9 +5,10 @@ import random
 import string
 
 from click.testing import CliRunner
+from click_extensions import private_dir
 from temp_utils.contextmanagers import temp_dir, temp_file
 
-from tigerhost import private_dir, settings
+from tigerhost import settings
 
 
 @pytest.yield_fixture(scope='function')
@@ -26,7 +27,7 @@ def make_git_repo(runner):
 def fake_private_dir():
     with temp_dir() as path:
         new_private_dir = os.path.join(path, '.tigerhost')
-        with mock.patch('tigerhost.private_dir.private_dir_path') as mocked:
+        with mock.patch('click_extensions.private_dir.private_dir_path') as mocked:
             mocked.return_value = new_private_dir
             yield
 

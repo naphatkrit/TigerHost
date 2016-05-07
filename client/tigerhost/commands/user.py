@@ -1,7 +1,10 @@
 import click
 import urlparse
 
-from tigerhost import exit_codes, settings
+from click_extensions import exit_codes
+from click_extensions.decorators import catch_exception, print_markers
+
+from tigerhost import settings
 from tigerhost.api_client import ApiClient, ApiClientAuthenticationError, ApiClientResponseError
 from tigerhost.user import User, save_user, delete_user, has_saved_user
 from tigerhost.utils import decorators
@@ -14,8 +17,8 @@ _api_key_url = urlparse.urljoin(settings.API_SERVER_URL, 'api/api_key/')
 @click.pass_context
 @click.option('--username', '-u', default=None, help='Your username (netID)', type=str)
 @click.option('--api-key', '-a', default=None, help='The API key optained from {}'.format(_api_key_url), type=str)
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 def login(ctx, username, api_key):
     """Logs the user in by asking for username and api_key
     """
@@ -44,8 +47,8 @@ def login(ctx, username, api_key):
 
 
 @click.command()
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_user
 @click.pass_context
 def user_info(ctx):
@@ -59,8 +62,8 @@ def user_info(ctx):
 
 
 @click.command()
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @click.pass_context
 def logout(ctx):
     """Log the user out, deleting the API key.

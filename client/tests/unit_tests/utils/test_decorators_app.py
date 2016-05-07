@@ -1,6 +1,8 @@
 import click
 import pytest
 
+from click_extensions.decorators import print_markers
+
 from tigerhost.vcs.git import GitVcs
 from tigerhost.utils import decorators
 
@@ -8,17 +10,16 @@ from tigerhost.utils import decorators
 @click.command()
 @decorators.store_app
 @click.pass_context
-@decorators.print_markers
+@print_markers
 def command_with_context(ctx):
     click.echo(ctx.obj['app'])
 
 
 @click.command()
-@decorators.print_markers
+@print_markers
 @decorators.store_vcs
 @decorators.store_app
 @click.pass_context
-@decorators.print_markers
 def command_with_context_and_vcs1(ctx):
     click.echo(ctx.obj['app'])
 
@@ -27,7 +28,7 @@ def command_with_context_and_vcs1(ctx):
 @decorators.store_app
 @decorators.store_vcs
 @click.pass_context
-@decorators.print_markers
+@print_markers
 def command_with_context_and_vcs2(ctx):
     click.echo(ctx.obj['app'])
 

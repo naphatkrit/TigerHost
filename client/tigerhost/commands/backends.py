@@ -1,12 +1,14 @@
 import click
 
+from click_extensions.decorators import catch_exception, print_markers
+
 from tigerhost.api_client import ApiClientResponseError
 from tigerhost.utils import decorators
 
 
 @click.command()
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_user
 @decorators.store_api_client
 @click.pass_context

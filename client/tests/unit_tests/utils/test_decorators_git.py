@@ -1,13 +1,15 @@
 import click
 import pytest
 
+from click_extensions.decorators import print_markers
+
 from tigerhost.utils import decorators
 
 
 @click.command()
 @decorators.store_vcs
 @click.pass_context
-@decorators.print_markers
+@print_markers
 def command_with_context(ctx):
     vcs = ctx.obj['vcs']
     if vcs is None:

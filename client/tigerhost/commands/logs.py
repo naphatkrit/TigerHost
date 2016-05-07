@@ -1,5 +1,7 @@
 import click
 
+from click_extensions.decorators import catch_exception, print_markers
+
 from tigerhost.api_client import ApiClientResponseError
 from tigerhost.utils import decorators
 
@@ -9,8 +11,8 @@ _available_colors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan']
 
 @click.command()
 @click.option('--num', '-n', type=int, help='The number of lines to display')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context

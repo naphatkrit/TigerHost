@@ -1,12 +1,14 @@
 import click
 
+from click_extensions.decorators import catch_exception, print_markers
+
 from tigerhost.api_client import ApiClientResponseError
 from tigerhost.utils import decorators
 
 
 @click.command()
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context
@@ -26,8 +28,8 @@ def get_users(ctx):
 
 @click.command()
 @click.argument('username')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context
@@ -42,8 +44,8 @@ def add_access(ctx, username):
 
 @click.command()
 @click.argument('username')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context

@@ -2,13 +2,15 @@ import click
 import datetime
 import time
 
+from click_extensions.decorators import catch_exception, print_markers
+
 from tigerhost.api_client import ApiClientResponseError
 from tigerhost.utils import decorators
 
 
 @click.command()
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context
@@ -28,8 +30,8 @@ def list_addons(ctx):
 @click.command()
 @click.argument('addon', required=True)
 @click.option('--attach-as', '-as', default=None, help='Attachment name, used to customize the name of the config var(s)')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context
@@ -46,8 +48,8 @@ def create_addon(ctx, addon, attach_as):
 @click.command()
 @click.argument('addon', required=True)
 @click.option('--interval', '-i', type=int, default=30, help='The polling interval in seconds.')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context
@@ -71,8 +73,8 @@ def wait_addon(ctx, addon, interval):
 
 @click.command()
 @click.argument('addon_name', required=True)
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context

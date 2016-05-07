@@ -1,5 +1,7 @@
 import click
 
+from click_extensions.decorators import catch_exception, print_markers
+
 from tigerhost import settings
 from tigerhost.api_client import ApiClientResponseError
 from tigerhost.utils import decorators
@@ -9,9 +11,9 @@ from tigerhost.vcs.base import CommandError
 @click.command()
 @click.option('--app', '-a', required=True, help='The app to work with')
 @click.option('--remote', '-r', default=None, help='The git remote to create')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
-@decorators.catch_exception(CommandError)
+@print_markers
+@catch_exception(ApiClientResponseError)
+@catch_exception(CommandError)
 @decorators.store_api_client
 @decorators.store_vcs
 @click.pass_context

@@ -1,13 +1,16 @@
 import click
 
+import click_extensions
+from click_extensions.decorators import catch_exception, print_markers
+
 from tigerhost import settings
 from tigerhost.api_client import ApiClientResponseError
-from tigerhost.utils import click_utils, decorators
+from tigerhost.utils import decorators
 
 
 @click.command()
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @click.pass_context
 def list_apps(ctx):
@@ -30,8 +33,8 @@ def list_apps(ctx):
 @click.command()
 @click.argument('name')
 @click.option('--backend', '-b', help='Pick a different backend from the default.')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_vcs
 @click.pass_context
@@ -77,8 +80,8 @@ This can happen if you created multiple {app_name} apps for your project.'''.for
 
 
 @click.command()
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context
@@ -87,20 +90,20 @@ def destroy_app(ctx):
     """
     app = ctx.obj['app']
     api_client = ctx.obj['api_client']
-    click_utils.echo_heading('Destroying all addons.', marker_color='magenta')
+    click_extensions.echo_heading('Destroying all addons.', marker_color='magenta')
     addons = api_client.get_application_addons(app)
     for x in addons:
         click.echo('Destroying {name} ({addon}).'.format(name=x['display_name'], addon=x['provider_name']))
         api_client.delete_application_addon(app, x['display_name'])
-    click_utils.echo_heading('Destroying app.', marker_color='magenta')
+    click_extensions.echo_heading('Destroying app.', marker_color='magenta')
     api_client.delete_application(app)
     click.echo('App {} destroyed.'.format(app))
 
 
 @click.command()
 @click.argument('username')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @decorators.store_app
 @click.pass_context

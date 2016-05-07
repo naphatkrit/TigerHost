@@ -1,7 +1,9 @@
 import json
 import pytest
 
-from tigerhost import private_dir, settings
+from click_extensions import private_dir
+
+from tigerhost import settings
 from tigerhost.user import User, UserFormatError, save_user, load_user, has_saved_user, delete_user
 
 

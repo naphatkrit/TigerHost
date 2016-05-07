@@ -1,6 +1,8 @@
 import click
 import os
 
+from click_extensions.decorators import catch_exception, print_markers
+
 from tigerhost.api_client import ApiClientResponseError
 from tigerhost.utils import decorators
 
@@ -9,9 +11,9 @@ from tigerhost.utils import decorators
 @click.argument('name')
 @click.argument('path', default='~/.ssh/id_rsa.pub')
 @click.option('--backend', '-b', help='The backend to add this key to. Defaults to the default backend.')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
-@decorators.catch_exception(IOError)
+@print_markers
+@catch_exception(ApiClientResponseError)
+@catch_exception(IOError)
 @decorators.store_api_client
 @click.pass_context
 def add_key(ctx, name, path, backend):
@@ -40,8 +42,8 @@ def _truncate(text):
 
 
 @click.command()
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
+@print_markers
+@catch_exception(ApiClientResponseError)
 @decorators.store_api_client
 @click.pass_context
 def list_keys(ctx):
@@ -63,9 +65,9 @@ def list_keys(ctx):
 @click.command()
 @click.argument('name')
 @click.option('--backend', '-b', help='The backend to remove this key from. Defaults to the default backend.')
-@decorators.print_markers
-@decorators.catch_exception(ApiClientResponseError)
-@decorators.catch_exception(IOError)
+@print_markers
+@catch_exception(ApiClientResponseError)
+@catch_exception(IOError)
 @decorators.store_api_client
 @click.pass_context
 def remove_key(ctx, name, backend):
