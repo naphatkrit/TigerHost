@@ -1,6 +1,6 @@
 import click
 
-from tigerhost import exit_codes
+from click_extensions import exit_codes
 
 from deploy.commands.create import _get_secret
 

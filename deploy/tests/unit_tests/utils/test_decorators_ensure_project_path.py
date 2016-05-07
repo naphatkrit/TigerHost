@@ -2,7 +2,7 @@ import click
 import mock
 import os
 
-from tigerhost import exit_codes
+from click_extensions import exit_codes
 
 from deploy.utils import decorators, path_utils
 from deploy.project import get_project_path, save_project_path, default_project_path

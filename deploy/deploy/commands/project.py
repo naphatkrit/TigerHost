@@ -2,7 +2,7 @@ import click
 import os
 import shutil
 
-from tigerhost.utils import decorators
+from click_extensions import decorators
 
 from deploy.project import clone_project, default_project_path, save_project_path
 from deploy.utils import path_utils

@@ -1,7 +1,7 @@
 import click
 import pytest
 
-from tigerhost import exit_codes
+from click_extensions import exit_codes
 
 from deploy.utils import click_utils
 

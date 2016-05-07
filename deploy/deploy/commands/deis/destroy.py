@@ -1,7 +1,7 @@
 import boto3
 import click
 
-from tigerhost.utils.decorators import print_markers
+from click_extensions.decorators import print_markers
 
 from deploy.secret import store
 from deploy.utils.decorators import skip_if_debug

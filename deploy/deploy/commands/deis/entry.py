@@ -1,6 +1,6 @@
 import click
 
-from tigerhost import private_dir
+from click_extensions import private_dir
 
 from deploy import settings
 from deploy.commands.deis.configure_dns import configure_dns

@@ -2,8 +2,8 @@ import boto3
 import click
 import subprocess32 as subprocess
 
-from tigerhost.utils.decorators import print_markers
-from tigerhost.utils.click_utils import echo_heading
+from click_extensions import echo_heading
+from click_extensions.decorators import print_markers
 
 from deploy import docker_machine, settings
 from deploy.utils.decorators import ensure_project_path, require_docker_machine, require_docker_compose, option_hosted_zone_id

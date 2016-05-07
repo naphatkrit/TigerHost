@@ -1,7 +1,7 @@
 import click
 
-from tigerhost import private_dir
-from tigerhost.utils.click_utils import bash_complete_command
+from click_extensions import private_dir
+from click_extensions.commands import bash_complete_command
 
 import deploy
 

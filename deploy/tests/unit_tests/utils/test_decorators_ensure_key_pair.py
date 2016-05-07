@@ -5,7 +5,7 @@ import os
 import pytest
 import stat
 
-from tigerhost import exit_codes
+from click_extensions import exit_codes
 from temp_utils import contextmanagers
 
 from deploy.utils.decorators import ensure_key_pair

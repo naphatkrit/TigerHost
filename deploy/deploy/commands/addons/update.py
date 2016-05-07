@@ -2,8 +2,8 @@ import click
 import os
 import subprocess32 as subprocess
 
-from tigerhost.utils.click_utils import echo_heading
-from tigerhost.utils.decorators import print_markers
+from click_extensions import echo_heading
+from click_extensions.decorators import print_markers
 
 from deploy import docker_machine, settings
 from deploy.commands.addons.create import _generate_compose_file

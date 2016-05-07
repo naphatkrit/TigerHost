@@ -1,7 +1,7 @@
 import click
 import mock
 
-from tigerhost import exit_codes
+from click_extensions import exit_codes
 
 from deploy.utils.decorators import require_executable
 

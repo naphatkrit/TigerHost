@@ -1,6 +1,6 @@
 import os
 
-from tigerhost import private_dir
+from click_extensions import private_dir
 from tigerhost.vcs.git import GitVcs
 
 from deploy import settings, user_config

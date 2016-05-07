@@ -2,7 +2,7 @@ import click
 import mock
 import pytest
 
-from tigerhost import exit_codes
+from click_extensions import exit_codes
 
 from deploy import settings
 from deploy.utils.decorators import option_hosted_zone_id

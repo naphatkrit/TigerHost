@@ -16,8 +16,9 @@ install_requires = [
     'awscli>=1.10.17,<2.0.0',
     'boto3>=1.3.0,<2.0.0',
     'Click>=6.0',
+    'click-extensions>=1.1.0,<2.0',
     'pyyaml>=3.11,<4.0',
-    'tigerhost==0.5.0',
+    'tigerhost>=0.5.0',  # only for GitVcs
     'requests>=2.9.1,<3.0',
     'subprocess32>=3.2.6',
     'temp_utils>=1.0,<2.0',

@@ -1,8 +1,8 @@
 import click
 import subprocess32 as subprocess
 
-from tigerhost.utils.click_utils import echo_heading
-from tigerhost.utils.decorators import print_markers
+from click_extensions import echo_heading
+from click_extensions.decorators import print_markers
 
 from deploy import settings
 from deploy.secret import store

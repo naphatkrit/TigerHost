@@ -2,7 +2,7 @@ import click
 import os
 import shutil
 
-from tigerhost.utils.decorators import print_markers
+from click_extensions.decorators import print_markers
 from tigerhost.vcs.git import GitVcs
 
 from deploy.secret import secret_dir

@@ -9,8 +9,7 @@ import subprocess32 as subprocess
 
 from functools import update_wrapper
 from temp_utils import contextmanagers
-from tigerhost import exit_codes, private_dir
-from tigerhost.utils.click_utils import echo_heading
+from click_extensions import echo_heading, exit_codes, private_dir
 
 from deploy import settings
 from deploy.project import get_project_path, save_project_path, default_project_path, clone_project

@@ -4,7 +4,7 @@ import pytest
 
 from click.testing import CliRunner
 from temp_utils.contextmanagers import temp_dir, chdir
-from tigerhost import private_dir
+from click_extensions import private_dir
 
 from deploy import settings
 from deploy.secret.secret_dir import ensure_secret_dir_exists
@@ -14,7 +14,7 @@ from deploy.secret.secret_dir import ensure_secret_dir_exists
 def fake_private_dir():
     with temp_dir() as path:
         new_private_dir = os.path.join(path, '.deploy')
-        with mock.patch('tigerhost.private_dir.private_dir_path') as mocked:
+        with mock.patch('click_extensions.private_dir.private_dir_path') as mocked:
             mocked.return_value = new_private_dir
             yield
 
