@@ -3,7 +3,7 @@ import click
 import os
 import subprocess32 as subprocess
 
-from tigerhost.utils import contextmanagers
+from temp_utils import contextmanagers
 from tigerhost.utils.decorators import print_markers
 
 from deploy import settings

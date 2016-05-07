@@ -8,8 +8,8 @@ import stat
 import subprocess32 as subprocess
 
 from functools import update_wrapper
+from temp_utils import contextmanagers
 from tigerhost import exit_codes, private_dir
-from tigerhost.utils import contextmanagers
 from tigerhost.utils.click_utils import echo_heading
 
 from deploy import settings

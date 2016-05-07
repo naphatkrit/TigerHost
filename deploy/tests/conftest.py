@@ -3,8 +3,8 @@ import os
 import pytest
 
 from click.testing import CliRunner
+from temp_utils.contextmanagers import temp_dir, chdir
 from tigerhost import private_dir
-from tigerhost.utils.contextmanagers import temp_dir, chdir
 
 from deploy import settings
 from deploy.secret.secret_dir import ensure_secret_dir_exists

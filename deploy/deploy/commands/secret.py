@@ -1,7 +1,7 @@
 import click
 import subprocess32 as subprocess
 
-from tigerhost.utils import contextmanagers
+from temp_utils import contextmanagers
 
 from deploy.secret import secret_dir
 

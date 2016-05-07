@@ -1,7 +1,7 @@
 import mock
 import os
 
-from tigerhost.utils import contextmanagers
+from temp_utils import contextmanagers
 
 from deploy.project import get_project_path, save_project_path, clone_project, default_project_path
 

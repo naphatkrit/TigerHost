@@ -2,7 +2,7 @@ import mock
 import os
 import pytest
 
-from tigerhost.utils import contextmanagers
+from temp_utils import contextmanagers
 
 from deploy.docker_machine import check_call, check_output, retrieve_credentials, docker_machine_storage_path, MachineNotFoundError, get_url
 

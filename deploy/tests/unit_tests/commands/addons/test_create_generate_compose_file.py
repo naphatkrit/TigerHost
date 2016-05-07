@@ -2,7 +2,7 @@ import os
 import pytest
 import yaml
 
-from tigerhost.utils import contextmanagers
+from temp_utils import contextmanagers
 
 from deploy.commands.addons.create import _generate_compose_file
 

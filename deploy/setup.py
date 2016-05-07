@@ -20,6 +20,7 @@ install_requires = [
     'tigerhost==0.5.0',
     'requests>=2.9.1,<3.0',
     'subprocess32>=3.2.6',
+    'temp_utils>=1.0,<2.0',
 ]
 
 setup(

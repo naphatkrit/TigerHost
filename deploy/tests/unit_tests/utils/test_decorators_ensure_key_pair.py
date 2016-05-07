@@ -6,7 +6,7 @@ import pytest
 import stat
 
 from tigerhost import exit_codes
-from tigerhost.utils import contextmanagers
+from temp_utils import contextmanagers
 
 from deploy.utils.decorators import ensure_key_pair
 
