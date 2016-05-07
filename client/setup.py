@@ -16,6 +16,7 @@ install_requires = [
     'Click>=6.0',
     'requests>=2.9.1,<3.0',
     'subprocess32>=3.2.6',
+    'temp-utils>=1.0.0,<2.0',
 ]
 
 setup(

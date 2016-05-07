@@ -4,7 +4,8 @@ import shutil
 import stat
 import tempfile
 
-from tigerhost.utils import contextmanagers
+from temp_utils import contextmanagers
+
 from tigerhost.vcs.base import CommandError
 from tigerhost.vcs.git import GitVcs
 

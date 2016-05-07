@@ -2,7 +2,8 @@ import mock
 import os
 import pytest
 
-from tigerhost.utils import contextmanagers
+from temp_utils import contextmanagers
+
 from tigerhost.vcs.base import Vcs
 
 

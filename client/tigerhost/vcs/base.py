@@ -9,8 +9,7 @@ import os.path
 
 from contextlib import contextmanager
 from subprocess32 import Popen, PIPE, check_call
-
-from tigerhost.utils import contextmanagers
+from temp_utils import contextmanagers
 
 
 class CommandError(Exception):

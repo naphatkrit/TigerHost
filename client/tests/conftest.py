@@ -5,9 +5,9 @@ import random
 import string
 
 from click.testing import CliRunner
+from temp_utils.contextmanagers import temp_dir, temp_file
 
 from tigerhost import private_dir, settings
-from tigerhost.utils.contextmanagers import temp_dir, temp_file
 
 
 @pytest.yield_fixture(scope='function')
