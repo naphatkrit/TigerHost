@@ -31,3 +31,9 @@ To run integration tests:
 URL=<http://tigerhostapp.com> bin/integration_tests
 ```
 You can replace `http://tigerhostapp.com` with the URL to a local instance of TigerHost.
+
+## Deploy to Pypi
+To deploy the current version of the code to Pypi:
+
+1. Update `/tigerhost/__init__.py`, variable `__version__`, appropriately.
+2. Run `make deploy`.
