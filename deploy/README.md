@@ -13,7 +13,7 @@ This project also uses two external libraries written by Naphat Sanguansin:
 This project also depends on the TigerHost CLI for its git library. This is not refactored into a separate library because the library was taken from another open-sourced project.
 
 ## Development
-To start developing for TigerHost Deployment CLI, in your virtualenv specifically for TigerHost CLI, run:
+To start developing for TigerHost Deployment CLI, in your virtualenv specifically for TigerHost Deployment CLI, run:
 
 ```
 make develop
