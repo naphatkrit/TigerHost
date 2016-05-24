@@ -25,6 +25,8 @@ In TigerHost, you deploy with a git push.
 
 .. code-block:: console
 
-    $ git push tigerhost
+    $ git push tigerhost <branch_name>
+
+Typically, the branch you want to push is the master branch.
 
 Your app will be available at ``<app_name>.tigerhostapp.com``.
