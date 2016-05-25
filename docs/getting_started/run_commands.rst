@@ -31,3 +31,19 @@ For a more serious example, let's say you want to migrate the database of your d
 .. code-block:: console
 
     $ tigerhost run python manage.py migrate
+
+.. note::
+
+    Another known issue is when running commands with options (like --this or -t). In that case, either put the whole command in quote, or use the Unix notation --.
+
+    That is, either do:
+
+    .. code-block:: console
+
+        $ tigerhost run "python manage.py migrate --some-option"
+
+    or:
+
+    .. code-block:: console
+
+        $ tigerhost run -- python manage.py migrate --some-option
