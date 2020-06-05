@@ -2,7 +2,7 @@ celery[redis]==3.1.21
 boto3==1.2.6
 enum34==1.1.2
 dj-database-url==0.4.0
-Django==1.9.2
+Django==1.11.29
 docker-py==1.8.0rc2
 gunicorn==19.4.5
 haikunator==1.0.1
